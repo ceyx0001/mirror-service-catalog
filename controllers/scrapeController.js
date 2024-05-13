@@ -15,27 +15,36 @@ exports.scrape = asyncHandler(async (req, res, next) => {
   );
 
   // clean response into array of JSON objects
-  const document = cheerio.load(response.data); // html string
   let items = [];
+  const document = cheerio.load(response.data); // html string
+  const scriptContent = document("script").last().html();
 
-  document("script").each((i, element) => {
-    // find script tag containing deferred item renderer with item info
-    const scriptContent = document.html(element);
-    if (scriptContent.includes('require(["main"], function() {')) {
-      const arrayStartIndex = scriptContent.indexOf("new R(") + 6; // clean string
-      const arrayEndIndex = scriptContent.indexOf(".run()") - 2;
-      const arrayString = scriptContent.slice(arrayStartIndex, arrayEndIndex);
-      items = JSON.parse(arrayString).map((item) => ({
-        icon: item[1].icon,
-        name: item[1].name,
-        enchantMods: item[1].enchantMods,
-        implicitMods: item[1].implicitMods,
-        explicitMods: item[1].explicitMods,
-        fracturedMods: item[1].fracturedMods,
-        craftedMods: item[1].craftedMods,
-      }));
-    }
-  });
+  if (scriptContent.includes("DeferredItemRenderer")) {
+    const arrayStartIndex = scriptContent.indexOf("new R(") + 6; // clean string
+    const arrayEndIndex = scriptContent.indexOf(".run()") - 2;
+    const arrayString = scriptContent.slice(arrayStartIndex, arrayEndIndex);
+    items = JSON.parse(arrayString).map((item) => ({
+      icon: item[1].icon,
+      name: item[1].name,
+      enchantMods: item[1].enchantMods,
+      implicitMods: item[1].implicitMods,
+      explicitMods: item[1].explicitMods,
+      fracturedMods: item[1].fracturedMods,
+      craftedMods: item[1].craftedMods,
+    }));
+  } else {
+    // No results.
+    const err = new Error("Could not find item renderer.");
+    err.status = 500;
+    return next(err);
+  }
+
+  if (items.length === 0) {
+    // No results.
+    const err = new Error("Could not find any items from vendor.");
+    err.status = 500;
+    return next(err);
+  }
 
   res.json(items);
 });
