@@ -24,36 +24,29 @@ exports.getShopData = asyncHandler(async (req, res, next) => {
     const arrayStartIndex = scriptContent.indexOf("new R(") + 6; // clean string
     const arrayEndIndex = scriptContent.indexOf(".run()") - 2;
     const arrayString = scriptContent.slice(arrayStartIndex, arrayEndIndex);
-    serviceItems = JSON.parse(arrayString).map((item) => {
-      if (item[1].name != "" && !("duplicated" in item[1])) {
-        return {
-          icon: item[1].icon,
-          name: item[1].name,
-          enchantMods: item[1].enchantMods,
-          implicitMods: item[1].implicitMods,
-          explicitMods: item[1].explicitMods,
-          fracturedMods: item[1].fracturedMods,
-          craftedMods: item[1].craftedMods,
-          crucibleMods: item[1].crucibleMods,
-        };
-      }
-    })
-    .filter(Boolean);
+    serviceItems = JSON.parse(arrayString)
+      .map((item) => {
+        if (item[1].name != "" && !("duplicated" in item[1])) {
+          return {
+            icon: item[1].icon,
+            name: item[1].name,
+            enchantMods: item[1].enchantMods,
+            implicitMods: item[1].implicitMods,
+            explicitMods: item[1].explicitMods,
+            fracturedMods: item[1].fracturedMods,
+            craftedMods: item[1].craftedMods,
+            crucibleMods: item[1].crucibleMods,
+          };
+        }
+      })
+      .filter(Boolean);
+  }
+
+  if (serviceItems.length !== 0) {
+    return serviceItems;
   } else {
-    // No results.
-    const err = new Error("Could not find item renderer.");
-    err.status = 500;
-    return next(err);
+    return null;
   }
-
-  if (serviceItems.length === 0) {
-    // No results.
-    const err = new Error("Could not find any items from vendor.");
-    err.status = 500;
-    return next(err);
-  }
-
-  return serviceItems;
 });
 
 exports.shop = asyncHandler(async (req, res, next) => {

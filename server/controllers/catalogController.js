@@ -6,6 +6,8 @@ exports.catalog = asyncHandler(async (req, res, next) => {
   const startPage = parseInt(req.query.startPage, 10) || 1;
   const endPage = parseInt(req.query.endPage, 10) || 50;
 
+  console.log(`${req.url}`);
+
   const threadReq = {
     ...req,
     query: { startPage: startPage, endPage: endPage },
@@ -18,6 +20,7 @@ exports.catalog = asyncHandler(async (req, res, next) => {
   });
 
   // Wait for all shop operations to complete
-  const results = await Promise.all(requests);
+  let results = await Promise.all(requests);
+  results = results.filter(item => item !== null);
   res.json(results);
 });

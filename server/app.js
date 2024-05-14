@@ -3,14 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const cors = require('cors');
 var indexRouter = require('./routes/index');
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+// Enable CORS only for localhost:3001
+app.use(cors({
+  origin: 'http://localhost:3001'
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -33,7 +34,6 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
 });
 
 module.exports = app;
