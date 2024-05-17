@@ -1,12 +1,13 @@
-const express = require("express");
+import express from "express";
+import { catalog_details, catalog_update } from "../controllers/catalogController.js";
+import shop from "../controllers/shopController.js";
+import threads from "../controllers/threadsController.js";
+
 const router = express.Router();
 
-const catalogController = require("../controllers/catalogController");
-const shopController = require("../controllers/shopController");
-const threadController = require("../controllers/threadsController");
+router.get("/api/catalog-update", catalog_update);
+router.get("/api/catalog", catalog_details);
+router.get("/api/threads", threads);
+router.get("/api/shop/:threadIndex", shop);
 
-router.get("/api/catalog", catalogController.catalog);
-router.get("/api/threads", threadController.threads);
-router.get("/api/shop/:threadIndex", shopController.shop);
-
-module.exports = router;
+export default router;

@@ -1,14 +1,13 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
-const asyncHandler = require("express-async-handler");
+import axios from "axios";
+import cheerio from "cheerio";
+import asyncHandler from "express-async-handler";
 
-exports.getShopData = asyncHandler(async (req, res, next) => {
+const getShopData = asyncHandler(async (req, res, next) => {
   const url = `https://www.pathofexile.com/forum/view-thread/${req.params.threadIndex}`;
   // fetch one vendor
   const response = await axios.get(url, {
     headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      "User-Agent": `Mirror-Catalog/1.0 (${process.env.DEV_EMAIL}) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3`,
     },
   });
 
@@ -42,13 +41,20 @@ exports.getShopData = asyncHandler(async (req, res, next) => {
       .filter(Boolean);
   }
 
-  if (serviceItems.length !== 0) {
-    return serviceItems;
+  const profileName = document("tr .post_info .posted-by .profile-link")
+    .first()
+    .text();
+
+  return { prifleName: profileName, url: url, items: serviceItems };
+});
+
+const shop = asyncHandler(async (req, res, next) => {
+  const data = await getShopData(req);
+  if (res) {
+    return res.json(data);
   } else {
-    return null;
+    return data;
   }
 });
 
-exports.shop = asyncHandler(async (req, res, next) => {
-  res.json(await exports.getShopData(req));
-});
+export default shop;

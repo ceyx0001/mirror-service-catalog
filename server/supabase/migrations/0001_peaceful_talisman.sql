@@ -1,0 +1,1 @@
+ALTER TABLE "catalog" ADD COLUMN "id" serial NOT NULL;

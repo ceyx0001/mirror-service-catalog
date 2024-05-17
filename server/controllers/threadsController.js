@@ -1,8 +1,8 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
-const asyncHandler = require("express-async-handler");
+import axios from "axios";
+import cheerio from "cheerio";
+import asyncHandler from "express-async-handler";
 
-exports.getThreadsData = asyncHandler(async (req, res, next) => {
+const getThreadsData = asyncHandler(async (req, res, next) => {
   req.startPage = parseInt(req.query.startPage, 10) || 1;
   req.endPage = parseInt(req.query.endPage, 10) || 50;
   let threads = [];
@@ -23,7 +23,7 @@ exports.getThreadsData = asyncHandler(async (req, res, next) => {
       const response = await axios.get(url, {
         headers: {
           "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+            `Mirror-Catalog/1.0 (${process.env.DEV_EMAIL}) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3`,
         },
       });
 
@@ -33,10 +33,13 @@ exports.getThreadsData = asyncHandler(async (req, res, next) => {
         .replace(/\s\s+|\n/g, "");
 
       if (tableContent.includes("tbody")) {
-        document("a").each(function (i, elem) {
+        document("a").each((i, elem) => {
           const element = document(elem);
           const text = element.text().toLowerCase();
-          if (text.includes("mirror")) {
+          if (
+            text.includes("mirror") &&
+            (text.includes("service") || text.includes("shop"))
+          ) {
             threads.push(parseInt(element.attr("href").match(/\d+/g).join("")));
           }
         });
@@ -51,12 +54,19 @@ exports.getThreadsData = asyncHandler(async (req, res, next) => {
   await Promise.all(promises);
 
   if (threads.length === 0) {
-    return res.json({ message: "No mirror threads found." });
+    return { message: "No mirror threads found." };
   }
 
   return threads;
 });
 
-exports.threads = asyncHandler(async (req, res, next) => {
-  res.json(await exports.getThreadsData(req));
+const threads = asyncHandler(async (req, res, next) => {
+  const data = await getThreadsData(req);
+  if (res) {
+    return res.json(data);
+  } else {
+    return data;
+  }
 });
+
+export default threads;

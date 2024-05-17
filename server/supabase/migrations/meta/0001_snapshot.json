@@ -1,0 +1,58 @@
+{
+  "id": "53a7bcaf-a0bc-4844-abad-127cb6f267b7",
+  "prevId": "06a9a7fc-4603-4132-87c3-5871dbbd9ea2",
+  "version": "6",
+  "dialect": "postgresql",
+  "tables": {
+    "public.catalog": {
+      "name": "catalog",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "profile_name": {
+          "name": "profile_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "post_link": {
+          "name": "post_link",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "items": {
+          "name": "items",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"icon\":\"\",\"name\":\"\",\"enchantMods\":\"\",\"implicitMods\":\"\",\"fracturedMods\":\"\",\"craftedMods\":\"\",\"crucibleMods\":\"\"}'::jsonb"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "catalog_post_link_unique": {
+          "name": "catalog_post_link_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "post_link"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
