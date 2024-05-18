@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  schema: './models/schema.js',
+  schema: './db/models/schema.js',
   out: './supabase/migrations',
   dialect: 'postgresql',
   dbCredentials: {

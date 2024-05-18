@@ -29,12 +29,12 @@ const getShopData = asyncHandler(async (req, res, next) => {
           return {
             icon: item[1].icon,
             name: item[1].name,
-            enchantMods: item[1].enchantMods,
-            implicitMods: item[1].implicitMods,
-            explicitMods: item[1].explicitMods,
-            fracturedMods: item[1].fracturedMods,
-            craftedMods: item[1].craftedMods,
-            crucibleMods: item[1].crucibleMods,
+            enchantMods: item[1].enchantMods || "",
+            implicitMods: item[1].implicitMods || "",
+            explicitMods: item[1].explicitMods || "",
+            fracturedMods: item[1].fracturedMods || "",
+            craftedMods: item[1].craftedMods || "",
+            crucibleMods: item[1].crucibleMods || "",
           };
         }
       })
@@ -45,7 +45,12 @@ const getShopData = asyncHandler(async (req, res, next) => {
     .first()
     .text();
 
-  return { prifleName: profileName, url: url, items: serviceItems };
+  return {
+    profile_name: profileName,
+    thread_index: req.params.threadIndex,
+    items: serviceItems,
+    id: `${profileName + "-" + req.params.threadIndex}`,
+  };
 });
 
 const shop = asyncHandler(async (req, res, next) => {

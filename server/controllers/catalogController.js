@@ -1,13 +1,13 @@
 import shop from "./shopController.js";
 import threads from "./threadsController.js";
-import * as db from "../db/queries.js"
+import * as db from "../db/queries.js";
 import asyncHandler from "express-async-handler";
 
 const catalog_update = asyncHandler(async (req, res, next) => {
   const startPage = parseInt(req.query.startPage, 10) || 1;
   const endPage = parseInt(req.query.endPage, 10) || 50;
 
-  /*const threadReq = { query: { startPage: startPage, endPage: endPage } };
+  const threadReq = { query: { startPage: startPage, endPage: endPage } };
   const newThreads = await threads(threadReq);
   // Create a new request object for each thread
   const requests = newThreads.map(async (threadIndex) => {
@@ -18,22 +18,14 @@ const catalog_update = asyncHandler(async (req, res, next) => {
 
   // Wait for all shop operations to complete
   let results = await Promise.all(requests);
-  results = results.filter((item) => item !== null);
   if (results.length === 0) {
     const err = new Error("No mirror items up for service.");
     err.status = 400;
     throw err;
   }
 
-  /*
-  const response = await db
-    .insert(catalog)
-    .values(results)
-    .onConflictDoUpdate({ items: results.items });
-  */
-  const table = await db.getShop();
-  console.log(table);
-  res.json('');
+  await db.updateShop(results);
+  res.json("Completed");
 });
 
 const catalog_details = asyncHandler(async (data) => {});

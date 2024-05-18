@@ -1,5 +1,4 @@
-import "dotenv/config";
-
+import "dotenv/config"
 import createError from "http-errors";
 import express from "express";
 import helmet from "helmet";
@@ -37,7 +36,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.locals.error = process.env.NODE_ENV === "dev" ? err : {};
 
   // render the error page
   res.status(err.status || 500);

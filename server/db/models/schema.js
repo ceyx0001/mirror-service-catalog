@@ -1,20 +1,14 @@
-import { pgTable, text, jsonb, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 const catalog = pgTable("catalog", {
-  id: text('id').primaryKey(),
-  profileName: varchar("profile_name", { length: 100 }).notNull(),
-  url: varchar("post_link", { length: 100 }).notNull().unique(),
+  profile_name: text("profile_name", { length: 100 }).notNull().default(""),
+  thread_index: text("thread_index", { length: 100 }).notNull().unique().default(""),
   items: jsonb("items")
-    .default({
-      icon: "",
-      name: "",
-      enchantMods: "",
-      implicitMods: "",
-      fracturedMods: "",
-      craftedMods: "",
-      crucibleMods: "",
-    })
-    .notNull(),
+    .array()
+    .notNull()
+    .default(sql`ARRAY[]::jsonb[]`),
+  id: text("id").notNull().primaryKey(),
 });
 
 export default catalog;
