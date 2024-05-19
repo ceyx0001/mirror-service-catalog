@@ -1,4 +1,4 @@
-import "dotenv/config"
+import "dotenv/config";
 import createError from "http-errors";
 import express from "express";
 import helmet from "helmet";
@@ -15,7 +15,7 @@ const app = express();
 // Enable CORS only for localhost:3001
 app.use(
   cors({
-    origin: "http://localhost:5127",
+    origin: "http://localhost:5173",
   })
 );
 app.use(helmet());
@@ -50,7 +50,7 @@ async function main() {
     username: `${process.env.SUPABASE_USER}`,
     prepare: false,
   });
-  db = drizzle(client);
+  db = drizzle(client, { logger: true });
 }
 
 export { app, db };

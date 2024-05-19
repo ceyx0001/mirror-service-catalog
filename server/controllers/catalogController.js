@@ -8,9 +8,9 @@ const catalog_update = asyncHandler(async (req, res, next) => {
   const endPage = parseInt(req.query.endPage, 10) || 50;
 
   const threadReq = { query: { startPage: startPage, endPage: endPage } };
-  const newThreads = await threads(threadReq);
+  const threadIndexes = await threads(threadReq);
   // Create a new request object for each thread
-  const requests = newThreads.map(async (threadIndex) => {
+  const requests = threadIndexes.map(async (threadIndex) => {
     const shopReq = { params: { threadIndex } };
     const shopData = await shop(shopReq);
     return shopData;
@@ -18,16 +18,27 @@ const catalog_update = asyncHandler(async (req, res, next) => {
 
   // Wait for all shop operations to complete
   let results = await Promise.all(requests);
+
+  const unique = new Map();
+  results.map((shop) => {
+    if (!unique.has(shop.profile_name)) {
+      unique.set(shop.profile_name, shop);
+    }
+  });
+  results = Array.from(unique.values());
+
   if (results.length === 0) {
     const err = new Error("No mirror items up for service.");
     err.status = 400;
     throw err;
   }
 
-  await db.updateShop(results);
-  res.json("Completed");
+  await db.updateCatalog(results);
+  res.json('complete');
 });
 
-const catalog_details = asyncHandler(async (data) => {});
+const catalog_details = asyncHandler(async (req, res, next) => {
+  res.json(await db.getShop());
+});
 
 export { catalog_details, catalog_update };

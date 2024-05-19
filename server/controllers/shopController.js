@@ -18,6 +18,9 @@ const getShopData = asyncHandler(async (req, res, next) => {
     .last()
     .html()
     .replace(/\s\s+|\n/g, "");
+  const profileName = document("tr .post_info .posted-by .profile-link")
+    .first()
+    .text();
 
   if (scriptContent.includes("DeferredItemRenderer")) {
     const arrayStartIndex = scriptContent.indexOf("new R(") + 6; // clean string
@@ -27,29 +30,25 @@ const getShopData = asyncHandler(async (req, res, next) => {
       .map((item) => {
         if (item[1].name != "" && !("duplicated" in item[1])) {
           return {
-            icon: item[1].icon,
+            id: item[1].id,
             name: item[1].name,
-            enchantMods: item[1].enchantMods || "",
-            implicitMods: item[1].implicitMods || "",
-            explicitMods: item[1].explicitMods || "",
-            fracturedMods: item[1].fracturedMods || "",
-            craftedMods: item[1].craftedMods || "",
-            crucibleMods: item[1].crucibleMods || "",
+            baseType: item[1].baseType,
+            enchantMods: item[1].enchantMods || [],
+            implicitMods: item[1].implicitMods || [],
+            explicitMods: item[1].explicitMods || [],
+            fracturedMods: item[1].fracturedMods || [],
+            craftedMods: item[1].craftedMods || [],
+            crucibleMods: item[1].crucibleMods || [],
           };
         }
       })
       .filter(Boolean);
   }
 
-  const profileName = document("tr .post_info .posted-by .profile-link")
-    .first()
-    .text();
-
   return {
     profile_name: profileName,
     thread_index: req.params.threadIndex,
     items: serviceItems,
-    id: `${profileName + "-" + req.params.threadIndex}`,
   };
 });
 

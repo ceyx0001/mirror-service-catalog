@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./index.css";
+import Nav from "./components/Nav";
 
 interface Shop {
   icon: string;
@@ -11,23 +12,22 @@ interface Shop {
 
 function App() {
   const [catalog, setCatalog] = useState<Shop[][]>([]);
-
-  useEffect(() => {
+  /*useEffect(() => {
     const getShops = async () => {
-      const params = new URLSearchParams({
-        startPage: '1',
-        endPage: '1',
-      });
-      const url = `${process.env.API_URL}/catalog?${params.toString()}`;
+      const url = import.meta.env.VITE_API_URL;
       const response = await fetch(url);
       const shops: Shop[][] = await response.json();
       setCatalog(shops);
     };
-    
-    getShops();
-  }, []);
 
-  return <div></div>;
+    getShops();
+  }, []);*/
+
+  return (
+    <div>
+      <Nav />
+    </div>
+  );
 }
 
 export default App;
