@@ -13,6 +13,10 @@ module.exports = {
         primary: "#b6abbe",
         secondary: "#5d484b",
         accent: "#99827b",
+        mod: "#9293ff",
+        crafted: "#b2e6ff",
+        fractured: "#b4a26b",
+        crucible: "#ff7536",
       },
       borderWidth: {
         1: "1px",

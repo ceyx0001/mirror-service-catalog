@@ -8,6 +8,11 @@ body {
   background-color: theme("colors.background");
 }
 
-p {
+p,
+header {
   color: theme("colors.text");
+}
+
+img {
+  @apply w-24 h-24 object-scale-down;
 }

@@ -28,18 +28,43 @@ const getShopData = asyncHandler(async (req, res, next) => {
     const arrayString = scriptContent.slice(arrayStartIndex, arrayEndIndex);
     serviceItems = JSON.parse(arrayString)
       .map((item) => {
-        if (item[1].name != "" && !("duplicated" in item[1])) {
-          return {
-            id: item[1].id,
-            name: item[1].name,
-            baseType: item[1].baseType,
-            enchantMods: item[1].enchantMods || [],
-            implicitMods: item[1].implicitMods || [],
-            explicitMods: item[1].explicitMods || [],
-            fracturedMods: item[1].fracturedMods || [],
-            craftedMods: item[1].craftedMods || [],
-            crucibleMods: item[1].crucibleMods || [],
-          };
+        if (
+          item[1].name !== "" &&
+          !("duplicated" in item[1]) &&
+          item[1].rarity !== "Unique" &&
+          !item[1].baseType.includes(" Jewel") &&
+          !item[1].baseType.includes("Map")
+        ) {
+          try {
+            let itemQuality;
+            if (item[1].properties) {
+              const qualityArray = item[1].properties.find((property) =>
+                /^Quality.*/.test(property.name)
+              );
+              if (qualityArray) {
+                itemQuality = parseInt(
+                  qualityArray.values[0][0].replace(/\D/g, "")
+                );
+              }
+            }
+            return {
+              id: item[1].id,
+              icon: item[1].icon,
+              name: item[1].name,
+              baseType: item[1].baseType,
+              quality: itemQuality || null,
+              enchantMods: item[1].enchantMods || null,
+              implicitMods: item[1].implicitMods || null,
+              explicitMods: item[1].explicitMods || null,
+              fracturedMods: item[1].fracturedMods || null,
+              craftedMods: item[1].craftedMods || null,
+              crucibleMods: item[1].crucibleMods || null,
+            };
+          } catch (error) {
+            console.log(error);
+            console.log(item[1].properties);
+            console.log(req.params.threadIndex);
+          }
         }
       })
       .filter(Boolean);

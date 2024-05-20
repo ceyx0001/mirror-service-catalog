@@ -11,35 +11,19 @@ const catalog = pgTable("catalog", {
 
 const items = pgTable("items", {
   id: text("id", { length: 256 }).primaryKey().notNull(),
+  icon: text("icon", { length: 256 }).notNull(),
   name: text("name", { length: 100 }).notNull().default(""),
   base_type: text("base_type", { length: 50 }).notNull().default(""),
-  enchant_mods: text("enchant_mods")
-    .array()
+  quality: integer("quality", { length: 4 }),
+  enchant_mods: text("enchant_mods").array(),
+  implicit_mods: text("implicit_mods").array(),
+  explicit_mods: text("explicit_mods").array(),
+  fractured_mods: text("fractured_mods").array(),
+  crafted_mods: text("crafted_mods").array(),
+  crucible_mods: text("crucible_mods").array(),
+  owner: text("owner")
     .notNull()
-    .default(sql`'{}'::text[]`),
-  implicit_mods: text("implicit_mods")
-    .array()
-    .notNull()
-    .default(sql`'{}'::text[]`),
-  explicit_mods: text("explicit_mods")
-    .array()
-    .notNull()
-    .default(sql`'{}'::text[]`),
-  fractured_mods: text("fractured_mods")
-    .array()
-    .notNull()
-    .default(sql`'{}'::text[]`),
-  crafted_mods: text("crafted_mods")
-    .array()
-    .notNull()
-    .default(sql`'{}'::text[]`),
-  crucible_mods: text("crucible_mods")
-    .array()
-    .notNull()
-    .default(sql`'{}'::text[]`),
-  shop_id: integer("shop_id")
-    .notNull()
-    .references(() => catalog.thread_index),
+    .references(() => catalog.profile_name),
 });
 
 export { catalog, items };

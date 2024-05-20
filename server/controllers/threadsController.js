@@ -56,7 +56,7 @@ const getThreadsData = asyncHandler(async (req, res, next) => {
   if (threads.length === 0) {
     return { message: "No mirror threads found." };
   }
-
+  threads.sort();
   return threads;
 });
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./index.css";
 import Nav from "./components/Nav";
+import Item from "./components/Item"
 
 interface Shop {
   icon: string;
@@ -26,6 +27,7 @@ function App() {
   return (
     <div>
       <Nav />
+      <Item />
     </div>
   );
 }
