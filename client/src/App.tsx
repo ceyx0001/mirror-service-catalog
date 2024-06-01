@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import "./index.css";
-import Sidebar from "./components/Sidebar";
 import { Shop, ShopType } from "./components/Shop";
 import { Search } from "./components/Search";
 import icon from "./assets/Mirror_of_Kalandra.png";
@@ -13,7 +12,7 @@ interface Paging {
 
 const navBtn = (
   <div className="flex justify-end">
-    <div className="inline-flex justify-center items-center rounded-full text-primary hover:bg-primary/20 p-1">
+    <div className="inline-flex justify-center items-center rounded-full text-primary transition hover:bg-primary/20 p-1">
       <svg
         className="flex-shrink-0 size-8"
         width="16"
@@ -44,8 +43,8 @@ function App() {
   }, [paging]);
 
   return (
-    <div className="relative bg-background h-full">
-      <nav className="flex flex-row items-center sticky top-0 border-b-1 border-secondary/55 py-1 w-full bg-background">
+    <div className="relative bg-black">
+      <nav className="flex flex-row items-center fixed top-0 border-b-1 border-secondary/55 py-1 w-full bg-background z-50">
         <button
           className={`mx-4 transition group outline-none ${
             toggleSidebar ? "left-64" : "left-2"
@@ -67,20 +66,27 @@ function App() {
           </button>
         </div>
       </nav>
-      <div className="flex flex-shrink-0">
-        <aside className="pt-1 border-r-1 border-secondary/55">
-          <Transition show={toggleSidebar}>
-            <div className="sticky top-16">
-              <Search />
-            </div>
-          </Transition>
-        </aside>
 
-        <div className="grow my-5 mx-5 space-y-12 box-content overflow-auto">
-          {catalog.map((shop) => (
+      <aside
+        className={`border-r-1 border-secondary/55 bg-background h-screen fixed top-0 z-10 pt-20 overflow-y-auto transition-transform duration-150 ease-out ${
+          toggleSidebar ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <Search />
+      </aside>
+
+      <div
+        className={`pt-10 px-3 my-5 space-y-12 transition-all duration-150 flex flex-col ${
+          toggleSidebar
+            ? "translate-x-[265px] max-w-[calc(100%-265px)]"
+            : "translate-x-0 max-w-full"
+        }`}
+      >
+        {catalog.map((shop) => (
+          <div className="overflow-auto">
             <Shop key={shop.profileName} shopDetails={shop} />
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

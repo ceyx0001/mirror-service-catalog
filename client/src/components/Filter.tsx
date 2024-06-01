@@ -46,11 +46,11 @@ export function Filter({
   };
 
   return (
-    <div className="p-3 w-full text-text text-sm text-left space-y-2">
+    <div className="p-3 w-full text-text text-sm text-left space-y-2 overflow-y-auto h-full pb-9">
       {filters.map((filter, index) => (
-        <div className="flex" key={index}>
+        <div className="flex hover:shadow-primary shadow-sm transition-shadow" key={index}>
           <input
-            className="outline-none focus:ring-1 ring-primary bg-secondary border-l-4 border-primary py-1 px-3"
+            className="outline-none focus:ring-1 ring-primary bg-secondary border-l-4 border-primary py-1 px-3 w-20 lg:w-full"
             value={filter}
             onChange={(event) => handleFilterChange(index, event)}
           />
@@ -88,7 +88,7 @@ export function Filter({
         />
       ) : (
         <button onClick={addFilter} className="w-full">
-          <p className="text-center bg-accent hover:bg-secondary py-1 px-3">
+          <p className="text-center bg-accent hover:bg-secondary py-1 px-3 transition">
             + Add Filter
           </p>
         </button>
