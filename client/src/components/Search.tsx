@@ -4,7 +4,7 @@ import { Filter } from "./Filter";
 export function Search() {
   const [queryFilters, setQueryFilters] = useState<string[]>([]);
   return (
-    <div className="flex flex-col items-center space-y-5">
+    <div className="flex flex-col items-center space-y-5 w-[266px]">
       <button className="py-1 text-text bg-accent flex items-center justify-center w-40 hover:bg-secondary relative">
         Search
         <svg

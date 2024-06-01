@@ -44,8 +44,8 @@ function App() {
   }, [paging]);
 
   return (
-    <div className="relative bg-background">
-      <nav className="flex flex-row items-center fixed border-b-1 border-secondary/55 py-1 w-full bg-background">
+    <div className="relative bg-background h-full">
+      <nav className="flex flex-row items-center sticky top-0 border-b-1 border-secondary/55 py-1 w-full bg-background">
         <button
           className={`mx-4 transition group outline-none ${
             toggleSidebar ? "left-64" : "left-2"
@@ -67,14 +67,15 @@ function App() {
           </button>
         </div>
       </nav>
-      <div className="flex pt-[49px] flex-shrink-0">
-        <aside className="w-1/6 h-full">
+      <div className="flex flex-shrink-0">
+        <aside className="pt-1 border-r-1 border-secondary/55">
           <Transition show={toggleSidebar}>
-            <div className="">
+            <div className="sticky top-16">
               <Search />
             </div>
           </Transition>
         </aside>
+
         <div className="grow my-5 mx-5 space-y-12 box-content overflow-auto">
           {catalog.map((shop) => (
             <Shop key={shop.profileName} shopDetails={shop} />
