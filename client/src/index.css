@@ -5,14 +5,21 @@
 
 body {
   font-family: "Inter", sans-serif;
-  background-color: theme("colors.background");
+  background-color: black;
 }
 
 p,
-header {
+header,
+span {
   color: theme("colors.text");
 }
 
 img {
   @apply w-24 h-24 object-scale-down;
+}
+
+html,
+div {
+  scrollbar-width: thin;
+  scrollbar-color: #b6abbe #b6abbe38; /* thumb and track color */
 }

@@ -1,6 +1,7 @@
 import { db } from "../app.js";
+import shop from "../controllers/shopController.js";
 import { catalog, items } from "./schema.js";
-import { sql } from "drizzle-orm";
+import { desc, sql, inArray, getTableColumns } from "drizzle-orm";
 
 export function log() {
   console.log(db.g);
@@ -24,7 +25,7 @@ export async function updateCatalog(shops) {
             fractured_mods: item.fracturedMods,
             crafted_mods: item.craftedMods,
             crucible_mods: item.crucibleMods,
-            owner: shop.profile_name,
+            shop_id: shop.thread_index,
           };
           itemsToInsert.set(item.id, db_item);
         }
@@ -32,6 +33,8 @@ export async function updateCatalog(shops) {
       return {
         profile_name: shop.profile_name,
         thread_index: shop.thread_index,
+        views: shop.views,
+        title: shop.title,
       };
     });
 
@@ -40,7 +43,11 @@ export async function updateCatalog(shops) {
       .values(shopsToInsert)
       .onConflictDoUpdate({
         target: catalog.profile_name,
-        set: { thread_index: sql`EXCLUDED.thread_index` },
+        set: {
+          thread_index: sql`EXCLUDED.thread_index`,
+          views: sql`EXCLUDED.views`,
+          title: sql`EXCLUDED.title`,
+        },
       });
 
     const uniqueItemsToInsert = Array.from(itemsToInsert.values());
@@ -58,7 +65,7 @@ export async function updateCatalog(shops) {
           fractured_mods: sql`EXCLUDED.fractured_mods`,
           crafted_mods: sql`EXCLUDED.crafted_mods`,
           crucible_mods: sql`EXCLUDED.crucible_mods`,
-          owner: sql`EXCLUDED.owner`,
+          shop_id: sql`EXCLUDED.shop_id`,
         },
       });
   } catch (error) {
@@ -66,6 +73,55 @@ export async function updateCatalog(shops) {
   }
 }
 
-export async function getShop() {
-  return db.select().from(catalog);
+export async function someThreads(start, end) {
+  return await db
+    .select({
+      profileName: catalog.profile_name,
+      threadIndex: catalog.thread_index,
+      title: catalog.title,
+    })
+    .from(catalog)
+    .orderBy(desc(catalog.views))
+    .offset(start)
+    .limit(end);
+}
+
+export async function allThreads() {
+  return await db.select().from(catalog);
+}
+
+export async function someShops(start, end) {
+  try {
+    const threads = await someThreads(start, end);
+    const threadsMap = new Map();
+    for (const thread of threads) {
+      threadsMap.set(thread.threadIndex, thread);
+    }
+    const threadIndexes = [...threadsMap.keys()];
+    const shopItems = await db
+      .select()
+      .from(items)
+      .where(inArray(items.shop_id, threadIndexes));
+
+    let shopsMap = new Map();
+    for (const item of shopItems) {
+      const shop = shopsMap.get(item.shop_id);
+      const { shop_id, ...rest } = item;
+      if (shop) {
+        shop.items.push(rest);
+      } else {
+        const shopItems = [rest];
+        shopsMap.set(item.shop_id, {
+          profileName: threadsMap.get(item.shop_id).profileName,
+          threadIndex: item.shop_id,
+          title: threadsMap.get(item.shop_id).title,
+          items: shopItems,
+        });
+      }
+    }
+
+    return [...shopsMap.values()];
+  } catch (error) {
+    console.log(error);
+  }
 }

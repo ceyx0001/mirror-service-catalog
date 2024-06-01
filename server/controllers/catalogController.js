@@ -3,18 +3,17 @@ import threads from "./threadsController.js";
 import * as db from "../db/queries.js";
 import asyncHandler from "express-async-handler";
 
-const catalog_update = asyncHandler(async (req, res, next) => {
+export const catalogUpdate = asyncHandler(async (req, res, next) => {
   try {
     const startPage = parseInt(req.query.startPage, 10) || 1;
     const endPage = parseInt(req.query.endPage, 10) || 50;
 
     const threadReq = { query: { startPage: startPage, endPage: endPage } };
-    const threadIndexes = await threads(threadReq);
+    const serviceThreads = await threads(threadReq);
     // Create a new request object for each thread
-    const requests = threadIndexes.map(async (threadIndex) => {
-      const shopReq = { params: { threadIndex } };
-      const shopData = await shop(shopReq);
-      return shopData;
+    const requests = serviceThreads.map(async (thread) => {
+      const shopData = await shop(thread.index);
+      return { ...shopData, views: thread.views, title: thread.title };
     });
 
     // Wait for all shop operations to complete
@@ -35,14 +34,24 @@ const catalog_update = asyncHandler(async (req, res, next) => {
     }
 
     await db.updateCatalog(results);
-    res.json('complete');
+    res.json("complete");
   } catch (error) {
     console.log(error);
   }
 });
 
-const catalog_details = asyncHandler(async (req, res, next) => {
-  res.json(await db.getShop());
+export const allThreads = asyncHandler(async (req, res, next) => {
+  res.json(await db.allThreads());
 });
 
-export { catalog_details, catalog_update };
+export const someThreads = asyncHandler(async (req, res, next) => {
+  const start = req.query.offset - 1 || 0;
+  const end = req.query.max;
+  res.json(await db.someThreads(start, end));
+});
+
+export const someShops = asyncHandler(async (req, res, next) => {
+  const start = req.query.offset - 1 || 0;
+  const end = req.query.max;
+  res.json(await db.someShops(start, end));
+});

@@ -8,6 +8,7 @@ import logger from "morgan";
 import cors from "cors";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
+import * as schema from "./db/schema.js";
 import indexRouter from "./routes/index.js";
 
 const app = express();
@@ -42,6 +43,20 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 });
 
+app.get("/api/", (req, res, next) => {
+  console.log("query access")
+  const { query } = req.query;
+
+  // Check if any query string value is negative
+  for (let key in query) {
+    if (Number(query[key]) <= 0) {
+      return res
+        .status(400)
+        .send(`Query parameter ${key} has an invalid value: ${query[key]}`);
+    }
+  }
+});
+
 let db;
 main().catch((err) => console.log(err));
 async function main() {
@@ -50,7 +65,7 @@ async function main() {
     username: `${process.env.SUPABASE_USER}`,
     prepare: false,
   });
-  db = drizzle(client, { logger: true });
+  db = drizzle(client, { schema: schema }, { logger: true });
 }
 
 export { app, db };

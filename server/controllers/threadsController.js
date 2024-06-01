@@ -22,32 +22,37 @@ const getThreadsData = asyncHandler(async (req, res, next) => {
       }`;
       const response = await axios.get(url, {
         headers: {
-          "User-Agent":
-            `Mirror-Catalog/1.0 (${process.env.DEV_EMAIL}) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3`,
+          "User-Agent": `Mirror-Catalog/1.0 (${process.env.DEV_EMAIL}) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3`,
         },
       });
 
       const document = cheerio.load(response.data);
-      const tableContent = document("#view_forum_table")
-        .html()
-        .replace(/\s\s+|\n/g, "");
-
-      if (tableContent.includes("tbody")) {
-        document("a").each((i, elem) => {
+      document("tr .title a").each((i, elem) => {
+        try {
           const element = document(elem);
-          const text = element.text().toLowerCase();
+          const shopTitle = element.text().toLowerCase().trim();
           if (
-            text.includes("mirror") &&
-            (text.includes("service") || text.includes("shop"))
+            shopTitle.includes("mirror") &&
+            (shopTitle.includes("service") || shopTitle.includes("shop"))
           ) {
-            threads.push(parseInt(element.attr("href").match(/\d+/g).join("")));
+            const thread = {
+              index: parseInt(document(elem).attr("href").replace(/\D/g, "")),
+              views: parseInt(
+                document(elem)
+                  .closest("td.thread")
+                  .next()
+                  .find("div.post-stat")
+                  .text()
+                  .replace(/\D/g, "")
+              ),
+              title: shopTitle,
+            };
+            threads.push(thread);
           }
-        });
-      } else {
-        const err = new Error("Could not find threads.");
-        err.status = 500;
-        throw err;
-      }
+        } catch (error) {
+          console.log(error);
+        }
+      });
     }
   );
 
