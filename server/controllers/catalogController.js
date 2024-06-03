@@ -55,3 +55,7 @@ export const someShops = asyncHandler(async (req, res, next) => {
   const end = req.query.max;
   res.json(await db.someShops(start, end));
 });
+
+export const filter = asyncHandler(async (req, res, next) => {
+  res.json(await db.filterItems(["non-aura"]));
+});

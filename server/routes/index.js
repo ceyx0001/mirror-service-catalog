@@ -12,4 +12,6 @@ router.get("/api/shops", catalog.someShops);
 router.get("/api/shop/:threadIndex", shop);
 router.get("/api/threads", threads);
 
+router.get("/api/items/filter", catalog.filter);
+
 export default router;

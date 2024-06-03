@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Transition } from "@headlessui/react";
 import "./index.css";
 import { Shop, ShopType } from "./components/Shop";
 import { Search } from "./components/Search";
@@ -10,23 +9,7 @@ interface Paging {
   max: number;
 }
 
-const navBtn = (
-  <div className="flex justify-end">
-    <div className="inline-flex justify-center items-center rounded-full text-primary transition hover:bg-primary/20 p-1">
-      <svg
-        className="flex-shrink-0 size-8"
-        width="16"
-        height="16"
-        fill="currentColor"
-        viewBox="0 0 16 16"
-      >
-        <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-      </svg>
-    </div>
-  </div>
-);
-
-function App() {
+export function App() {
   const [catalog, setCatalog] = useState<ShopType[]>([]);
   const [paging, setPaging] = useState<Paging>({ offset: 1, max: 10 });
   const [toggleSidebar, setToggleSidebar] = useState(true);
@@ -72,7 +55,7 @@ function App() {
           toggleSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Search />
+        <Search setCatalog={setCatalog} />
       </aside>
 
       <div
@@ -83,8 +66,8 @@ function App() {
         }`}
       >
         {catalog.map((shop) => (
-          <div className="overflow-auto">
-            <Shop key={shop.profileName} shopDetails={shop} />
+          <div key={shop.profileName} className="overflow-auto">
+            <Shop shopDetails={shop} />
           </div>
         ))}
       </div>
@@ -92,4 +75,18 @@ function App() {
   );
 }
 
-export default App;
+const navBtn = (
+  <div className="flex justify-end">
+    <div className="inline-flex justify-center items-center rounded-full text-primary transition hover:bg-primary/20 p-1">
+      <svg
+        className="flex-shrink-0 size-8"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+      </svg>
+    </div>
+  </div>
+);

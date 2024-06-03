@@ -6,9 +6,6 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
-import postgres from "postgres";
-import { drizzle } from "drizzle-orm/postgres-js";
-import * as schema from "./db/schema.js";
 import indexRouter from "./routes/index.js";
 
 const app = express();
@@ -44,7 +41,7 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/api/", (req, res, next) => {
-  console.log("query access")
+  console.log("query access");
   const { query } = req.query;
 
   // Check if any query string value is negative
@@ -57,6 +54,11 @@ app.get("/api/", (req, res, next) => {
   }
 });
 
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
+import * as catalogSchema from "./db/schemas/catalogSchema.js";
+import * as itemsSchema from "./db/schemas/itemsSchema.js";
+import * as modsSchema from "./db/schemas/modsSchema.js";
 let db;
 main().catch((err) => console.log(err));
 async function main() {
@@ -65,7 +67,11 @@ async function main() {
     username: `${process.env.SUPABASE_USER}`,
     prepare: false,
   });
-  db = drizzle(client, { schema: schema }, { logger: true });
+  db = drizzle(
+    client,
+    { schema: { ...catalogSchema, ...itemsSchema, ...modsSchema } },
+    { logger: true }
+  );
 }
 
 export { app, db };
