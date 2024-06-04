@@ -66,12 +66,7 @@ const getThreadsData = asyncHandler(async (req, res, next) => {
 });
 
 const threads = asyncHandler(async (req, res, next) => {
-  const data = await getThreadsData(req);
-  if (res) {
-    return res.json(data);
-  } else {
-    return data;
-  }
+  return await getThreadsData(req);
 });
 
 export default threads;

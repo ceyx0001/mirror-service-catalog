@@ -41,21 +41,21 @@ export const catalogUpdate = asyncHandler(async (req, res, next) => {
 });
 
 export const allThreads = asyncHandler(async (req, res, next) => {
-  res.json(await db.allThreads());
+  res.json(await db.getAllThreads());
 });
 
-export const someThreads = asyncHandler(async (req, res, next) => {
-  const start = req.query.offset - 1 || 0;
-  const end = req.query.max;
-  res.json(await db.someThreads(start, end));
+export const threadsInRange = asyncHandler(async (req, res, next) => {
+  const offset = req.query.offset - 1 || 0;
+  const limit = req.query.limit || 1;
+  res.json(await db.getThreadsInRange(offset, limit));
 });
 
-export const someShops = asyncHandler(async (req, res, next) => {
-  const start = req.query.offset - 1 || 0;
-  const end = req.query.max;
-  res.json(await db.someShops(start, end));
+export const shopsInRange = asyncHandler(async (req, res, next) => {
+  const offset = req.query.offset - 1 || 0;
+  const limit = req.query.limit || 1;
+  res.json(await db.getShopsInRange(offset, limit));
 });
 
-export const filter = asyncHandler(async (req, res, next) => {
-  res.json(await db.filterItems(["non-aura"]));
+export const filteredItems = asyncHandler(async (req, res, next) => {
+  res.json(await db.getFilteredItems(Object.keys(req.query)));
 });

@@ -6,17 +6,17 @@ import icon from "./assets/Mirror_of_Kalandra.png";
 
 interface Paging {
   offset: number;
-  max: number;
+  limit: number;
 }
 
 export function App() {
   const [catalog, setCatalog] = useState<ShopType[]>([]);
-  const [paging, setPaging] = useState<Paging>({ offset: 1, max: 10 });
+  const [paging, setPaging] = useState<Paging>({ offset: 1, limit: 10 });
   const [toggleSidebar, setToggleSidebar] = useState(true);
 
   useEffect(() => {
     const getShops = async () => {
-      const url = `http://localhost:3000/api/shops?offset=${paging.offset}&max=${paging.max}`; //import.meta.env.VITE_API_URL;
+      const url = `http://localhost:3000/api/shops/range?offset=${paging.offset}&limit=${paging.limit}`; //import.meta.env.VITE_API_URL;
       const response = await fetch(url);
       const shops: ShopType[] = await response.json();
       setCatalog(shops);
@@ -59,15 +59,15 @@ export function App() {
       </aside>
 
       <div
-        className={`pt-10 px-3 my-5 space-y-12 transition-all duration-150 flex flex-col ${
+        className={`pt-10 px-3 my-5 space-y-12 flex flex-col ${
           toggleSidebar
-            ? "translate-x-[265px] max-w-[calc(100%-265px)]"
-            : "translate-x-0 max-w-full"
+            ? "ml-[268px]"
+            : "ml-0"
         }`}
       >
         {catalog.map((shop) => (
-          <div key={shop.profileName} className="overflow-auto">
-            <Shop shopDetails={shop} />
+          <div key={shop.profile_name} className="overflow-auto">
+            <Shop shop={shop} />
           </div>
         ))}
       </div>
