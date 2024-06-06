@@ -1,4 +1,3 @@
-import "../index.css";
 import { Item, ItemType } from "./Item";
 
 export type ShopType = {

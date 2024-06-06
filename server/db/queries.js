@@ -220,7 +220,6 @@ function mapItemsToShop(items) {
 export async function getFilteredItems(filters) {
   try {
     let table = null;
-
     if (filters.length > 1) {
       table = db.$with("table").as(
         db
@@ -233,7 +232,7 @@ export async function getFilteredItems(filters) {
           )
       );
 
-      while (filters.length > 1) {
+      while (filters.length > 0) {
         table = db.$with("table").as(
           db
             .with(table)
@@ -249,15 +248,7 @@ export async function getFilteredItems(filters) {
         );
       }
 
-      table = db
-        .with(table)
-        .select({ item_id: table.item_id })
-        .from(table)
-        .where(
-          sql`${table.item_id} IN (SELECT item_id FROM mods WHERE mod ILIKE ${
-            "%" + filters.pop() + "%"
-          })`
-        );
+      table = db.with(table).select({ item_id: table.item_id }).from(table);
     } else {
       table = db
         .select({ item_id: mods.item_id })

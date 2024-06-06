@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Filter } from "./Filter";
-import { ShopType } from "./Shop";
+import { ShopType } from "../Shop";
 
 export function Search({
   setCatalog,
@@ -10,7 +10,7 @@ export function Search({
   const [filters, setFilters] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const filterShops = async () => {
+  async function filterShops() {
     setLoading(true);
     const filtersString = filters.join("&");
     const url = `http://localhost:3000/api/items/filter?${filtersString}`;
@@ -18,13 +18,12 @@ export function Search({
     const shops: ShopType[] = await response.json();
     setCatalog(shops);
     setLoading(false);
-  };
+  }
 
   return (
     <div className="flex flex-col items-center space-y-5 lg:w-[266px] h-[82vh]">
       {loading ? (
         <button
-          type="button"
           className="py-1 text-text bg-accent flex items-center justify-center w-32 lg:w-40 relative"
           disabled
         >
@@ -32,9 +31,9 @@ export function Search({
         </button>
       ) : (
         <button
-          type="button"
-          className="py-1 text-text bg-accent flex items-center justify-center w-32 lg:w-40 hover:bg-secondary relative transition active:bg-primary"
+          className="py-1 text-text bg-accent flex items-center justify-center w-32 lg:w-40 hover:bg-secondary relative transition cursor-pointer"
           onClick={filterShops}
+          disabled={filters.length === 0}
         >
           Search
           <svg
