@@ -1,21 +1,9 @@
-import { db } from "../app.js";
-import { catalog } from "./schemas/catalogSchema.js";
-import { items } from "./schemas/itemsSchema.js";
-import { mods } from "./schemas/modsSchema.js";
-import {
-  desc,
-  sql,
-  inArray,
-  ilike,
-  arrayContains,
-  or,
-  and,
-  eq,
-  count,
-  countDistinct,
-  gte,
-  arrayOverlaps,
-} from "drizzle-orm";
+import { db } from "../app";
+import { catalog } from "./schemas/catalogSchema";
+import { items } from "./schemas/itemsSchema";
+import { mods } from "./schemas/modsSchema";
+import { desc, sql, inArray } from "drizzle-orm";
+import { filterItems, groupMods } from "./searches/search";
 
 function buildConflictUpdateSet(table) {
   const columns = Object.keys(table);
@@ -149,28 +137,6 @@ export async function getAllThreads() {
   return await db.select().from(catalog);
 }
 
-function addDupes(str, count) {
-  const val = parseInt(str.split("%")[0].split().pop());
-  const newVal = val * (count + 1);
-  return str.replace(val, newVal);
-}
-
-function groupMods(mods) {
-  const modsMap = new Map();
-  for (const mod of mods) {
-    const key = mod.type;
-    if (mod.dupes) {
-      mod.mod = addDupes(mod.mod, mod.dupes);
-    }
-    if (modsMap.get(key)) {
-      modsMap.get(key).push(mod.mod);
-    } else {
-      modsMap.set(key, [mod.mod]);
-    }
-  }
-  return Object.fromEntries(modsMap);
-}
-
 export async function getShopsInRange(offset, limit) {
   try {
     const result = await db.query.catalog.findMany({
@@ -199,74 +165,6 @@ export async function getShopsInRange(offset, limit) {
   }
 }
 
-function mapItemsToShop(items) {
-  let shopsMap = new Map();
-  for (const item of items) {
-    const key = item.catalog.profile_name;
-    const { catalog, ...itemDetails } = item;
-    const modsGroup = groupMods(itemDetails.mods);
-    if (shopsMap.get(key)) {
-      shopsMap.get(key).items.push({ ...itemDetails, mods: modsGroup });
-    } else {
-      shopsMap.set(key, {
-        ...catalog,
-        items: [{ ...itemDetails, mods: modsGroup }],
-      });
-    }
-  }
-  return shopsMap.values();
-}
-
 export async function getFilteredItems(filters) {
-  try {
-    let table = null;
-    if (filters.length > 1) {
-      table = db.$with("table").as(
-        db
-          .select()
-          .from(mods)
-          .where(
-            sql`${mods.item_id} IN (SELECT item_id FROM mods WHERE mod ILIKE ${
-              "%" + filters.pop() + "%"
-            })`
-          )
-      );
-
-      while (filters.length > 0) {
-        table = db.$with("table").as(
-          db
-            .with(table)
-            .select()
-            .from(table)
-            .where(
-              sql`${
-                table.item_id
-              } IN (SELECT item_id FROM mods WHERE mod ILIKE ${
-                "%" + filters.pop() + "%"
-              })`
-            )
-        );
-      }
-
-      table = db.with(table).select({ item_id: table.item_id }).from(table);
-    } else {
-      table = db
-        .select({ item_id: mods.item_id })
-        .from(mods)
-        .where(ilike(mods.mod, `%${filters[0]}%`));
-    }
-
-    const result = await db.query.items.findMany({
-      where: inArray(items.item_id, table),
-      columns: { shop_id: false },
-      with: {
-        mods: { columns: { item_id: false } },
-        catalog: { columns: { views: false } },
-      },
-    });
-
-    return Array.from(mapItemsToShop(result));
-  } catch (error) {
-    console.log(error);
-  }
+  return filterItems(filters);
 }

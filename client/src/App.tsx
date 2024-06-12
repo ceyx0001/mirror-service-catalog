@@ -33,7 +33,7 @@ export function App() {
           toggleSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Search setCatalog={setCatalog} />
+        <Search setCatalog={setCatalog} setPaging={setPaging} />
       </aside>
 
       <div

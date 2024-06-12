@@ -1,17 +1,17 @@
 import axios from "axios";
 import cheerio from "cheerio";
-import asyncHandler from "express-async-handler";
+import { Request, NextFunction } from "express";
 
-const getThreadsData = asyncHandler(async (req, res, next) => {
+export const getThreadsData = async (req: Request, next: NextFunction) => {
   req.startPage = parseInt(req.query.startPage, 10) || 1;
   req.endPage = parseInt(req.query.endPage, 10) || 50;
   let threads = [];
   if (req.startPage > req.endPage) {
-    const err = new Error(
+    const err: any = new Error(
       "Page number to start indexing threads is greater than the last page."
     );
-    err.status = 400;
-    throw err;
+    err.status(400);
+    next(err);
   }
 
   const promises = Array.from(
@@ -59,14 +59,14 @@ const getThreadsData = asyncHandler(async (req, res, next) => {
   await Promise.all(promises);
 
   if (threads.length === 0) {
-    return { message: "No mirror threads found." };
+    const err: any = new Error("No mirror threads found.");
+    err.status(400);
+    next(err);
   }
   threads.sort();
   return threads;
-});
+};
 
-const threads = asyncHandler(async (req, res, next) => {
-  return await getThreadsData(req);
-});
-
-export default threads;
+export const threads = async (req: Request, next: NextFunction) => {
+  return await getThreadsData(req, next);
+};

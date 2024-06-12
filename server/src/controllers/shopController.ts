@@ -1,8 +1,9 @@
 import axios from "axios";
 import cheerio from "cheerio";
 import asyncHandler from "express-async-handler";
+import { Request, Response } from "express";
 
-const getShopData = asyncHandler(async (index) => {
+const getShopData = async (index) => {
   try {
     const url = `https://www.pathofexile.com/forum/view-thread/${index}`;
     // fetch one vendor
@@ -79,9 +80,9 @@ const getShopData = asyncHandler(async (index) => {
   } catch (error) {
     console.log(error);
   }
-});
+};
 
-const shop = asyncHandler(async (req, res, next) => {
+const shop = asyncHandler(async (req: Request, res: Response) => {
   if (res) {
     const data = await getShopData(req.params.threadIndex);
     return res.json(data);

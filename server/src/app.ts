@@ -6,7 +6,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
-import indexRouter from "./routes/index.js";
+import indexRouter from "./routes/index";
 
 const app = express();
 
@@ -56,9 +56,9 @@ app.get("/api/", (req, res, next) => {
 
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
-import * as catalogSchema from "./db/schemas/catalogSchema.js";
-import * as itemsSchema from "./db/schemas/itemsSchema.js";
-import * as modsSchema from "./db/schemas/modsSchema.js";
+import * as catalogSchema from "./db/schemas/catalogSchema";
+import * as itemsSchema from "./db/schemas/itemsSchema";
+import * as modsSchema from "./db/schemas/modsSchema";
 let db;
 main().catch((err) => console.log(err));
 async function main() {
@@ -67,11 +67,9 @@ async function main() {
     username: `${process.env.SUPABASE_USER}`,
     prepare: false,
   });
-  db = drizzle(
-    client,
-    { schema: { ...catalogSchema, ...itemsSchema, ...modsSchema } },
-    { logger: true }
-  );
+  db = drizzle(client, {
+    schema: { ...catalogSchema, ...itemsSchema, ...modsSchema },
+  });
 }
 
 export { app, db };

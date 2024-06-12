@@ -2,21 +2,44 @@ import { useState } from "react";
 import { Filter } from "./Filter";
 import { ShopType } from "../Shop";
 
+export type Filters = {
+  modFilters: string[];
+  baseFilters: string[];
+  titleFilters: string[];
+};
+
 export function Search({
   setCatalog,
+  setPaging,
 }: {
   setCatalog: (catalog: ShopType[]) => void;
+  setPaging: ({ offset, limit }: { offset: number; limit: number }) => void;
 }) {
-  const [filters, setFilters] = useState<string[]>([]);
+  const [filters, setFilters] = useState<Filters>({
+    modFilters: [],
+    baseFilters: [],
+    titleFilters: [],
+  });
   const [loading, setLoading] = useState(false);
+
+  function setFilter(filterType: keyof Filters, newFilters: string[]) {
+    setFilters((prevState: Filters) => ({
+      ...prevState,
+      [filterType]: newFilters,
+    }));
+  }
 
   async function filterShops() {
     setLoading(true);
-    const filtersString = filters.join("&");
-    const url = `http://localhost:3000/api/items/filter?${filtersString}`;
-    const response = await fetch(url);
-    const shops: ShopType[] = await response.json();
-    setCatalog(shops);
+    if (Object.keys(filters).length > 0) {
+      const filtersString = filters.join("&");
+      const url = `http://localhost:3000/api/items/filter?${filtersString}`;
+      const response = await fetch(url);
+      const shops: ShopType[] = await response.json();
+      setCatalog(shops);
+    } else {
+      setPaging({ offset: 1, limit: 10 });
+    }
     setLoading(false);
   }
 
@@ -33,7 +56,6 @@ export function Search({
         <button
           className="py-1 text-text bg-accent flex items-center justify-center w-32 lg:w-40 hover:bg-secondary relative transition cursor-pointer"
           onClick={filterShops}
-          disabled={filters.length === 0}
         >
           Search
           <svg
@@ -52,7 +74,24 @@ export function Search({
           </svg>
         </button>
       )}
-      <Filter filters={filters} setFilters={setFilters} />
+      <Filter
+        filters={filters.baseFilters}
+        setFilters={setFilter}
+        title="Base"
+        filterKey="baseFilters"
+      />
+      <Filter
+        filters={filters.modFilters}
+        setFilters={setFilter}
+        title="Mods"
+        filterKey="modFilters"
+      />
+      <Filter
+        filters={filters.titleFilters}
+        setFilters={setFilter}
+        title="Title"
+        filterKey="titleFilters"
+      />
     </div>
   );
 }

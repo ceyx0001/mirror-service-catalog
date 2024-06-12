@@ -1,17 +1,22 @@
 import { FocusEvent, KeyboardEvent } from "react";
 import { Accordion } from "./Accordian";
+import { Filters } from "./Search";
 
 export function Filter({
   filters,
   setFilters,
+  title,
+  filterKey,
 }: {
   filters: string[];
-  setFilters: React.Dispatch<string[]>;
+  setFilters: (filterType: keyof Filters, newFilters: string[]) => void;
+  title: string;
+  filterKey: keyof Filters;
 }) {
   function handleBlur(index: number, e: FocusEvent<HTMLInputElement, Element>) {
     const newFilters = [...filters];
     newFilters[index] = e.currentTarget.value;
-    setFilters(newFilters);
+    setFilters(filterKey, newFilters);
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -21,17 +26,17 @@ export function Filter({
   }
 
   function handleNewAccordionFilter() {
-    setFilters([...filters, ""]);
+    setFilters(filterKey, [...filters, ""]);
   }
 
   function handleRemoveFilter(index: number) {
     const newFilters = filters.filter((_, i) => i !== index);
-    setFilters(newFilters);
+    setFilters(filterKey, newFilters);
   }
 
   return (
     <div className="text-text grid w-full">
-      <Accordion title={"Mods"}>
+      <Accordion title={title}>
         <div className="flex flex-col items-center">
           <div className="space-y-2">
             {filters.map((_filter, index) => (

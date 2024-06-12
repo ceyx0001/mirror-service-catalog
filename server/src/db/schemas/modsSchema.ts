@@ -1,6 +1,6 @@
 import { pgTable, text, integer, primaryKey } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { items } from "./itemsSchema.js";
+import { items } from "./itemsSchema";
 
 export const mods = pgTable(
   "mods",

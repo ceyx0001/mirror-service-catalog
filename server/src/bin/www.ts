@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-import { app } from "../app.js";
+import { app } from "../app";
 import debugModule from "debug";
 import * as http from "http";
 const debug = debugModule("mirror-scraper:server");

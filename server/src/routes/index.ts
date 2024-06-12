@@ -1,7 +1,7 @@
 import express from "express";
-import * as catalog from "../controllers/catalogController.js";
-import shop from "../controllers/shopController.js";
-import threads from "../controllers/threadsController.js";
+import * as catalog from "../controllers/catalogController";
+import shop from "../controllers/shopController";
+import { threads } from "../controllers/threadsController";
 
 const router = express.Router();
 
