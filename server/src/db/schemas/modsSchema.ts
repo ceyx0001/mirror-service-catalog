@@ -1,5 +1,5 @@
 import { pgTable, text, integer, primaryKey } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { items } from "./itemsSchema";
 
 export const mods = pgTable(
@@ -21,3 +21,5 @@ export const modsRelations = relations(mods, ({ one }) => ({
     references: [items.item_id],
   }),
 }));
+
+export type SelectMod = InferSelectModel<typeof mods>;

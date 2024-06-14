@@ -44,9 +44,7 @@ const getShopData = async (index) => {
                   /^Quality.*/.test(property.name)
                 );
                 if (qualityArray) {
-                  itemQuality = parseInt(
-                    qualityArray.values[0][0].replace(/\D/g, "")
-                  );
+                  itemQuality = qualityArray.values[0][0].replace(/\D/g, "");
                 }
               }
               return {

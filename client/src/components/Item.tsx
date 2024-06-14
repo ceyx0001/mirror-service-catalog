@@ -31,9 +31,16 @@ function renderMods(mods: string[], id: string, color: string) {
 }
 
 export function Item({ item }: { item: ItemType }) {
+  const [enlarge, setEnlarge] = useState(false);
+
   return (
     <article
-      className={`text-[12px] min-w-[21rem] max-w-[21rem] bg-secondary h-min bg-opacity-30 rounded-3xl px-5 pb-5 text-center grid grid-rows-auto shadow-inner hover:shadow-secondary transition-shadow`}
+      className={`text-[0.7rem] bg-card w-80 min-h-min
+        rounded-3xl px-4 pb-3 grid grid-rows-auto
+        shadow-2xl shadow-black hover:cursor-pointer transition-transform  ${
+          enlarge ? "scale-[1.3] relative z-40" : ""
+        }`}
+      onClick={() => setEnlarge(!enlarge)}
     >
       <img src={item.icon} className="justify-self-center m-5" />
       <p className="py-2">

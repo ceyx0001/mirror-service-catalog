@@ -25,6 +25,7 @@ export const theme = {
       background: "#0e0c0f",
       primary: "#b6abbe",
       secondary: "#5d484b",
+      card: "#292021",
       accent: "#99827b",
       mod: "#9293ff",
       crafted: "#b2e6ff",

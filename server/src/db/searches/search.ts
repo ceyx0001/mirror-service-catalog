@@ -49,3 +49,9 @@ export async function filterItems(filters) {
     console.log(error);
   }
 }
+
+export type Filters = {
+  modFilters: string[];
+  baseFilters: string[];
+  titleFilters: string[];
+};

@@ -1,28 +1,33 @@
-import { catalog } from "../schemas/catalogSchema";
-import { items } from "../schemas/itemsSchema";
+import { catalog, SelectCatalog } from "../schemas/catalogSchema";
+import { items, SelectItem } from "../schemas/itemsSchema";
 import { mods } from "../schemas/modsSchema";
 import { db } from "../../app";
-import { mapItemsToShop } from "./search";
-import { sql, inArray } from "drizzle-orm";
+import { Filters, mapItemsToShop } from "./search";
+import { sql, inArray, or } from "drizzle-orm";
+import { PgTable } from "drizzle-orm/pg-core";
 
 async function applyFilters(
-  filters,
-  parentTable,
-  key,
-  parentTableName,
-  column
+  filters: string[],
+  parentTable: PgTable,
+  key: string,
+  parentTableName: string,
+  columns: string[]
 ) {
   try {
     let filteredTable = null;
     if (filters.length > 0) {
-      const preparedQuery = (table) =>
+      const conditions = columns.map(
+        (column) => sql`${sql.raw(column)} ILIKE ${sql.placeholder("filter")}`
+      );
+      const combinedConditions = sql.join(conditions, sql` OR `); // Combine with OR
+      const preparedQuery = (table: PgTable) =>
         db
           .select()
           .from(table)
           .where(
             sql`${table[key]} IN (SELECT ${sql.raw(key)} FROM ${sql.raw(
               parentTableName
-            )} WHERE ${sql.raw(column)} ILIKE ${sql.placeholder("filter")})`
+            )} WHERE ${combinedConditions})`
           )
           .prepare();
 
@@ -49,52 +54,53 @@ async function applyFilters(
   }
 }
 
-export async function getItems(filters) {
+export async function getItems(filters: Filters) {
   try {
     let filtersArray = [
       {
         filter: filters.titleFilters,
-        applyFilter: async (filter, table = catalog) => {
-          return await applyFilters(
-            filter,
-            table,
-            "thread_index",
-            "catalog",
-            "title"
-          );
+        applyFilter: async (filter: string[], table = catalog) => {
+          if (!filter) {
+            return null;
+          }
+          return await applyFilters(filter, table, "thread_index", "catalog", [
+            "title",
+          ]);
         },
       },
       {
         filter: filters.baseFilters,
-        applyFilter: async (filter, table) => {
-          let filteredTitle;
-          if (table && table !== items) {
+        applyFilter: async (filter: string[], table: SelectCatalog[]) => {
+          let filteredBase: PgTable;
+          if (table && table.length > 0) {
             const threadIndexes = table.map((shop) => shop.thread_index);
-            filteredTitle = db
+            filteredBase = await db
               .select()
               .from(items)
               .where(inArray(items.shop_id, threadIndexes))
-              .as("filteredTitle");
+              .as("filteredBase");
           } else {
-            filteredTitle = items;
+            filteredBase = items;
           }
 
-          return await applyFilters(
-            filter,
-            filteredTitle,
-            "item_id",
-            "items",
-            "base_type"
-          );
+          if (!filter) {
+            return await db.select().from(filteredBase);
+          }
+
+          return await applyFilters(filter, filteredBase, "item_id", "items", [
+            "base_type",
+            "name",
+            "quality",
+          ]);
         },
       },
       {
         filter: filters.modFilters,
-        applyFilter: async (filter, table) => {
-          let filteredMods;
-          if (table && table !== mods) {
+        applyFilter: async (filter: string[], table: SelectItem[]) => {
+          let filteredMods: PgTable;
+          if (table && table.length > 0) {
             const itemIds = table.map((item) => item.item_id);
-            filteredMods = db
+            filteredMods = await db
               .select()
               .from(mods)
               .where(inArray(mods.item_id, itemIds))
@@ -103,30 +109,30 @@ export async function getItems(filters) {
             filteredMods = mods;
           }
 
-          return await applyFilters(
-            filter,
-            filteredMods,
-            "item_id",
-            "mods",
-            "mod"
-          );
+          if (!filter) {
+            return await db.select().from(filteredMods);
+          }
+
+          return await applyFilters(filter, filteredMods, "item_id", "mods", [
+            "mod",
+          ]);
         },
       },
     ];
 
     let filteredTable;
     for (let filterObj of filtersArray) {
-      if (filterObj.filter) {
-        filteredTable = await filterObj.applyFilter(
-          filterObj.filter,
-          filteredTable
-        );
-      }
+      filteredTable = await filterObj.applyFilter(
+        filterObj.filter,
+        filteredTable
+      );
     }
 
     if (filteredTable) {
       const itemIdSet = new Set<string>();
-      filteredTable.map((mod) => itemIdSet.add(mod.item_id));
+      filteredTable.map((mod: { item_id: string }) =>
+        itemIdSet.add(mod.item_id)
+      );
       const itemIds: string[] = Array.from(itemIdSet);
       const result = await db.query.items.findMany({
         where: inArray(items.item_id, itemIds),

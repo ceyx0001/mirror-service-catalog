@@ -29,7 +29,7 @@ export function App() {
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar} />
 
       <aside
-        className={`border-r-1 border-secondary/55 bg-background h-screen fixed top-0 z-10 pt-20 overflow-y-auto transition-transform duration-150 ease-out ${
+        className={`border-r-1 border-secondary/55 bg-background h-screen fixed top-0 z-10 pt-20 transition-transform duration-150 ease-out ${
           toggleSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -37,12 +37,12 @@ export function App() {
       </aside>
 
       <div
-        className={`pt-10 px-3 my-5 flex flex-col space-y-3 ${
-          toggleSidebar ? "lg:ml-[268px] ml-[130px]" : "ml-0"
+        className={`px-10 my-10 flex flex-col space-y-3 ${
+          toggleSidebar ? "lg:ml-[16rem] ml-[8rem]" : "ml-0"
         }`}
       >
         {catalog.map((shop) => (
-          <div key={shop.profile_name} className="overflow-auto">
+          <div key={shop.profile_name} className="overflow-visible">
             <Shop shop={shop} />
           </div>
         ))}

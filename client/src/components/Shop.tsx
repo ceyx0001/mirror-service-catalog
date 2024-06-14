@@ -1,4 +1,5 @@
 import { Item, ItemType } from "./Item";
+import { Accordion } from "./Accordian";
 
 export type ShopType = {
   profile_name: string;
@@ -9,11 +10,11 @@ export type ShopType = {
 
 export function Shop({ shop }: { shop: ShopType }) {
   return (
-    <div className="bg-background rounded-t-3xl rounded-b-3xl p-5 space-y-5">
+    <div className="bg-background rounded-t-3xl rounded-b-3xl p-5 space-y-5 relative">
       <div className="flex space-x-10 items-end">
         <p className="text-xl">{shop.profile_name}</p>
         <a
-          className="text-text hover:text-accent transition"
+          className="text-primary hover:text-text transition"
           target="_blank"
           rel="noopener noreferrer"
           href={`https://www.pathofexile.com/forum/view-thread/${shop.thread_index}`}
@@ -21,11 +22,13 @@ export function Shop({ shop }: { shop: ShopType }) {
           {shop.title}
         </a>
       </div>
-        <div className="flex space-x-5 transition overflow-auto">
+      <Accordion defaultOpen={true} title="">
+        <div className="grid grid-cols-4 grid-flow-row justify-items-center gap-y-5">
           {shop.items.map((item: ItemType) => (
             <Item key={item.item_id} item={item} />
           ))}
         </div>
+      </Accordion>
     </div>
   );
 }

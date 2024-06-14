@@ -63,11 +63,14 @@ export function About() {
                     </h3>
                     <div className="mt-2">
                       <p className="text-sm mb-10">
-                        Users are able to add mod filters which will then be
-                        used by the app to search for items. It is also possible
-                        to filter shops by their title. For example, it is
-                        possible to filter for "MF" or "armour stacking" in the
-                        title.
+                        Users are able to add keyword filters which will then be
+                        used by the app to search for items.
+                        <br /><br />
+                        Title filters matches shop titles.
+                        <br />
+                        Base filters matches an item's quality (without %), base, or name.
+                        <br />
+                        Mod filters matches any modifier on the item.
                       </p>
                     </div>
                   </div>

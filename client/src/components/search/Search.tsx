@@ -8,6 +8,13 @@ export type Filters = {
   titleFilters: string[];
 };
 
+function addQuery(query: string, type: string, filters: string[]) {
+  for (const filter of filters) {
+    query = query + "&" + type + "=" + filter;
+  }
+  return query;
+}
+
 export function Search({
   setCatalog,
   setPaging,
@@ -31,12 +38,19 @@ export function Search({
 
   async function filterShops() {
     setLoading(true);
-    if (Object.keys(filters).length > 0) {
-      const filtersString = filters.join("&");
-      const url = `http://localhost:3000/api/items/filter?${filtersString}`;
+    if (
+      filters.modFilters.length > 0 ||
+      filters.baseFilters.length > 0 ||
+      filters.titleFilters.length > 0
+    ) {
+      let url = `http://localhost:3000/api/items/filter?`;
+      url = addQuery(url, "title", filters.titleFilters);
+      url = addQuery(url, "base", filters.baseFilters);
+      url = addQuery(url, "mod", filters.modFilters);
       const response = await fetch(url);
       const shops: ShopType[] = await response.json();
       setCatalog(shops);
+      console.log(Object.keys(filters));
     } else {
       setPaging({ offset: 1, limit: 10 });
     }
@@ -44,17 +58,17 @@ export function Search({
   }
 
   return (
-    <div className="flex flex-col items-center space-y-5 lg:w-[266px] h-[82vh]">
+    <div className="flex flex-col items-center lg:w-[16rem] h-[90vh]">
       {loading ? (
         <button
-          className="py-1 text-text bg-accent flex items-center justify-center w-32 lg:w-40 relative"
+          className=" text-text bg-secondary flex items-center justify-center w-32 lg:w-40 relative mb-8 p-1"
           disabled
         >
           <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-black" />
         </button>
       ) : (
         <button
-          className="py-1 text-text bg-accent flex items-center justify-center w-32 lg:w-40 hover:bg-secondary relative transition cursor-pointer"
+          className="text-text bg-secondary flex items-center justify-center w-40 hover:bg-accent relative transition cursor-pointer mb-8 p-1"
           onClick={filterShops}
         >
           Search
@@ -74,24 +88,31 @@ export function Search({
           </svg>
         </button>
       )}
-      <Filter
-        filters={filters.baseFilters}
-        setFilters={setFilter}
-        title="Base"
-        filterKey="baseFilters"
-      />
-      <Filter
-        filters={filters.modFilters}
-        setFilters={setFilter}
-        title="Mods"
-        filterKey="modFilters"
-      />
-      <Filter
-        filters={filters.titleFilters}
-        setFilters={setFilter}
-        title="Title"
-        filterKey="titleFilters"
-      />
+
+      <div className="w-full overflow-y-auto gutter">
+        <Filter
+          filters={filters.baseFilters}
+          setFilters={setFilter}
+          title="Base"
+          filterKey="baseFilters"
+        />
+      </div>
+      <div className="w-full overflow-y-auto gutter">
+        <Filter
+          filters={filters.modFilters}
+          setFilters={setFilter}
+          title="Mods"
+          filterKey="modFilters"
+        />
+      </div>
+      <div className="w-full overflow-y-auto gutter">
+        <Filter
+          filters={filters.titleFilters}
+          setFilters={setFilter}
+          title="Title"
+          filterKey="titleFilters"
+        />
+      </div>
     </div>
   );
 }

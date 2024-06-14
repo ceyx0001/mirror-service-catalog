@@ -1,5 +1,5 @@
 import { pgTable, text, integer } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { catalog } from "./catalogSchema";
 import { mods } from "./modsSchema";
 
@@ -8,7 +8,7 @@ export const items = pgTable("items", {
   icon: text("icon"),
   name: text("name"),
   base_type: text("base_type"),
-  quality: integer("quality"),
+  quality: text("quality"),
   shop_id: integer("shop_id")
     .notNull()
     .references(() => catalog.thread_index, { onUpdate: "cascade" }),
@@ -21,3 +21,5 @@ export const itemsRelations = relations(items, ({ one, many }) => ({
   }),
   mods: many(mods),
 }));
+
+export type SelectItem = InferSelectModel<typeof items>;

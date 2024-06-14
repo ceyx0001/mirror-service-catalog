@@ -1,5 +1,5 @@
 import { FocusEvent, KeyboardEvent } from "react";
-import { Accordion } from "./Accordian";
+import { Accordion } from "../Accordian";
 import { Filters } from "./Search";
 
 export function Filter({
@@ -35,16 +35,17 @@ export function Filter({
   }
 
   return (
-    <div className="text-text grid w-full">
-      <Accordion title={title}>
+    <div className="text-text pl-2 pb-2">
+      <Accordion title={title} defaultOpen={false}>
         <div className="flex flex-col items-center">
-          <div className="space-y-2">
+          <div className="space-y-3 mb-2">
             {filters.map((_filter, index) => (
-              <div key={index} className="flex w-28 lg:w-full">
+              <div key={index} className="flex mt-4">
                 <input
-                  className="bg-secondary outline-none px-3 p-1 hover:shadow-primary shadow-sm transition-shadow"
+                  className="bg-secondary outline-none hover:shadow-primary shadow-sm transition-shadow px-1"
                   onBlur={(e) => handleBlur(index, e)}
                   onKeyDown={(e) => handleKeyDown(e)}
+                  autoFocus={index === filters.length - 1}
                 />
                 <button
                   type="button"
@@ -73,7 +74,7 @@ export function Filter({
           <button
             type="button"
             onClick={() => handleNewAccordionFilter()}
-            className="text-base bg-accent text-center p-1 px-3 hover:bg-secondary transition-colors mt-6"
+            className="text-base bg-secondary text-center px-3 hover:bg-accent transition-colors my-2 mb-4"
           >
             + Add Filter
           </button>
