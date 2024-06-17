@@ -10,7 +10,7 @@ export function Nav({
   setToggleSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
-    <nav className="flex flex-row items-center sticky top-0 border-b-1 border-secondary/55 py-1 w-full bg-background z-50">
+    <nav className="flex flex-row items-center fixed top-0 border-b-1 border-secondary/55 py-1 w-full bg-background z-50">
       <button
         type="button"
         className={`mx-4 transition group outline-none ${

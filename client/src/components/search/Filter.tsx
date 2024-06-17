@@ -15,8 +15,10 @@ export function Filter({
 }) {
   function handleBlur(index: number, e: FocusEvent<HTMLInputElement, Element>) {
     const newFilters = [...filters];
-    newFilters[index] = e.currentTarget.value;
-    setFilters(filterKey, newFilters);
+    if (e.currentTarget.value !== "") {
+      newFilters[index] = e.currentTarget.value;
+      setFilters(filterKey, newFilters);
+    }
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -38,9 +40,9 @@ export function Filter({
     <div className="text-text pl-2 pb-2">
       <Accordion title={title} defaultOpen={false}>
         <div className="flex flex-col items-center">
-          <div className="space-y-3 mb-2">
+          <div className="">
             {filters.map((_filter, index) => (
-              <div key={index} className="flex mt-4">
+              <div key={index} className="flex mb-3">
                 <input
                   className="bg-secondary outline-none hover:shadow-primary shadow-sm transition-shadow px-1"
                   onBlur={(e) => handleBlur(index, e)}
@@ -74,7 +76,7 @@ export function Filter({
           <button
             type="button"
             onClick={() => handleNewAccordionFilter()}
-            className="text-base bg-secondary text-center px-3 hover:bg-accent transition-colors my-2 mb-4"
+            className="text-base bg-secondary text-center px-3 hover:bg-accent transition-colors"
           >
             + Add Filter
           </button>

@@ -11,9 +11,9 @@ export const Accordion = ({
 }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <>
+    <div className="group">
       <button
-        className={`w-full top-0 border-b peer hover:brightness-200 border-secondary group transition duration-300 pb-2`}
+        className={`w-full top-0 border-b group-hover:brightness-200 border-secondary group transition duration-300 pb-2`}
         onClick={() => setOpen(!open)}
       >
         {title !== "" ? (
@@ -57,12 +57,13 @@ export const Accordion = ({
           </svg>
         )}
       </button>
-      <div className={`text-sm ${open ? "" : "hidden"}`}>{children}</div>
-      <hr
-        className={`border-secondary peer-hover:brightness-200 transition duration-300 ${
+      <div className={`text-sm py-5 ${open ? "" : "hidden"}`}>{children}</div>
+      <button
+        className={`border-secondary group-hover:brightness-200 border-t h-8 w-full transition duration-300 ${
           open ? "" : "hidden"
         }`}
+        onClick={() => setOpen(!open)}
       />
-    </>
+    </div>
   );
 };

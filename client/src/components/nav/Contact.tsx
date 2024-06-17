@@ -1,4 +1,4 @@
-import useFade from "../../hooks/Fade";
+import useFade from "../../hooks/useFade";
 import discordIcon from "../../assets/discord-mark-white.svg";
 import emailIcon from "../../assets/communication.png";
 
@@ -9,7 +9,7 @@ export function Contact() {
     <div className="relative text-primary" onBlur={hide}>
       <button
         type="button"
-        className="hover:text-accent transition-colors"
+        className="hover:brightness-200 transition"
         onClick={handleToggle}
       >
         Contact

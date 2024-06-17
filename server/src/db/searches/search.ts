@@ -1,4 +1,4 @@
-import * as andSearch from "./andSearch";
+import * as andSearch from "./and/andSearch";
 
 function addDupes(str, count) {
   const val = parseInt(str.split("%")[0].split().pop());
@@ -40,7 +40,7 @@ export function mapItemsToShop(items) {
   return shopsMap.values();
 }
 
-export async function filterItems(filters) {
+export async function filterItems(filters: Filters) {
   try {
     let table = null;
     table = andSearch.getItems(filters);

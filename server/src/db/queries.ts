@@ -3,7 +3,7 @@ import { catalog } from "./schemas/catalogSchema";
 import { items } from "./schemas/itemsSchema";
 import { mods } from "./schemas/modsSchema";
 import { desc, sql, inArray } from "drizzle-orm";
-import { filterItems, groupMods } from "./searches/search";
+import { filterItems, groupMods, Filters} from "./searches/search";
 
 function buildConflictUpdateSet(table) {
   const columns = Object.keys(table);
@@ -165,6 +165,6 @@ export async function getShopsInRange(offset, limit) {
   }
 }
 
-export async function getFilteredItems(filters) {
+export async function getFilteredItems(filters: Filters) {
   return filterItems(filters);
 }

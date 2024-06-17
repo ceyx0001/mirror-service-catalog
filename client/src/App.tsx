@@ -1,28 +1,82 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useCallback, LegacyRef } from "react";
 import { Shop, ShopType } from "./components/Shop";
 import { Search } from "./components/search/Search";
 import { Nav } from "./components/nav/Nav";
+import { useQuery, Paging } from "./hooks/useQuery";
+import { useSearch } from "./hooks/useSearch";
 
-interface Paging {
-  offset: number;
-  limit: number;
-}
+const DEFAULT_PAGING: Paging = {
+  offset: 1,
+  limit: 10,
+};
 
 export function App() {
-  const [catalog, setCatalog] = useState<ShopType[]>([]);
-  const [paging, setPaging] = useState<Paging>({ offset: 1, limit: 10 });
-  const [toggleSidebar, setToggleSidebar] = useState(true);
+  const [toggleSidebar, setToggleSidebar] = useState<boolean>(true);
+  const [homePaging, setPaging] = useState<Paging>(DEFAULT_PAGING);
+  const [searchPaging, setsearchPaging] = useState<Paging>({
+    ...DEFAULT_PAGING,
+    offset: 0,
+  });
+  const [filteredCatalog, setFilteredCatalog] = useState<ShopType[]>([]);
 
-  useEffect(() => {
-    const getShops = async () => {
-      const url = `http://localhost:3000/api/shops/range?offset=${paging.offset}&limit=${paging.limit}`; //import.meta.env.VITE_API_URL;
-      const response = await fetch(url);
-      const shops: ShopType[] = await response.json();
-      setCatalog(shops);
-    };
+  const {
+    catalog: queryResults,
+    loading: queryLoading,
+    hasMore: queryHasMore,
+  } = useQuery(homePaging);
+  const {
+    catalog: searchResults,
+    loading: searchLoading,
+    hasMore: searchHasMore,
+  } = useSearch(searchPaging, filteredCatalog);
+  
+  const observer = useRef<IntersectionObserver>();
 
-    getShops();
-  }, [paging]);
+  const lastQuery = useCallback(
+    (node: HTMLDivElement) => {
+      if (queryLoading) {
+        return;
+      }
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && queryHasMore) {
+          setPaging((old) => ({
+            offset: old.offset + DEFAULT_PAGING.limit,
+            limit: old.limit,
+          }));
+        }
+      });
+      if (node) {
+        observer.current.observe(node);
+      }
+    },
+    [queryLoading, queryHasMore]
+  );
+
+  const lastSearch = useCallback(
+    (node: HTMLDivElement) => {
+      if (searchLoading) {
+        return;
+      }
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && searchHasMore) {
+          setsearchPaging((old) => ({
+            offset: old.offset + DEFAULT_PAGING.limit,
+            limit: old.limit,
+          }));
+        }
+      });
+      if (node) {
+        observer.current.observe(node);
+      }
+    },
+    [searchLoading, searchHasMore]
+  );
 
   return (
     <div className="relative bg-black">
@@ -33,20 +87,53 @@ export function App() {
           toggleSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Search setCatalog={setCatalog} setPaging={setPaging} />
+        <Search setFilteredCatalog={setFilteredCatalog} />
       </aside>
 
       <div
-        className={`px-10 my-10 flex flex-col space-y-3 ${
-          toggleSidebar ? "lg:ml-[16rem] ml-[8rem]" : "ml-0"
+        className={` mx-10 my-3 mt-[3.8rem] space-y-12 transition-transform origin-top flex flex-col max-h-screen ${
+          toggleSidebar ? "scale-[.89] translate-x-32" : "scale:100"
         }`}
       >
-        {catalog.map((shop) => (
-          <div key={shop.profile_name} className="overflow-visible">
-            <Shop shop={shop} />
-          </div>
-        ))}
+        {filteredCatalog.length > 0
+          ? renderShops(searchResults, searchLoading, searchHasMore, lastSearch)
+          : renderShops(queryResults, queryLoading, queryHasMore, lastQuery)}
       </div>
     </div>
+  );
+}
+
+function renderShops(
+  catalog: ShopType[],
+  loading: boolean,
+  hasMore: boolean,
+  last: LegacyRef<HTMLDivElement>
+) {
+  return (
+    <>
+      {catalog.map((shop, index) => {
+        if (catalog.length === index + 1) {
+          return (
+            <div
+              ref={last}
+              key={shop.profile_name}
+              className="overflow-visible"
+            >
+              <Shop shop={shop} />
+            </div>
+          );
+        } else {
+          return (
+            <div key={shop.profile_name} className="overflow-visible">
+              <Shop shop={shop} />
+            </div>
+          );
+        }
+      })}
+      <span className="w-full text-center text-xl">
+        {(loading || hasMore) && "Loading..."}
+        {!loading && !hasMore && "No items found."}
+      </span>
+    </>
   );
 }

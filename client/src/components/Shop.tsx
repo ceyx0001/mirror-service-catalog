@@ -10,7 +10,7 @@ export type ShopType = {
 
 export function Shop({ shop }: { shop: ShopType }) {
   return (
-    <div className="bg-background rounded-t-3xl rounded-b-3xl p-5 space-y-5 relative">
+    <div className="bg-background rounded-t-3xl rounded-b-3xl px-5 pt-5 space-y-5 relative">
       <div className="flex space-x-10 items-end">
         <p className="text-xl">{shop.profile_name}</p>
         <a

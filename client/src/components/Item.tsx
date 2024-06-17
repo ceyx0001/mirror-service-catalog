@@ -35,9 +35,9 @@ export function Item({ item }: { item: ItemType }) {
 
   return (
     <article
-      className={`text-[0.7rem] bg-card w-80 min-h-min
+      className={`text-[0.65rem] bg-card w-80 min-h-min
         rounded-3xl px-4 pb-3 grid grid-rows-auto
-        shadow-2xl shadow-black hover:cursor-pointer transition-transform  ${
+        shadow-md shadow-black hover:cursor-pointer transition-transform  ${
           enlarge ? "scale-[1.3] relative z-40" : ""
         }`}
       onClick={() => setEnlarge(!enlarge)}

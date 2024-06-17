@@ -1,4 +1,4 @@
-import useFade from "../../hooks/Fade";
+import useFade from "../../hooks/useFade";
 
 export function About() {
   const { visible, faded, handleToggle, hide } = useFade();
@@ -7,7 +7,7 @@ export function About() {
     <div className="relative text-primary z-10">
       <button
         type="button"
-        className=" hover:text-accent transition-colors text-primary"
+        className=" hover:brightness-200 transition text-primary"
         onClick={handleToggle}
       >
         About
@@ -27,7 +27,7 @@ export function About() {
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                     <h3
-                      className="text-base font-semibold leading-6 text-accent"
+                      className="text-base font-semibold leading-6"
                       id="modal-title"
                     >
                       What does this app do?
@@ -39,7 +39,7 @@ export function About() {
                           href="https://www.pathofexile.com/forum/view-forum/standard-trading-shops"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="hover:text-primary text-accent"
+                          className="hover:text-primary text-accent brightness-125 hover:brightness-100 transition"
                         >
                           {" "}
                           Standard Trading Shops
@@ -52,7 +52,7 @@ export function About() {
                         thread in the 50 pages).
                         <br />
                         <br /> Currently, jewels have not been added because
-                        they have a different data structure
+                        they have a different item format.
                       </p>
                     </div>
                     <h3

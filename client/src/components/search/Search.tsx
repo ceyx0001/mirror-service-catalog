@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Filter } from "./Filter";
 import { ShopType } from "../Shop";
+import { Filter } from "./Filter";
 
 export type Filters = {
   modFilters: string[];
@@ -16,18 +16,21 @@ function addQuery(query: string, type: string, filters: string[]) {
 }
 
 export function Search({
-  setCatalog,
-  setPaging,
+  setFilteredCatalog,
 }: {
-  setCatalog: (catalog: ShopType[]) => void;
-  setPaging: ({ offset, limit }: { offset: number; limit: number }) => void;
+  setFilteredCatalog: (catalog: ShopType[]) => void;
 }) {
   const [filters, setFilters] = useState<Filters>({
     modFilters: [],
     baseFilters: [],
     titleFilters: [],
   });
-  const [loading, setLoading] = useState(false);
+  const [prevFilters, setprevFilters] = useState<Filters>({
+    modFilters: [],
+    baseFilters: [],
+    titleFilters: [],
+  });
+  const [filtering, setFiltering] = useState(false);
 
   function setFilter(filterType: keyof Filters, newFilters: string[]) {
     setFilters((prevState: Filters) => ({
@@ -36,8 +39,13 @@ export function Search({
     }));
   }
 
-  async function filterShops() {
-    setLoading(true);
+  async function getFilteredCatalog() {
+    if (JSON.stringify(filters) === JSON.stringify(prevFilters)) {
+      return;
+    }
+
+    setFiltering(true);
+    console.log(filters);
     if (
       filters.modFilters.length > 0 ||
       filters.baseFilters.length > 0 ||
@@ -49,17 +57,17 @@ export function Search({
       url = addQuery(url, "mod", filters.modFilters);
       const response = await fetch(url);
       const shops: ShopType[] = await response.json();
-      setCatalog(shops);
-      console.log(Object.keys(filters));
+      setFilteredCatalog(shops);
     } else {
-      setPaging({ offset: 1, limit: 10 });
+      setFilteredCatalog([]);
     }
-    setLoading(false);
+    setprevFilters(filters);
+    setFiltering(false);
   }
 
   return (
     <div className="flex flex-col items-center lg:w-[16rem] h-[90vh]">
-      {loading ? (
+      {filtering ? (
         <button
           className=" text-text bg-secondary flex items-center justify-center w-32 lg:w-40 relative mb-8 p-1"
           disabled
@@ -69,7 +77,7 @@ export function Search({
       ) : (
         <button
           className="text-text bg-secondary flex items-center justify-center w-40 hover:bg-accent relative transition cursor-pointer mb-8 p-1"
-          onClick={filterShops}
+          onClick={getFilteredCatalog}
         >
           Search
           <svg
