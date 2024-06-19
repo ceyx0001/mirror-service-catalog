@@ -18,7 +18,7 @@ export function useSearch(paging: Paging, completeCatalog: ShopType[]) {
   useEffect(() => {
     if (completeCatalog.length > 0) {
       let cleanup = false;
-      const getShops = async () => {
+      const getShops = () => {
         setLoading(true);
         if (!cleanup) {
           setCatalog((old) => {

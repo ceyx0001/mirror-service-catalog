@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import indexRouter from "./routes/index";
+import { rateLimit } from "express-rate-limit";
 
 const app = express();
 
@@ -16,6 +17,19 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+app.set("trust proxy", 1);
+
+const timeout = 1 * 5 * 1000;
+const window = 1 * 5 * 1000;
+app.use(
+  rateLimit({
+    windowMs: window,
+    skipFailedRequests: true,
+    limit: 5,
+    message: { message: "Rate limit exceeded.", timeout: timeout },
+  })
+);
+
 app.use(helmet());
 app.use(logger("dev"));
 app.use(express.json());
@@ -32,16 +46,10 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV === "dev" ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
 });
 
-app.get("/api/", (req, res, next) => {
-  console.log("query access");
+app.get("/api/", (req, res) => {
   const { query } = req.query;
 
   // Check if any query string value is negative

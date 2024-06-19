@@ -31,3 +31,19 @@ input {
 .gutter {
   scrollbar-gutter: stable;
 }
+
+.progress-bar {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.progress-bar::-webkit-progress-bar {
+  background-color: #5d484b;
+  border-radius: 0.5rem;
+}
+
+.progress-bar::-webkit-progress-value {
+  background-color: #b6abbe;
+  border-radius: 0.5rem;
+  transition: width 0.5s; /* This line animates the progress bar */
+}

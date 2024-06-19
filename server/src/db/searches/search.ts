@@ -46,7 +46,7 @@ export async function filterItems(filters: Filters) {
     table = andSearch.getItems(filters);
     return table;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 }
 

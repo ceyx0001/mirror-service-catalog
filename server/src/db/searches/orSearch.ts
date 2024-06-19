@@ -23,6 +23,6 @@ export async function getOrMods(filters) {
 
     return Array.from(mapItemsToShop(result));
   } catch (error) {
-    console.log(error);
+    return error;
   }
 }

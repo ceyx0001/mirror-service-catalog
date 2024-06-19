@@ -39,6 +39,6 @@ export async function getItems(filters: Filters) {
 
     return [];
   } catch (error) {
-    return error.toString();
+    return error;
   }
 }

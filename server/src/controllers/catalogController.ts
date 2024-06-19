@@ -64,7 +64,7 @@ export const shopsInRange = asyncHandler(
 );
 
 export const filteredItems = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next) => {
     const filters = {
       titleFilters:
         req.query.title !== undefined

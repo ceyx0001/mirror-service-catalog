@@ -13,7 +13,7 @@ export const Accordion = ({
   return (
     <div className="group">
       <button
-        className={`w-full top-0 border-b group-hover:brightness-200 border-secondary group transition duration-300 pb-2`}
+        className={`w-full top-0 border-b group-hover:brightness-200 border-secondary group transition duration-300 pb-1`}
         onClick={() => setOpen(!open)}
       >
         {title !== "" ? (

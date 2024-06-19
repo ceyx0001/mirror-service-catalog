@@ -8,6 +8,9 @@ export type Filters = {
   titleFilters: string[];
 };
 
+type ERROR = { message: string; timeout: number };
+type DATA = ERROR | ShopType[];
+
 function addQuery(query: string, type: string, filters: string[]) {
   for (const filter of filters) {
     query = query + "&" + type + "=" + filter;
@@ -17,8 +20,10 @@ function addQuery(query: string, type: string, filters: string[]) {
 
 export function Search({
   setFilteredCatalog,
+  setTimeout,
 }: {
   setFilteredCatalog: (catalog: ShopType[]) => void;
+  setTimeout: (duration: number) => void;
 }) {
   const [filters, setFilters] = useState<Filters>({
     modFilters: [],
@@ -40,29 +45,45 @@ export function Search({
   }
 
   async function getFilteredCatalog() {
-    if (JSON.stringify(filters) === JSON.stringify(prevFilters)) {
-      return;
-    }
+    try {
+      if (JSON.stringify(filters) === JSON.stringify(prevFilters)) {
+        return;
+      }
 
-    setFiltering(true);
-    console.log(filters);
-    if (
-      filters.modFilters.length > 0 ||
-      filters.baseFilters.length > 0 ||
-      filters.titleFilters.length > 0
-    ) {
-      let url = `http://localhost:3000/api/items/filter?`;
-      url = addQuery(url, "title", filters.titleFilters);
-      url = addQuery(url, "base", filters.baseFilters);
-      url = addQuery(url, "mod", filters.modFilters);
-      const response = await fetch(url);
-      const shops: ShopType[] = await response.json();
-      setFilteredCatalog(shops);
-    } else {
-      setFilteredCatalog([]);
+      setFiltering(true);
+
+      try {
+        if (
+          filters.modFilters.length > 0 ||
+          filters.baseFilters.length > 0 ||
+          filters.titleFilters.length > 0
+        ) {
+          let url = `http://localhost:3000/api/items/filter?`;
+          url = addQuery(url, "title", filters.titleFilters);
+          url = addQuery(url, "base", filters.baseFilters);
+          url = addQuery(url, "mod", filters.modFilters);
+          const response = await fetch(url);
+          const data: DATA = await response.json();
+          if (data instanceof Array) {
+            setFilteredCatalog(data);
+          } else {
+            if (response.status === 429) {
+              setTimeout(data.timeout);
+            }
+          }
+        } else {
+          setFilteredCatalog([]);
+        }
+        setprevFilters(filters);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.log(error);
+        }
+      }
+      setFiltering(false);
+    } catch (error) {
+      console.log(error);
     }
-    setprevFilters(filters);
-    setFiltering(false);
   }
 
   return (

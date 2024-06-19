@@ -2,6 +2,7 @@ import { useRef, useState, useCallback, LegacyRef } from "react";
 import { Shop, ShopType } from "./components/Shop";
 import { Search } from "./components/search/Search";
 import { Nav } from "./components/nav/Nav";
+import { Timeout } from "./components/search/Timeout";
 import { useQuery, Paging } from "./hooks/useQuery";
 import { useSearch } from "./hooks/useSearch";
 
@@ -18,18 +19,19 @@ export function App() {
     offset: 0,
   });
   const [filteredCatalog, setFilteredCatalog] = useState<ShopType[]>([]);
+  const [timeout, setTimeout] = useState<number>(0);
 
   const {
     catalog: queryResults,
     loading: queryLoading,
     hasMore: queryHasMore,
-  } = useQuery(homePaging);
+  } = useQuery(homePaging, setTimeout);
   const {
     catalog: searchResults,
     loading: searchLoading,
     hasMore: searchHasMore,
   } = useSearch(searchPaging, filteredCatalog);
-  
+
   const observer = useRef<IntersectionObserver>();
 
   const lastQuery = useCallback(
@@ -78,8 +80,18 @@ export function App() {
     [searchLoading, searchHasMore]
   );
 
+  function handleTimeoutExpire() {
+    setTimeout(0);
+    if (queryResults.length === 0) {
+      setPaging({ offset: 1, limit: 10 });
+    }
+  }
+
   return (
     <div className="relative bg-black">
+      {timeout > 0 && (
+        <Timeout duration={timeout} onTimeout={handleTimeoutExpire} />
+      )}
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar} />
 
       <aside
@@ -87,9 +99,11 @@ export function App() {
           toggleSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Search setFilteredCatalog={setFilteredCatalog} />
+        <Search
+          setFilteredCatalog={setFilteredCatalog}
+          setTimeout={setTimeout}
+        />
       </aside>
-
       <div
         className={` mx-10 my-3 mt-[3.8rem] space-y-12 transition-transform origin-top flex flex-col max-h-screen ${
           toggleSidebar ? "scale-[.89] translate-x-32" : "scale:100"
@@ -130,6 +144,7 @@ function renderShops(
           );
         }
       })}
+
       <span className="w-full text-center text-xl">
         {(loading || hasMore) && "Loading..."}
         {!loading && !hasMore && "No items found."}
