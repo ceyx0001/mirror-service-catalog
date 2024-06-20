@@ -1,7 +1,6 @@
 import express from "express";
 import * as catalog from "../controllers/catalogController";
 import shop from "../controllers/shopController";
-import { threads } from "../controllers/threadsController";
 
 const router = express.Router();
 
