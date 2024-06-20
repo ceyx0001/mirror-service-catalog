@@ -1,6 +1,6 @@
 import { db } from "../../../app";
-import { PgTable, PgTableWithColumns } from "drizzle-orm/pg-core";
-import { TableConfig, inArray, sql } from "drizzle-orm";
+import { PgTable } from "drizzle-orm/pg-core";
+import { inArray, sql } from "drizzle-orm";
 import { catalog, SelectCatalog } from "../../schemas/catalogSchema";
 import { items, SelectItem } from "../../schemas/itemsSchema";
 import { mods } from "../../schemas/modsSchema";
