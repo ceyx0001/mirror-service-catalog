@@ -2,6 +2,7 @@
   "name": "mirror-scraper",
   "version": "0.0.0",
   "private": true,
+  "main": "./src/bin/www.ts",
   "scripts": {
     "start": "npx ts-node ./src/bin/www.ts",
     "dev": "nodemon ./src/bin/www.ts"

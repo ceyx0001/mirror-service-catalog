@@ -1,9 +1,10 @@
 {
     "compilerOptions": {
+      "module": "CommonJS",
       "outDir": "./dist",
       "allowJs": true,
       "target": "es5",
       "esModuleInterop": true,
     },
-    "include": ["./src/**/*"]
+    "include": ["api/**/*"]
   }
