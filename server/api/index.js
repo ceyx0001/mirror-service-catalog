@@ -30,7 +30,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const app_1 = require("../app");
+const app_1 = __importDefault(require("./app"));
 const debug_1 = __importDefault(require("debug"));
 const http = __importStar(require("http"));
 const debug = (0, debug_1.default)("mirror-scraper:server");
@@ -38,15 +38,15 @@ const debug = (0, debug_1.default)("mirror-scraper:server");
  * Get port from environment and store in Express.
  */
 const port = normalizePort(process.env.PORT || "3000");
-app_1.app.set("port", port);
+app_1.default.set("port", port);
 /**
  * Create HTTP server.
  */
-const server = http.createServer(app_1.app);
+const server = http.createServer(app_1.default);
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port);
+server.listen(port, () => console.log("Server ready on port " + port));
 server.on("error", onError);
 server.on("listening", onListening);
 /**

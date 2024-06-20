@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-import { app } from "../app";
+import app from "./app";
 import debugModule from "debug";
 import * as http from "http";
 const debug = debugModule("mirror-scraper:server");
@@ -26,7 +26,7 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, () => console.log("Server ready on port " + port));
 server.on("error", onError);
 server.on("listening", onListening);
 

@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./api/bin/www.js",
-    "dev": "ts-node ./src/bin/www.ts"
+    "start": "node ./api/index.js",
+    "dev": "ts-node ./src/index.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.43.2",

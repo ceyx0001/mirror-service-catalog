@@ -1,6 +1,6 @@
 import { items } from "../schemas/itemsSchema";
 import { mods } from "../schemas/modsSchema";
-import { db } from "../../app";
+import db from "../db";
 import { mapItemsToShop } from "./search";
 import { or, inArray, ilike } from "drizzle-orm";
 

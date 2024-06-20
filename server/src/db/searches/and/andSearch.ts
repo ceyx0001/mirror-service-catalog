@@ -1,5 +1,5 @@
 import { items } from "../../schemas/itemsSchema";
-import { db } from "../../../app";
+import db from "../../db";
 import { Filters, mapItemsToShop } from "../search";
 import { inArray } from "drizzle-orm";
 import * as andStrategy from "./andStrategies";

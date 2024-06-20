@@ -1,4 +1,4 @@
-import { db } from "../app";
+import db from "./db";
 import { catalog } from "./schemas/catalogSchema";
 import { items } from "./schemas/itemsSchema";
 import { mods } from "./schemas/modsSchema";

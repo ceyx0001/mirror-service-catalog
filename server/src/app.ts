@@ -6,15 +6,14 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
-import indexRouter from "./routes/index";
+import indexRouter from "./routes/routes";
 import { rateLimit } from "express-rate-limit";
 
 const app = express();
 
-// Enable CORS only for localhost:3001
 app.use(
   cors({
-    origin: "",
+    origin: `${process.env.ORIGIN}`,
   })
 );
 app.set("trust proxy", 1);
@@ -49,7 +48,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 });
 
-app.get("/api/", (req, res) => {
+app.get("/", (req, res) => {
   const { query } = req.query;
 
   // Check if any query string value is negative
@@ -62,22 +61,4 @@ app.get("/api/", (req, res) => {
   }
 });
 
-import postgres from "postgres";
-import { drizzle } from "drizzle-orm/postgres-js";
-import * as catalogSchema from "./db/schemas/catalogSchema";
-import * as itemsSchema from "./db/schemas/itemsSchema";
-import * as modsSchema from "./db/schemas/modsSchema";
-let db;
-main().catch((err) => console.log(err));
-async function main() {
-  const connectionString = process.env.SUPABASE_URL;
-  const client = postgres(connectionString, {
-    username: `${process.env.SUPABASE_USER}`,
-    prepare: false,
-  });
-  db = drizzle(client, {
-    schema: { ...catalogSchema, ...itemsSchema, ...modsSchema },
-  });
-}
-
-export { app, db };
+export default app;

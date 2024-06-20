@@ -8,9 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.andModFilter = exports.andBaseFilter = exports.andTitleFilter = void 0;
-const app_1 = require("../../../app");
+const db_1 = __importDefault(require("../../db"));
 const drizzle_orm_1 = require("drizzle-orm");
 const catalogSchema_1 = require("../../schemas/catalogSchema");
 const itemsSchema_1 = require("../../schemas/itemsSchema");
@@ -22,7 +25,7 @@ function applyFilters(filters, parentTable, key, parentTableName, columns) {
             if (filters.length > 0) {
                 const conditions = columns.map((column) => (0, drizzle_orm_1.sql) `${drizzle_orm_1.sql.raw(column)} ILIKE ${drizzle_orm_1.sql.placeholder("filter")}`);
                 const combinedConditions = drizzle_orm_1.sql.join(conditions, (0, drizzle_orm_1.sql) ` OR `);
-                const preparedQuery = (table) => app_1.db
+                const preparedQuery = (table) => db_1.default
                     .select()
                     .from(table)
                     .where((0, drizzle_orm_1.sql) `${table[key]} IN (SELECT ${drizzle_orm_1.sql.raw(key)} FROM ${drizzle_orm_1.sql.raw(parentTableName)} WHERE ${combinedConditions})`)
@@ -63,7 +66,7 @@ exports.andBaseFilter = {
         let filteredBase;
         if (table && table.length > 0) {
             const threadIndexes = table.map((shop) => shop.thread_index);
-            filteredBase = yield app_1.db
+            filteredBase = yield db_1.default
                 .select()
                 .from(itemsSchema_1.items)
                 .where((0, drizzle_orm_1.inArray)(itemsSchema_1.items.shop_id, threadIndexes))
@@ -73,7 +76,7 @@ exports.andBaseFilter = {
             filteredBase = itemsSchema_1.items;
         }
         if (!filter) {
-            return yield app_1.db.select().from(filteredBase);
+            return yield db_1.default.select().from(filteredBase);
         }
         return yield applyFilters(filter, filteredBase, "item_id", "items", [
             "base_type",
@@ -87,7 +90,7 @@ exports.andModFilter = {
         let filteredMods;
         if (table && table.length > 0) {
             const itemIds = table.map((item) => item.item_id);
-            filteredMods = yield app_1.db
+            filteredMods = yield db_1.default
                 .select()
                 .from(modsSchema_1.mods)
                 .where((0, drizzle_orm_1.inArray)(modsSchema_1.mods.item_id, itemIds))
@@ -97,7 +100,7 @@ exports.andModFilter = {
             filteredMods = modsSchema_1.mods;
         }
         if (!filter) {
-            return yield app_1.db.select().from(filteredMods);
+            return yield db_1.default.select().from(filteredMods);
         }
         return yield applyFilters(filter, filteredMods, "item_id", "mods", ["mod"]);
     }),

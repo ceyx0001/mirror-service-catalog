@@ -35,42 +35,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getItems = getItems;
-const itemsSchema_1 = require("../../schemas/itemsSchema");
-const db_1 = __importDefault(require("../../db"));
-const search_1 = require("../search");
-const drizzle_orm_1 = require("drizzle-orm");
-const andStrategy = __importStar(require("./andStrategies"));
-function getItems(filters) {
+const postgres_1 = __importDefault(require("postgres"));
+const postgres_js_1 = require("drizzle-orm/postgres-js");
+const catalogSchema = __importStar(require("./schemas/catalogSchema"));
+const itemsSchema = __importStar(require("./schemas/itemsSchema"));
+const modsSchema = __importStar(require("./schemas/modsSchema"));
+let db;
+main().catch((err) => console.log(err));
+function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let filtersArray = [
-                { filter: filters.titleFilters, strategy: andStrategy.andTitleFilter },
-                { filter: filters.baseFilters, strategy: andStrategy.andBaseFilter },
-                { filter: filters.modFilters, strategy: andStrategy.andModFilter },
-            ];
-            let filteredTable;
-            for (let filterObj of filtersArray) {
-                filteredTable = yield filterObj.strategy.apply(filterObj.filter, filteredTable);
-            }
-            if (filteredTable && filteredTable.length > 0) {
-                const itemIdSet = new Set();
-                filteredTable.map((mod) => itemIdSet.add(mod.item_id));
-                const itemIds = Array.from(itemIdSet);
-                const result = yield db_1.default.query.items.findMany({
-                    where: (0, drizzle_orm_1.inArray)(itemsSchema_1.items.item_id, itemIds),
-                    columns: { shop_id: false },
-                    with: {
-                        mods: { columns: { item_id: false } },
-                        catalog: { columns: { views: false } },
-                    },
-                });
-                return Array.from((0, search_1.mapItemsToShop)(result));
-            }
-            return [];
-        }
-        catch (error) {
-            return error;
-        }
+        const connectionString = process.env.SUPABASE_URL;
+        const client = (0, postgres_1.default)(connectionString, {
+            username: `${process.env.SUPABASE_USER}`,
+            prepare: false,
+        });
+        db = (0, postgres_js_1.drizzle)(client, {
+            schema: Object.assign(Object.assign(Object.assign({}, catalogSchema), itemsSchema), modsSchema),
+        });
     });
 }
+exports.default = db;

@@ -8,13 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateCatalog = updateCatalog;
 exports.getThreadsInRange = getThreadsInRange;
 exports.getAllThreads = getAllThreads;
 exports.getShopsInRange = getShopsInRange;
 exports.getFilteredItems = getFilteredItems;
-const app_1 = require("../app");
+const db_1 = __importDefault(require("./db"));
 const catalogSchema_1 = require("./schemas/catalogSchema");
 const itemsSchema_1 = require("./schemas/itemsSchema");
 const modsSchema_1 = require("./schemas/modsSchema");
@@ -101,7 +104,7 @@ function updateCatalog(shops) {
                     title: shop.title,
                 };
             });
-            const shopsPromise = app_1.db
+            const shopsPromise = db_1.default
                 .insert(catalogSchema_1.catalog)
                 .values(shopsToInsert)
                 .onConflictDoUpdate({
@@ -109,7 +112,7 @@ function updateCatalog(shops) {
                 set: buildConflictUpdateSet(catalogSchema_1.catalog),
             });
             const uniqueItemsToInsert = Array.from(itemsToInsert.values());
-            const itemsPromise = app_1.db
+            const itemsPromise = db_1.default
                 .insert(itemsSchema_1.items)
                 .values(uniqueItemsToInsert)
                 .onConflictDoUpdate({
@@ -118,8 +121,8 @@ function updateCatalog(shops) {
             });
             const uniqueModsToInsert = Array.from(modsToInsert.values());
             const itemIds = uniqueModsToInsert.map((mod) => mod.item_id);
-            yield app_1.db.delete(modsSchema_1.mods).where((0, drizzle_orm_1.inArray)(modsSchema_1.mods.item_id, itemIds));
-            const modsPromise = app_1.db
+            yield db_1.default.delete(modsSchema_1.mods).where((0, drizzle_orm_1.inArray)(modsSchema_1.mods.item_id, itemIds));
+            const modsPromise = db_1.default
                 .insert(modsSchema_1.mods)
                 .values(uniqueModsToInsert)
                 .onConflictDoNothing();
@@ -132,7 +135,7 @@ function updateCatalog(shops) {
 }
 function getThreadsInRange(offset, limit) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield app_1.db
+        return yield db_1.default
             .select({
             profileName: catalogSchema_1.catalog.profile_name,
             threadIndex: catalogSchema_1.catalog.thread_index,
@@ -146,13 +149,13 @@ function getThreadsInRange(offset, limit) {
 }
 function getAllThreads() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield app_1.db.select().from(catalogSchema_1.catalog);
+        return yield db_1.default.select().from(catalogSchema_1.catalog);
     });
 }
 function getShopsInRange(offset, limit) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const result = yield app_1.db.query.catalog.findMany({
+            const result = yield db_1.default.query.catalog.findMany({
                 columns: { views: false },
                 with: {
                     items: {

@@ -8,22 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrMods = getOrMods;
 const itemsSchema_1 = require("../schemas/itemsSchema");
 const modsSchema_1 = require("../schemas/modsSchema");
-const app_1 = require("../../app");
+const db_1 = __importDefault(require("../db"));
 const search_1 = require("./search");
 const drizzle_orm_1 = require("drizzle-orm");
 function getOrMods(filters) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const conditions = filters.map((filter) => (0, drizzle_orm_1.ilike)(modsSchema_1.mods.mod, `%${filter}%`));
-            const subQuery = app_1.db
+            const subQuery = db_1.default
                 .select({ item_id: modsSchema_1.mods.item_id })
                 .from(modsSchema_1.mods)
                 .where((0, drizzle_orm_1.or)(...conditions));
-            const result = yield app_1.db.query.items.findMany({
+            const result = yield db_1.default.query.items.findMany({
                 where: (0, drizzle_orm_1.inArray)(itemsSchema_1.items.item_id, subQuery),
                 columns: { shop_id: false },
                 with: {
