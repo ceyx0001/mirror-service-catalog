@@ -9,6 +9,7 @@ export type Paging = {
 type ERROR = { message: string; timeout: number };
 type DATA = ERROR | ShopType[];
 
+// handling catalog queries without any search filters
 export function useQuery(
   paging: Paging,
   setTimeout: (duration: number) => void
@@ -21,7 +22,7 @@ export function useQuery(
     let cleanup = false;
     const getShops = async () => {
       setLoading(true);
-      const url = `http://localhost:3000/api/shops/range?offset=${paging.offset}&limit=${paging.limit}`; //import.meta.env.VITE_API_URL;
+      const url = `http://${import.meta.env.VITE_API_URL}/api/shops/range?offset=${paging.offset}&limit=${paging.limit}`;
 
       try {
         const response = await fetch(url);

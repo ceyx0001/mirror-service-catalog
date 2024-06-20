@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// rate limiter dialog
 export function Timeout({
   duration,
   onTimeout,

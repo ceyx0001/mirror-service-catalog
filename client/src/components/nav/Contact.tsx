@@ -2,6 +2,7 @@ import useFade from "../../hooks/useFade";
 import discordIcon from "../../assets/discord-mark-white.svg";
 import emailIcon from "../../assets/communication.png";
 
+// dialog containing contact information
 export function Contact() {
   const { visible, faded, handleToggle, hide } = useFade();
 
@@ -9,6 +10,7 @@ export function Contact() {
     <div className="relative text-primary" onBlur={hide}>
       <button
         type="button"
+        aria-label="Contact"
         className="hover:brightness-200 transition"
         onClick={handleToggle}
       >
@@ -18,7 +20,7 @@ export function Contact() {
       <div
         className={`grid grid-flow-row absolute -left-[8rem] top-12 border-secondary border bg-black rounded-lg min-w-max p-4 space-y-3 text-sm ${
           visible ? "animate-fade-in" : "animate-fade-out"
-        } ${faded ? "hidden" : "display:inline-block"}`}
+        } ${faded && "hidden"}`}
       >
         <div className="flex items-center space-x-3">
           <img src={discordIcon} className="w-7 h-7" />

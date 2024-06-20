@@ -6,6 +6,7 @@ export type Paging = {
   limit: number;
 };
 
+// handling catalog queries with search filters
 export function useSearch(paging: Paging, completeCatalog: ShopType[]) {
   const [catalog, setCatalog] = useState<ShopType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

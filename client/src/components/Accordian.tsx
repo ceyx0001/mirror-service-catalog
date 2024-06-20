@@ -1,5 +1,6 @@
 import { ReactNode, useState } from "react";
 
+// generic accordion that hides/shows child components
 export const Accordion = ({
   children,
   defaultOpen,
@@ -26,7 +27,7 @@ export const Accordion = ({
               viewBox="0 0 24 24"
               stroke="currentColor"
               className={`h-5 w-5 text-primary absolute ml-auto right-0 top-0 ${
-                open ? "rotate-180" : ""
+                open && "rotate-180"
               } 
           `}
             >
@@ -45,7 +46,7 @@ export const Accordion = ({
             viewBox="0 0 24 24"
             stroke="currentColor"
             className={`h-5 w-5 text-primary self-center ${
-              open ? "rotate-180" : ""
+              open && "rotate-180"
             } 
           `}
           >
@@ -58,12 +59,7 @@ export const Accordion = ({
           </svg>
         )}
       </button>
-      <div className={`text-sm py-5 ${open ? "" : "hidden"}`}>{children}</div>
-      <button
-        className={`border-secondary border-t h-8 w-full group-hover:border-accent transition duration-150 ${
-          open ? "" : "hidden"
-        }`}
-      />
+      {open && <div className="text-sm py-5">{children}</div>}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import useFade from "../../hooks/useFade";
 
+// dialog containing app information
 export function About() {
   const { visible, faded, handleToggle, hide } = useFade();
 
@@ -7,6 +8,7 @@ export function About() {
     <div className="relative text-primary z-10">
       <button
         type="button"
+        aria-label="About"
         className=" hover:brightness-200 transition text-primary"
         onClick={handleToggle}
       >
@@ -15,7 +17,7 @@ export function About() {
       <div
         className={`fixed inset-0 bg-black bg-opacity-90 ${
           visible ? "animate-fade-in" : "animate-fade-out"
-        } ${faded ? "hidden" : ""}`}
+        } ${faded && "hidden"}`}
       >
         <div
           className="fixed inset-0 z-10 w-screen overflow-y-auto"
@@ -65,12 +67,15 @@ export function About() {
                       <p className="text-sm mb-10">
                         Users are able to add keyword filters which will then be
                         used by the app to search for items.
-                        <br /><br />
+                        <br />
+                        <br />
                         Title filters matches shop titles.
                         <br />
-                        Base filters matches an item's quality (don't use %), base, or name.
+                        Base filters matches an item's quality (don't use %),
+                        base, or name.
                         <br />
-                        Mod filters matches any item mod (any text below it's quality).
+                        Mod filters matches any item mod (any text below it's
+                        quality).
                       </p>
                     </div>
                   </div>
@@ -79,6 +84,7 @@ export function About() {
               <div className="bg-black px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                 <button
                   type="button"
+                  aria-label="Okay"
                   className="inline-flex w-full justify-center rounded-xl bg-secondary px-3 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-accent sm:ml-3 sm:w-auto"
                   onClick={handleToggle}
                 >

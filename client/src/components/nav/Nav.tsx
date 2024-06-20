@@ -2,6 +2,7 @@ import { Contact } from "./Contact";
 import { About } from "./About";
 import icon from "../../assets/Mirror_of_Kalandra.png";
 
+// navigation bar
 export function Nav({
   toggleSidebar,
   setToggleSidebar,
@@ -13,6 +14,7 @@ export function Nav({
     <nav className="flex flex-row items-center fixed top-0 border-b-1 border-secondary/55 py-1 w-full bg-background z-20">
       <button
         type="button"
+        aria-label="Navigation" 
         className={`mx-4 transition group outline-none ${
           toggleSidebar ? "left-64" : "left-2"
         }`}

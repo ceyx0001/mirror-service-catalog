@@ -14,7 +14,7 @@ const app = express();
 // Enable CORS only for localhost:3001
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "",
   })
 );
 app.set("trust proxy", 1);

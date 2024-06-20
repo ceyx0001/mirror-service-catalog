@@ -11,6 +11,7 @@ export type Filters = {
 type ERROR = { message: string; timeout: number };
 type DATA = ERROR | ShopType[];
 
+// refactors filter strings to URL query parameters
 function addQuery(query: string, type: string, filters: string[]) {
   for (const filter of filters) {
     query = query + "&" + type + "=" + filter;
@@ -18,6 +19,7 @@ function addQuery(query: string, type: string, filters: string[]) {
   return query;
 }
 
+// search handler 
 export function Search({
   setFilteredCatalog,
   setTimeout,
@@ -90,6 +92,8 @@ export function Search({
     <div className="flex flex-col items-center lg:w-[16rem] h-[90vh]">
       {filtering ? (
         <button
+          type="button"
+          aria-label="Search-Loading"
           className=" text-text bg-secondary flex items-center justify-center w-32 lg:w-40 relative mb-8 p-1"
           disabled
         >
@@ -97,6 +101,8 @@ export function Search({
         </button>
       ) : (
         <button
+          type="button"
+          aria-label="Search"
           className="text-text bg-secondary flex items-center justify-center w-40 hover:bg-accent relative transition cursor-pointer mb-8 p-1"
           onClick={getFilteredCatalog}
         >

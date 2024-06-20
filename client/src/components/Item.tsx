@@ -22,19 +22,20 @@ function renderMods(mods: string[], id: string, color: string) {
   return mods ? (
     <div className={`py-1`}>
       {mods.map((text: string, i) => (
-        <p key={`${id}${i}`} className={`${color}`}>
+        <span key={`${id}${i}`} className={`${color}`}>
           {text}
-        </p>
+        </span>
       ))}
     </div>
   ) : null;
 }
 
+// item information
 export function Item({ item }: { item: ItemType }) {
   const [enlarge, setEnlarge] = useState(false);
 
   function blockClick(event: React.MouseEvent<HTMLElement>) {
-    event?.stopPropagation();
+    event.stopPropagation();
   }
 
   return (
@@ -42,7 +43,7 @@ export function Item({ item }: { item: ItemType }) {
       className={`text-[0.65rem] bg-card w-80 min-h-min
         rounded-3xl px-4 pb-3 grid grid-rows-auto
         shadow-lg shadow-black hover:cursor-pointer transition-[transform, colors] border border-secondary duration-300 ${
-          enlarge ? "scale-[1.3] relative z-40 border border-accent" : ""
+          enlarge && "scale-[1.3] relative z-40 border border-accent"
         }`}
       onClick={(e) => {
         blockClick(e);
@@ -50,11 +51,13 @@ export function Item({ item }: { item: ItemType }) {
       }}
     >
       <img src={item.icon} className="justify-self-center m-5" />
-      <p className="py-2">
+      <span className="py-2">
         {item.name} {item.base_type}
-      </p>
+      </span>
       <div>
-        {item.quality ? <p className="">Quality: {item.quality}%</p> : null}
+        {item.quality ? (
+          <span className="">Quality: {item.quality}%</span>
+        ) : null}
         {renderMods(item.mods.enchant, item.item_id, "text-crafted")}
         {item.mods.implicit ? (
           <>
