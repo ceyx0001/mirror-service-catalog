@@ -2,10 +2,9 @@
   "name": "mirror-scraper",
   "version": "0.0.0",
   "private": true,
-  "main": "./src/bin/www.ts",
   "scripts": {
-    "start": "npx ts-node ./src/bin/www.ts",
-    "dev": "nodemon ./src/bin/www.ts"
+    "start": "node ./api/bin/www.js",
+    "dev": "ts-node ./src/bin/www.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.43.2",
@@ -22,12 +21,11 @@
     "helmet": "^7.1.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "nodemon": "^3.1.0",
     "postgres": "^3.4.4",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.21.2"
+    "drizzle-kit": "^0.21.4",
+    "ts-node": "^10.9.2"
   }
 }
