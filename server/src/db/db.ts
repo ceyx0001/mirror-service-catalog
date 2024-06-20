@@ -6,9 +6,8 @@ import * as modsSchema from "./schemas/modsSchema";
 let db;
 main().catch((err) => console.log(err));
 async function main() {
-  const connectionString = process.env.SUPABASE_URL;
+  const connectionString = process.env.POSTGRES_URL;
   const client = postgres(connectionString, {
-    username: `${process.env.SUPABASE_USER}`,
     prepare: false,
   });
   db = drizzle(client, {

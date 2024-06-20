@@ -44,9 +44,8 @@ let db;
 main().catch((err) => console.log(err));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const connectionString = process.env.SUPABASE_URL;
+        const connectionString = process.env.POSTGRES_URL;
         const client = (0, postgres_1.default)(connectionString, {
-            username: `${process.env.SUPABASE_USER}`,
             prepare: false,
         });
         db = (0, postgres_js_1.drizzle)(client, {
