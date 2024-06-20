@@ -105,7 +105,7 @@ export function App() {
         />
       </aside>
       <div
-        className={` mx-10 my-3 mt-[3.8rem] space-y-12 transition-transform origin-top flex flex-col max-h-screen ${
+        className={` mx-10 my-3 mt-[6rem] space-y-12 transition-transform origin-top flex flex-col max-h-screen ${
           toggleSidebar ? "scale-[.89] translate-x-32" : "scale:100"
         }`}
       >

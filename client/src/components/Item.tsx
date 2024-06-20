@@ -33,14 +33,21 @@ function renderMods(mods: string[], id: string, color: string) {
 export function Item({ item }: { item: ItemType }) {
   const [enlarge, setEnlarge] = useState(false);
 
+  function blockClick(event: React.MouseEvent<HTMLElement>) {
+    event?.stopPropagation();
+  }
+
   return (
     <article
       className={`text-[0.65rem] bg-card w-80 min-h-min
         rounded-3xl px-4 pb-3 grid grid-rows-auto
-        shadow-md shadow-black hover:cursor-pointer transition-transform  ${
-          enlarge ? "scale-[1.3] relative z-40" : ""
+        shadow-lg shadow-black hover:cursor-pointer transition-[transform, colors] border border-secondary duration-300 ${
+          enlarge ? "scale-[1.3] relative z-40 border border-accent" : ""
         }`}
-      onClick={() => setEnlarge(!enlarge)}
+      onClick={(e) => {
+        blockClick(e);
+        setEnlarge(!enlarge);
+      }}
     >
       <img src={item.icon} className="justify-self-center m-5" />
       <p className="py-2">

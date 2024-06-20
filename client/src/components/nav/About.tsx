@@ -15,7 +15,7 @@ export function About() {
       <div
         className={`fixed inset-0 bg-black bg-opacity-90 ${
           visible ? "animate-fade-in" : "animate-fade-out"
-        } ${faded ? "hidden" : "display:inline-block"}`}
+        } ${faded ? "hidden" : ""}`}
       >
         <div
           className="fixed inset-0 z-10 w-screen overflow-y-auto"
@@ -46,7 +46,7 @@ export function About() {
                         </a>
                         . It organizes all that are up for Mirror Service or are
                         part of a Mirror Shop. It will only show items from
-                        forum threads whose titles have the words "mirror Shop"
+                        forum threads whose titles have the words "mirror shop"
                         or "mirror service" in them. Each profile can have one
                         mirror thread indexed at a time (the highest indxed
                         thread in the 50 pages).
@@ -68,9 +68,9 @@ export function About() {
                         <br /><br />
                         Title filters matches shop titles.
                         <br />
-                        Base filters matches an item's quality (without %), base, or name.
+                        Base filters matches an item's quality (don't use %), base, or name.
                         <br />
-                        Mod filters matches any modifier on the item.
+                        Mod filters matches any item mod (any text below it's quality).
                       </p>
                     </div>
                   </div>
