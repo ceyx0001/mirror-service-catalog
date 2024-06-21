@@ -13,7 +13,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: `https://mirror-service-catalog.vercel.app`,
+    origin: process.env.ORIGIN,
   })
 );
 app.set("trust proxy", 1);
