@@ -22,9 +22,9 @@ function renderMods(mods: string[], id: string, color: string) {
   return mods ? (
     <div className={`py-1`}>
       {mods.map((text: string, i) => (
-        <span key={`${id}${i}`} className={`${color}`}>
+        <p key={`${id}${i}`} className={`${color}`}>
           {text}
-        </span>
+        </p>
       ))}
     </div>
   ) : null;
