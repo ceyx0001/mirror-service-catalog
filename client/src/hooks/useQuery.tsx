@@ -22,7 +22,7 @@ export function useQuery(
     let cleanup = false;
     const getShops = async () => {
       setLoading(true);
-      const url = `http://${import.meta.env.VITE_API_URL}/shops/range?offset=${paging.offset}&limit=${paging.limit}`;
+      const url = `https://${import.meta.env.VITE_API_URL}/shops/range?offset=${paging.offset}&limit=${paging.limit}`;
 
       try {
         const response = await fetch(url);
