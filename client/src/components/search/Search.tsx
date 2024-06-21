@@ -19,7 +19,7 @@ function addQuery(query: string, type: string, filters: string[]) {
   return query;
 }
 
-// search handler 
+// search handler
 export function Search({
   setFilteredCatalog,
   setTimeout,
@@ -60,7 +60,7 @@ export function Search({
           filters.baseFilters.length > 0 ||
           filters.titleFilters.length > 0
         ) {
-          let url = `http://localhost:3000/api/items/filter?`;
+          let url = `http://${import.meta.env.VITE_API_URL}/items/filter?`;
           url = addQuery(url, "title", filters.titleFilters);
           url = addQuery(url, "base", filters.baseFilters);
           url = addQuery(url, "mod", filters.modFilters);
