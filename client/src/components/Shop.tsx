@@ -21,11 +21,11 @@ export function Shop({ shop }: { shop: ShopType }) {
           rel="noopener noreferrer"
           href={`https://www.pathofexile.com/forum/view-thread/${shop.thread_index}`}
         >
-          <span className="text-primary">{shop.title}</span>
+          <span className="text-primary hover:text-text transition">{shop.title}</span>
         </a>
       </div>
       <Accordion defaultOpen={true} title="">
-        <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row justify-items-center gap-y-5">
+        <div className="grid lg:grid-cols-5 grid-cols-1 grid-flow-row justify-items-center gap-y-5">
           {shop.items.map((item: ItemType) => (
             <Item key={item.item_id} item={item} />
           ))}
