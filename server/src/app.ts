@@ -8,7 +8,7 @@ import logger from "morgan";
 import cors from "cors";
 import indexRouter from "./routes/routes";
 import { rateLimit } from "express-rate-limit";
-import { schedule } from "node-schedule";
+const schedule = require('node-schedule');
 import { catalogUpdate } from "./controllers/catalogController";
 
 const job = schedule.scheduleJob("0 0 * * *", function () {
