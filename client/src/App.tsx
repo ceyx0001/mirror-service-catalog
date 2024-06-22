@@ -5,7 +5,6 @@ import { Nav } from "./components/nav/Nav";
 import { Timeout } from "./components/search/Timeout";
 import { useQuery, Paging } from "./hooks/useQuery";
 import { useSearch } from "./hooks/useSearch";
-import { Analytics } from "@vercel/analytics/react";
 
 const DEFAULT_PAGING: Paging = {
   offset: 1,
@@ -114,7 +113,6 @@ export function App() {
           ? renderShops(searchResults, searchLoading, searchHasMore, lastSearch)
           : renderShops(queryResults, queryLoading, queryHasMore, lastQuery)}
       </div>
-      <Analytics />
     </div>
   );
 }
