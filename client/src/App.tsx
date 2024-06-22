@@ -5,6 +5,7 @@ import { Nav } from "./components/nav/Nav";
 import { Timeout } from "./components/search/Timeout";
 import { useQuery, Paging } from "./hooks/useQuery";
 import { useSearch } from "./hooks/useSearch";
+import { Analytics } from "@vercel/analytics/react";
 
 const DEFAULT_PAGING: Paging = {
   offset: 1,
@@ -149,6 +150,7 @@ function renderShops(
         {(loading || hasMore) && "Loading..."}
         {!loading && !hasMore && "No items found."}
       </span>
+      <Analytics />
     </>
   );
 }
