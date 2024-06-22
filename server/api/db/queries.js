@@ -176,7 +176,7 @@ function getShopsInRange(offset, limit) {
             return result;
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
     });
 }

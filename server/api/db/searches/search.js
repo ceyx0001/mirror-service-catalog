@@ -91,7 +91,7 @@ function filterItems(filters) {
             return table;
         }
         catch (error) {
-            return error;
+            console.error(error);
         }
     });
 }

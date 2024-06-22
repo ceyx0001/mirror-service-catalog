@@ -70,7 +70,7 @@ function getItems(filters) {
             return [];
         }
         catch (error) {
-            return error;
+            console.error(error);
         }
     });
 }

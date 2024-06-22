@@ -21,33 +21,22 @@ const modsSchema_1 = require("../../schemas/modsSchema");
 function applyFilters(filters, parentTable, key, parentTableName, columns) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let result = null;
-            if (filters.length > 0) {
-                const conditions = columns.map((column) => (0, drizzle_orm_1.sql) `${drizzle_orm_1.sql.raw(column)} ILIKE ${drizzle_orm_1.sql.placeholder("filter")}`);
+            let condition = (0, drizzle_orm_1.or)(...columns.map((column) => (0, drizzle_orm_1.ilike)(parentTable[column], `%${filters.pop()}%`)));
+            let sq = db_1.default.$with("sq").as(db_1.default.select().from(parentTable).where(condition));
+            for (let i = 0; i < filters.length; i++) {
+                const conditions = columns.map((column) => (0, drizzle_orm_1.sql) `${drizzle_orm_1.sql.raw(column)} ILIKE ${"%" + filters[i] + "%"}`);
                 const combinedConditions = drizzle_orm_1.sql.join(conditions, (0, drizzle_orm_1.sql) ` OR `);
-                const preparedQuery = (table) => db_1.default
+                sq = db_1.default.$with("sq").as(db_1.default
+                    .with(sq)
                     .select()
-                    .from(table)
-                    .where((0, drizzle_orm_1.sql) `${table[key]} IN (SELECT ${drizzle_orm_1.sql.raw(key)} FROM ${drizzle_orm_1.sql.raw(parentTableName)} WHERE ${combinedConditions})`)
-                    .prepare();
-                let filteredTable = yield preparedQuery(parentTable).execute({
-                    filter: `%${filters.pop()}%`,
-                });
-                while (filters.length > 0) {
-                    const next = yield preparedQuery(filteredTable).execute({
-                        filter: `%${filters.pop()}%`,
-                    });
-                    if (!next) {
-                        throw new Error("Subsequent query returned no results.");
-                    }
-                    filteredTable = next;
-                }
-                result = filteredTable;
+                    .from(sq)
+                    .where((0, drizzle_orm_1.sql) `${sq[key]} IN (SELECT ${drizzle_orm_1.sql.raw(key)} FROM ${drizzle_orm_1.sql.raw(parentTableName)} WHERE ${combinedConditions})`));
             }
-            return result;
+            const prepared = db_1.default.with(sq).select().from(sq).prepare();
+            return yield prepared.execute();
         }
         catch (error) {
-            return error;
+            console.error(error);
         }
     });
 }
