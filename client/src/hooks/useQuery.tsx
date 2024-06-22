@@ -41,7 +41,7 @@ export function useQuery(
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
-          console.log(error);
+          console.error(error);
         }
       }
       setLoading(false);

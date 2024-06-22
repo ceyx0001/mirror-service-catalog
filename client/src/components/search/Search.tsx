@@ -32,11 +32,6 @@ export function Search({
     baseFilters: [],
     titleFilters: [],
   });
-  const [prevFilters, setprevFilters] = useState<Filters>({
-    modFilters: [],
-    baseFilters: [],
-    titleFilters: [],
-  });
   const [filtering, setFiltering] = useState(false);
 
   function setFilter(filterType: keyof Filters, newFilters: string[]) {
@@ -48,10 +43,6 @@ export function Search({
 
   async function getFilteredCatalog() {
     try {
-      if (JSON.stringify(filters) === JSON.stringify(prevFilters)) {
-        return;
-      }
-
       setFiltering(true);
 
       try {
@@ -76,15 +67,14 @@ export function Search({
         } else {
           setFilteredCatalog([]);
         }
-        setprevFilters(filters);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          console.log(error);
+          console.error(error);
         }
       }
       setFiltering(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
