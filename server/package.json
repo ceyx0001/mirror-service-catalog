@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./api/index.js",
-    "dev": "ts-node ./src/index.ts"
+    "dev": "nodemon ./src/index.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.43.2",

@@ -36,9 +36,8 @@ export async function getItems(filters: Filters) {
       });
       return Array.from(mapItemsToShop(result));
     }
-
     return [];
   } catch (error) {
-    return error;
+    console.error(error);
   }
 }

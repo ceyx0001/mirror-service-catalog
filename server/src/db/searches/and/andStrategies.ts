@@ -1,9 +1,9 @@
 import db from "../../db";
 import { PgTable } from "drizzle-orm/pg-core";
-import { inArray, sql } from "drizzle-orm";
+import { ilike, inArray, or, sql } from "drizzle-orm";
 import { catalog, SelectCatalog } from "../../schemas/catalogSchema";
 import { items, SelectItem } from "../../schemas/itemsSchema";
-import { mods } from "../../schemas/modsSchema";
+import { SelectMod, mods } from "../../schemas/modsSchema";
 
 type Strategy = {
   apply(filter: string[], table: any): Promise<[] | Error>;
@@ -17,45 +17,36 @@ async function applyFilters(
   columns: string[]
 ): Promise<[] | Error> {
   try {
-    let result: [] | null = null;
-    if (filters.length > 0) {
+    let condition = or(
+      ...columns.map((column) =>
+        ilike(parentTable[column], `%${filters.pop()}%`)
+      )
+    );
+
+    let sq = db.$with("sq").as(db.select().from(parentTable).where(condition));
+
+    for (let i = 0; i < filters.length; i++) {
       const conditions = columns.map(
-        (column) => sql`${sql.raw(column)} ILIKE ${sql.placeholder("filter")}`
+        (column) => sql`${sql.raw(column)} ILIKE ${"%" + filters[i] + "%"}`
       );
       const combinedConditions = sql.join(conditions, sql` OR `);
-      const preparedQuery = (table: PgTable) =>
+      sq = db.$with("sq").as(
         db
+          .with(sq)
           .select()
-          .from(table)
+          .from(sq)
           .where(
-            sql`${table[key]} IN (SELECT ${sql.raw(key)} FROM ${sql.raw(
+            sql`${sq[key]} IN (SELECT ${sql.raw(key)} FROM ${sql.raw(
               parentTableName
             )} WHERE ${combinedConditions})`
           )
-          .prepare();
-
-      let filteredTable = await preparedQuery(parentTable).execute({
-        filter: `%${filters.pop()}%`,
-      });
-
-      while (filters.length > 0) {
-        const next = await preparedQuery(filteredTable).execute({
-          filter: `%${filters.pop()}%`,
-        });
-
-        if (!next) {
-          throw new Error("Subsequent query returned no results.");
-        }
-
-        filteredTable = next;
-      }
-
-      result = filteredTable;
+      );
     }
 
-    return result;
+    const prepared = db.with(sq).select().from(sq).prepare();
+    return await prepared.execute();
   } catch (error) {
-    return error;
+    console.error(error);
   }
 }
 
