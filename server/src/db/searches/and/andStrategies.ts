@@ -3,7 +3,7 @@ import { PgTable } from "drizzle-orm/pg-core";
 import { ilike, inArray, or, sql } from "drizzle-orm";
 import { catalog, SelectCatalog } from "../../schemas/catalogSchema";
 import { items, SelectItem } from "../../schemas/itemsSchema";
-import { SelectMod, mods } from "../../schemas/modsSchema";
+import { mods } from "../../schemas/modsSchema";
 
 type Strategy = {
   apply(filter: string[], table: any): Promise<[] | Error>;
