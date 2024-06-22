@@ -13,7 +13,7 @@ export function Shop({ shop }: { shop: ShopType }) {
   return (
     <div className="bg-background px-5 pt-5 space-y-5 relative">
       <div className="flex space-x-10 items-end">
-        <span className="text-xl">{shop.profile_name}</span>
+        <span className="lg:text-xl">{shop.profile_name}</span>
         <a
           className="text-primary hover:text-text transition"
           aria-label="Shop-Link"
@@ -21,7 +21,7 @@ export function Shop({ shop }: { shop: ShopType }) {
           rel="noopener noreferrer"
           href={`https://www.pathofexile.com/forum/view-thread/${shop.thread_index}`}
         >
-          {shop.title}
+          <span className="text-primary">{shop.title}</span>
         </a>
       </div>
       <Accordion defaultOpen={true} title="">
