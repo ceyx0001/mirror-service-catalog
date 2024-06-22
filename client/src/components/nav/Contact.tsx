@@ -14,7 +14,7 @@ export function Contact() {
         className="hover:brightness-200 transition"
         onClick={handleToggle}
       >
-        Contact
+        <span className="text-primary">Contact</span>
       </button>
 
       <div

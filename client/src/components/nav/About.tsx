@@ -12,7 +12,7 @@ export function About() {
         className=" hover:brightness-200 transition text-primary"
         onClick={handleToggle}
       >
-        About
+        <span className="text-primary">About</span>
       </button>
       <div
         className={`fixed inset-0 bg-black bg-opacity-90 ${

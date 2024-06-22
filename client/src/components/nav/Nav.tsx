@@ -36,9 +36,9 @@ export function Nav({
       </button>
       <div className="flex flex-row items-center space-x-2">
         <img className="w-8 h-8" src={icon} />
-        <p className="font-bold text-lg">Mirror Service Catalog</p>
+        <h1 className="font-bold">Mirror Service Catalog</h1>
       </div>
-      <div className="ml-auto space-x-20 mx-20 flex">
+      <div className="ml-auto lg:space-x-20 lg:mx-20 lg:ml-auto space-x-10 mx-6 flex">
         <About />
         <Contact />
       </div>
