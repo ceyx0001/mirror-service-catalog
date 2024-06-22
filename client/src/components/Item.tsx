@@ -40,7 +40,7 @@ export function Item({ item }: { item: ItemType }) {
 
   return (
     <article
-      className={`text-[0.8rem] bg-card w-140 h-min max-h-min
+      className={`text-[0.8rem] bg-card w-120 h-min max-h-min
         rounded-3xl px-4 pb-3 grid grid-rows-auto
         shadow-lg shadow-black hover:cursor-pointer transition-[transform, colors] border border-secondary duration-300 ${
           enlarge && "scale-[1.3] relative z-40 border border-accent"
