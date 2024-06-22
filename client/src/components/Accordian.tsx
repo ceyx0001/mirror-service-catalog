@@ -59,7 +59,7 @@ export const Accordion = ({
           </svg>
         )}
       </button>
-      <div className={`text-sm py-5 ${open && "hidden"} `}>{children}</div>
+      <div className={`text-sm py-5 ${!open && "hidden"} `}>{children}</div>
     </div>
   );
 };
