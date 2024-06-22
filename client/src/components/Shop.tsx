@@ -25,7 +25,7 @@ export function Shop({ shop }: { shop: ShopType }) {
         </a>
       </div>
       <Accordion defaultOpen={true} title="">
-        <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row justify-items-center gap-y-5">
+        <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row justify-items-center gap-y-5 gap-x-10">
           {shop.items.map((item: ItemType) => (
             <Item key={item.item_id} item={item} />
           ))}
