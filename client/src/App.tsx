@@ -114,6 +114,7 @@ export function App() {
           ? renderShops(searchResults, searchLoading, searchHasMore, lastSearch)
           : renderShops(queryResults, queryLoading, queryHasMore, lastQuery)}
       </div>
+      <Analytics />
     </div>
   );
 }
@@ -150,7 +151,6 @@ function renderShops(
         {(loading || hasMore) && "Loading..."}
         {!loading && !hasMore && "No items found."}
       </span>
-      <Analytics />
     </>
   );
 }
