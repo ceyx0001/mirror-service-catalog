@@ -49,7 +49,7 @@ export function Filter({
             <div key={index} className="flex mb-3" onClick={blockClick}>
               <input
                 aria-label={`Filter-${index}`}
-                className="bg-secondary outline-none hover:shadow-primary shadow-sm transition-shadow px-1"
+                className="bg-secondary outline-none hover:shadow-primary shadow-sm transition-shadow px-1 p-1"
                 onBlur={(e) => handleBlur(index, e)}
                 onKeyDown={(e) => handleKeyDown(e)}
                 autoFocus={index === filters.length - 1}
