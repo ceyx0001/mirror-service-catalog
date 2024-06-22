@@ -21,6 +21,7 @@
     "helmet": "^7.1.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "node-schedule": "^2.1.1",
     "postgres": "^3.4.4",
     "typescript": "^5.4.5"
   },

@@ -13,6 +13,12 @@ const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const routes_1 = __importDefault(require("./routes/routes"));
 const express_rate_limit_1 = require("express-rate-limit");
+const node_schedule_1 = require("node-schedule");
+const catalogController_1 = require("./controllers/catalogController");
+const job = node_schedule_1.schedule.scheduleJob("0 0 * * *", function () {
+    console.log("Updating catalog...");
+    (0, catalogController_1.catalogUpdate)();
+});
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
     origin: process.env.ORIGIN,
