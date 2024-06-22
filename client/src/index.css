@@ -48,14 +48,6 @@ input {
   transition: width 0.5s; /* This line animates the progress bar */
 }
 
-@media screen and (min-width: 601px) {
-  p,
-  h1,
-  span {
-    font-size: 1rem;
-  }
-}
-
 @media screen and (max-width: 600) {
   span,
   p,
