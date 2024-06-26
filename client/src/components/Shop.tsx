@@ -11,7 +11,7 @@ export type ShopType = {
 // shop information
 export function Shop({ shop }: { shop: ShopType }) {
   return (
-    <div className="bg-background px-5 pt-5 space-y-5 relative">
+    <div className="bg-background px-12 pt-5 space-y-5 relative">
       <div className="flex space-x-10 items-end">
         <span className="lg:text-xl">{shop.profile_name}</span>
         <a
@@ -24,10 +24,10 @@ export function Shop({ shop }: { shop: ShopType }) {
           <span className="text-primary hover:text-text transition">{shop.title}</span>
         </a>
       </div>
-      <Accordion defaultOpen={true} title="">
-        <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row justify-items-center gap-y-5">
+      <Accordion defaultOpen={true}>
+        <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row gap-10">
           {shop.items.map((item: ItemType) => (
-            <Item key={item.item_id} item={item} />
+            <Item key={item.item_id} item={item} owner={shop.profile_name} />
           ))}
         </div>
       </Accordion>
