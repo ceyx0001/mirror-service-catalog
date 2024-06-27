@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Tooltip } from "./Tooltip";
+import { write } from "fs";
 
 type Mods = {
   enchant: string[];
@@ -11,10 +12,10 @@ type Mods = {
 };
 
 export type ItemType = {
-  item_id: string;
+  itemId: string;
   icon: string;
   name: string;
-  base_type: string;
+  baseType: string;
   quality: number;
   mods: Mods;
 };
@@ -42,12 +43,25 @@ function writeItem(item: ItemType) {
       }
     }
   }
-  return `${item.name}\n${item.base_type}\nQuality: ${item.quality}%\n${mods}`;
+  return `${item.name}\n${item.baseType}\nQuality: ${item.quality}%\n${mods}`;
 }
 
 // item information
 export function Item({ item, owner }: { item: ItemType; owner: string }) {
   const [enlarge, setEnlarge] = useState(false);
+
+  function handleWhisper() {
+    if (owner) {
+      navigator.clipboard.writeText(
+        "@" +
+          owner +
+          " Hello, I would like to mirror " +
+          item.name +
+          " " +
+          item.baseType
+      );
+    }
+  }
 
   return (
     <article
@@ -67,9 +81,7 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
         <Tooltip baseText={"Copy POB"} eventText={"Copied"}>
           <button
             aria-label="Copy-POB"
-            onClick={() => {
-              navigator.clipboard.writeText(writeItem(item));
-            }}
+            onClick={() => navigator.clipboard.writeText(writeItem(item))}
           >
             <svg
               className="w-5 h-5 text-primary hover:text-text transition-colors"
@@ -82,20 +94,8 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
           </button>
         </Tooltip>
 
-        <Tooltip baseText={"Copy Whisper"} eventText={"Copied"}>
-          <button
-            aria-label="Copy-Whisper"
-            onClick={() => {
-              navigator.clipboard.writeText(
-                "@" +
-                  owner +
-                  " Hello, I would like to mirror " +
-                  item.name +
-                  " " +
-                  item.base_type
-              );
-            }}
-          >
+        <Tooltip baseText={"Copy Whisper"} eventText={owner === null ? "Missing IGN/Private Profile": "Copied"}>
+          <button aria-label="Copy-Whisper" onClick={handleWhisper}>
             <svg
               className="w-5 h-5 text-primary hover:text-text transition-colors"
               xmlns="http://www.w3.org/2000/svg"
@@ -114,24 +114,24 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
       </div>
 
       <span className="py-2 text-[0.9rem]">
-        {item.name} {item.base_type}
+        {item.name} {item.baseType}
       </span>
       <div>
         {item.quality ? (
           <span className="">Quality: {item.quality}%</span>
         ) : null}
-        {renderMods(item.mods.enchant, item.item_id, "text-crafted")}
+        {renderMods(item.mods.enchant, item.itemId, "text-crafted")}
         {item.mods.implicit ? (
           <>
             <hr className="h-px my-1 bg-accent border-0" />
-            {renderMods(item.mods.implicit, item.item_id, "text-mod")}
+            {renderMods(item.mods.implicit, item.itemId, "text-mod")}
           </>
         ) : null}
         <hr className="h-px my-1 bg-accent border-0" />
-        {renderMods(item.mods.explicit, item.item_id, "text-mod")}
-        {renderMods(item.mods.fractured, item.item_id, "text-fractured")}
-        {renderMods(item.mods.crafted, item.item_id, "text-crafted")}
-        {renderMods(item.mods.crucible, item.item_id, "text-crucible")}
+        {renderMods(item.mods.explicit, item.itemId, "text-mod")}
+        {renderMods(item.mods.fractured, item.itemId, "text-fractured")}
+        {renderMods(item.mods.crafted, item.itemId, "text-crafted")}
+        {renderMods(item.mods.crucible, item.itemId, "text-crucible")}
       </div>
     </article>
   );

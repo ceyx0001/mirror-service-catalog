@@ -28,8 +28,11 @@ export function About() {
               <div className="bg-background px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <b>This tool is in no way affiliated with GGG.</b>
+                    <br />
+                    <br />
                     <h3
-                      className="text-base font-semibold leading-6"
+                      className="text-accent font-semibold leading-6"
                       id="modal-title"
                     >
                       What does this app do?
@@ -41,7 +44,8 @@ export function About() {
                           href="https://www.pathofexile.com/forum/view-forum/standard-trading-shops"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="hover:text-primary text-accent brightness-125 hover:brightness-100 transition"
+                          className="text-accent brightness-125 hover:text-blue-500 transition"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           {" "}
                           Standard Trading Shops
@@ -76,8 +80,6 @@ export function About() {
                         <br />
                         Mod filters matches any item mod (any text below it's
                         quality).
-                        <br />
-                        <b>This tool is in no way affiliated with GGG.</b>
                       </p>
                     </div>
                   </div>
