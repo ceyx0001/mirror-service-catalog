@@ -8,13 +8,15 @@ import logger from "morgan";
 import cors from "cors";
 import indexRouter from "./routes/routes";
 import { rateLimit } from "express-rate-limit";
-const schedule = require('node-schedule');
+const schedule = require("node-schedule");
 import { catalogUpdate } from "./controllers/catalogController";
 
-const job = schedule.scheduleJob("0 0 * * *", function () {
-  console.log("Updating catalog...");
-  catalogUpdate();
-});
+if (process.env.MODE === "development") {
+  const job = schedule.scheduleJob("0 0 * * *", function () {
+    console.log("Updating catalog...");
+    catalogUpdate();
+  });
+}
 
 const app = express();
 
