@@ -24,13 +24,14 @@ function applyFilters(filters, parentTable, key, parentTableName, columns) {
             let condition = (0, drizzle_orm_1.or)(...columns.map((column) => (0, drizzle_orm_1.ilike)(parentTable[column], `%${filters.pop()}%`)));
             let sq = db_1.default.$with("sq").as(db_1.default.select().from(parentTable).where(condition));
             for (let i = 0; i < filters.length; i++) {
-                const conditions = columns.map((column) => (0, drizzle_orm_1.sql) `${drizzle_orm_1.sql.raw(column)} ILIKE ${"%" + filters[i] + "%"}`);
-                const combinedConditions = drizzle_orm_1.sql.join(conditions, (0, drizzle_orm_1.sql) ` OR `);
                 sq = db_1.default.$with("sq").as(db_1.default
                     .with(sq)
                     .select()
                     .from(sq)
-                    .where((0, drizzle_orm_1.sql) `${sq[key]} IN (SELECT ${drizzle_orm_1.sql.raw(key)} FROM ${drizzle_orm_1.sql.raw(parentTableName)} WHERE ${combinedConditions})`));
+                    .where((0, drizzle_orm_1.inArray)(sq[key], db_1.default
+                    .select({ [key]: parentTable[key] })
+                    .from(parentTable)
+                    .where((0, drizzle_orm_1.or)(...columns.map((column) => (0, drizzle_orm_1.ilike)(parentTable[column], `%${filters[i]}%`)))))));
             }
             const prepared = db_1.default.with(sq).select().from(sq).prepare();
             return yield prepared.execute();
