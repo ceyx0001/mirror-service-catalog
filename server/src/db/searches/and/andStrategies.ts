@@ -22,23 +22,28 @@ async function applyFilters(
         ilike(parentTable[column], `%${filters.pop()}%`)
       )
     );
-
     let sq = db.$with("sq").as(db.select().from(parentTable).where(condition));
 
     for (let i = 0; i < filters.length; i++) {
-      const conditions = columns.map(
-        (column) => sql`${sql.raw(column)} ILIKE ${"%" + filters[i] + "%"}`
-      );
-      const combinedConditions = sql.join(conditions, sql` OR `);
       sq = db.$with("sq").as(
         db
           .with(sq)
           .select()
           .from(sq)
           .where(
-            sql`${sq[key]} IN (SELECT ${sql.raw(key)} FROM ${sql.raw(
-              parentTableName
-            )} WHERE ${combinedConditions})`
+            inArray(
+              sq[key],
+              db
+                .select({ [key]: parentTable[key] })
+                .from(parentTable)
+                .where(
+                  or(
+                    ...columns.map((column) =>
+                      ilike(parentTable[column], `%${filters[i]}%`)
+                    )
+                  )
+                )
+            )
           )
       );
     }
@@ -104,7 +109,6 @@ export const andModFilter: Strategy = {
     if (!filter) {
       return await db.select().from(filteredMods);
     }
-
     return await applyFilters(filter, filteredMods, "itemId", "mods", ["mod"]);
   },
 };
