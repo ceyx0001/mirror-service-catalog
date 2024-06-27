@@ -4,9 +4,9 @@ import { ReactNode, useState } from "react";
 export const Accordion = ({
   children,
   defaultOpen,
-  title,
+  title = "",
 }: {
-  title: string;
+  title?: string;
   children: ReactNode;
   defaultOpen: boolean;
 }) => {

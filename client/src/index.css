@@ -48,6 +48,11 @@ input {
   transition: width 0.5s; /* This line animates the progress bar */
 }
 
+.tooltip-trigger {
+  position: relative;
+  display: inline;
+}
+
 @media screen and (max-width: 600) {
   span,
   p,

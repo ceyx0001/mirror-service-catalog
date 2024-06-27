@@ -51,7 +51,7 @@ export function Search({
           filters.baseFilters.length > 0 ||
           filters.titleFilters.length > 0
         ) {
-          let url = `https://${import.meta.env.VITE_API_URL}/items/filter?`;
+          let url = `${import.meta.env.VITE_API_URL}/items/filter?`;
           url = addQuery(url, "title", filters.titleFilters);
           url = addQuery(url, "base", filters.baseFilters);
           url = addQuery(url, "mod", filters.modFilters);

@@ -6,19 +6,19 @@ const drizzle_orm_1 = require("drizzle-orm");
 const catalogSchema_1 = require("./catalogSchema");
 const modsSchema_1 = require("./modsSchema");
 exports.items = (0, pg_core_1.pgTable)("items", {
-    item_id: (0, pg_core_1.text)("item_id").primaryKey().notNull(),
+    itemId: (0, pg_core_1.text)("itemId").primaryKey().notNull(),
     icon: (0, pg_core_1.text)("icon"),
     name: (0, pg_core_1.text)("name"),
-    base_type: (0, pg_core_1.text)("base_type"),
+    baseType: (0, pg_core_1.text)("baseType"),
     quality: (0, pg_core_1.text)("quality"),
-    shop_id: (0, pg_core_1.integer)("shop_id")
+    shopId: (0, pg_core_1.integer)("shopId")
         .notNull()
-        .references(() => catalogSchema_1.catalog.thread_index, { onUpdate: "cascade" }),
+        .references(() => catalogSchema_1.catalog.threadIndex, { onUpdate: "cascade" }),
 });
 exports.itemsRelations = (0, drizzle_orm_1.relations)(exports.items, ({ one, many }) => ({
     catalog: one(catalogSchema_1.catalog, {
-        fields: [exports.items.shop_id],
-        references: [catalogSchema_1.catalog.thread_index],
+        fields: [exports.items.shopId],
+        references: [catalogSchema_1.catalog.threadIndex],
     }),
     mods: many(modsSchema_1.mods),
 }));

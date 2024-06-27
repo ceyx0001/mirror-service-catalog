@@ -55,8 +55,8 @@ exports.catalogUpdate = (0, express_async_handler_1.default)((req, res, next) =>
         const shops = yield Promise.all(requests);
         const uniqueShops = new Map();
         shops.map((shop) => {
-            if (!uniqueShops.has(shop.profile_name)) {
-                uniqueShops.set(shop.profile_name, shop);
+            if (!uniqueShops.has(shop.profileName)) {
+                uniqueShops.set(shop.profileName, shop);
             }
         });
         const results = Array.from(uniqueShops.values());

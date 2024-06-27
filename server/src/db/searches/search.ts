@@ -25,7 +25,7 @@ export function groupMods(mods) {
 export function mapItemsToShop(items) {
   let shopsMap = new Map();
   for (const item of items) {
-    const key = item.catalog.profile_name;
+    const key = item.catalog.profileName;
     const { catalog, ...itemDetails } = item;
     const modsGroup = groupMods(itemDetails.mods);
     if (shopsMap.get(key)) {

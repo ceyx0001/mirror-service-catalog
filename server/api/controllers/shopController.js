@@ -13,27 +13,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
-const cheerio_1 = __importDefault(require("cheerio"));
+const cheerio_1 = require("cheerio");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
+const header = {
+    headers: {
+        "User-Agent": `Mirror-Catalog/1.0 (${process.env.DEV_EMAIL}) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3`,
+    },
+};
+function getThreadDocument(index) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const threadUrl = `https://www.pathofexile.com/forum/view-thread/${index}`;
+        const threadResponse = yield axios_1.default.get(threadUrl, header);
+        return (0, cheerio_1.load)(threadResponse.data); // html string
+    });
+}
+function getProfileDocument(profileName) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const profileUrl = `https://www.pathofexile.com/character-window/get-characters`;
+        const profileResponse = yield axios_1.default.get(profileUrl, Object.assign(Object.assign({}, header), { data: {
+                accountName: profileName,
+                realm: "pc",
+            } }));
+        return profileResponse;
+    });
+}
 const getShopData = (index) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const url = `https://www.pathofexile.com/forum/view-thread/${index}`;
-        // fetch one vendor
-        const response = yield axios_1.default.get(url, {
-            headers: {
-                "User-Agent": `Mirror-Catalog/1.0 (${process.env.DEV_EMAIL}) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3`,
-            },
-        });
         // clean response into array of JSON objects
         let serviceItems = [];
-        const document = cheerio_1.default.load(response.data); // html string
-        const scriptContent = document("script")
+        const threadDocument = yield getThreadDocument(index);
+        const scriptContent = threadDocument("script")
             .last()
             .html()
             .replace(/\s\s+|\n/g, "");
-        const profileName = document("tr .post_info .posted-by .profile-link")
+        const profileName = threadDocument("tr .post_info .posted-by .profile-link")
             .first()
             .text();
+        const profileDocument = yield getProfileDocument(profileName);
+        let characterName = null;
         if (scriptContent.includes("DeferredItemRenderer")) {
             const arrayStartIndex = scriptContent.indexOf("new R(") + 6; // clean string
             const arrayEndIndex = scriptContent.indexOf(".run()") - 2;
@@ -77,8 +94,9 @@ const getShopData = (index) => __awaiter(void 0, void 0, void 0, function* () {
                 .filter(Boolean);
         }
         return {
-            profile_name: profileName,
-            thread_index: parseInt(index),
+            profileName: profileName,
+            characterName: characterName,
+            threadIndex: parseInt(index),
             items: serviceItems,
         };
     }
@@ -86,6 +104,16 @@ const getShopData = (index) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(error);
     }
 });
+function test() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield getProfileDocument("username349");
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+}
 const shop = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (res) {
         const data = yield getShopData(req.params.threadIndex);
