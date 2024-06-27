@@ -55,13 +55,13 @@ function getItems(filters) {
             }
             if (filteredTable && filteredTable.length > 0) {
                 const itemIdSet = new Set();
-                filteredTable.map((mod) => itemIdSet.add(mod.item_id));
+                filteredTable.map((mod) => itemIdSet.add(mod.itemId));
                 const itemIds = Array.from(itemIdSet);
                 const result = yield db_1.default.query.items.findMany({
-                    where: (0, drizzle_orm_1.inArray)(itemsSchema_1.items.item_id, itemIds),
-                    columns: { shop_id: false },
+                    where: (0, drizzle_orm_1.inArray)(itemsSchema_1.items.itemId, itemIds),
+                    columns: { shopId: false },
                     with: {
-                        mods: { columns: { item_id: false } },
+                        mods: { columns: { itemId: false } },
                         catalog: { columns: { views: false } },
                     },
                 });

@@ -41,7 +41,7 @@ function setMods(map, itemId, modType, mods) {
             }
             else {
                 map.set(key, {
-                    item_id: itemId,
+                    itemId: itemId,
                     mod: text,
                     type: modType,
                     dupes: null,
@@ -85,21 +85,21 @@ function updateCatalog(shops) {
             const shopsToInsert = shops.map((shop) => {
                 shop.items.forEach((item) => {
                     if (!itemsToInsert.has(item.id)) {
-                        const db_item = {
+                        const dbItem = {
                             name: item.name,
-                            base_type: item.baseType,
+                            baseType: item.baseType,
                             icon: item.icon,
                             quality: item.quality,
-                            item_id: item.id,
-                            shop_id: shop.thread_index,
+                            itemId: item.id,
+                            shopId: shop.threadIndex,
                         };
-                        itemsToInsert.set(item.id, db_item);
+                        itemsToInsert.set(item.id, dbItem);
                         aggregateMods(item, modsToInsert);
                     }
                 });
                 return {
-                    profile_name: shop.profile_name,
-                    thread_index: shop.thread_index,
+                    profileName: shop.profileName,
+                    threadIndex: shop.threadIndex,
                     views: shop.views,
                     title: shop.title,
                 };
@@ -108,7 +108,7 @@ function updateCatalog(shops) {
                 .insert(catalogSchema_1.catalog)
                 .values(shopsToInsert)
                 .onConflictDoUpdate({
-                target: catalogSchema_1.catalog.profile_name,
+                target: catalogSchema_1.catalog.profileName,
                 set: buildConflictUpdateSet(catalogSchema_1.catalog),
             });
             const uniqueItemsToInsert = Array.from(itemsToInsert.values());
@@ -116,12 +116,12 @@ function updateCatalog(shops) {
                 .insert(itemsSchema_1.items)
                 .values(uniqueItemsToInsert)
                 .onConflictDoUpdate({
-                target: itemsSchema_1.items.item_id,
+                target: itemsSchema_1.items.itemId,
                 set: buildConflictUpdateSet(itemsSchema_1.items),
             });
             const uniqueModsToInsert = Array.from(modsToInsert.values());
-            const itemIds = uniqueModsToInsert.map((mod) => mod.item_id);
-            yield db_1.default.delete(modsSchema_1.mods).where((0, drizzle_orm_1.inArray)(modsSchema_1.mods.item_id, itemIds));
+            const itemIds = uniqueModsToInsert.map((mod) => mod.itemId);
+            yield db_1.default.delete(modsSchema_1.mods).where((0, drizzle_orm_1.inArray)(modsSchema_1.mods.itemId, itemIds));
             const modsPromise = db_1.default
                 .insert(modsSchema_1.mods)
                 .values(uniqueModsToInsert)
@@ -137,8 +137,8 @@ function getThreadsInRange(offset, limit) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield db_1.default
             .select({
-            profileName: catalogSchema_1.catalog.profile_name,
-            threadIndex: catalogSchema_1.catalog.thread_index,
+            profileName: catalogSchema_1.catalog.profileName,
+            threadIndex: catalogSchema_1.catalog.threadIndex,
             title: catalogSchema_1.catalog.title,
         })
             .from(catalogSchema_1.catalog)
@@ -159,9 +159,9 @@ function getShopsInRange(offset, limit) {
                 columns: { views: false },
                 with: {
                     items: {
-                        columns: { shop_id: false },
+                        columns: { shopId: false },
                         with: {
-                            mods: { columns: { item_id: false } },
+                            mods: { columns: { itemId: false } },
                         },
                     },
                 },

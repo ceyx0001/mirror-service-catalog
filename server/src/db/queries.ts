@@ -23,7 +23,7 @@ function setMods(map, itemId, modType, mods) {
         map.set(key, oldMod);
       } else {
         map.set(key, {
-          item_id: itemId,
+          itemId: itemId,
           mod: text,
           type: modType,
           dupes: null,
@@ -68,21 +68,21 @@ export async function updateCatalog(shops) {
     const shopsToInsert = shops.map((shop) => {
       shop.items.forEach((item) => {
         if (!itemsToInsert.has(item.id)) {
-          const db_item = {
+          const dbItem = {
             name: item.name,
-            base_type: item.baseType,
+            baseType: item.baseType,
             icon: item.icon,
             quality: item.quality,
-            item_id: item.id,
-            shop_id: shop.thread_index,
+            itemId: item.id,
+            shopId: shop.threadIndex,
           };
-          itemsToInsert.set(item.id, db_item);
+          itemsToInsert.set(item.id, dbItem);
           aggregateMods(item, modsToInsert);
         }
       });
       return {
-        profile_name: shop.profile_name,
-        thread_index: shop.thread_index,
+        profileName: shop.profileName,
+        threadIndex: shop.threadIndex,
         views: shop.views,
         title: shop.title,
       };
@@ -92,7 +92,7 @@ export async function updateCatalog(shops) {
       .insert(catalog)
       .values(shopsToInsert)
       .onConflictDoUpdate({
-        target: catalog.profile_name,
+        target: catalog.profileName,
         set: buildConflictUpdateSet(catalog),
       });
 
@@ -101,13 +101,13 @@ export async function updateCatalog(shops) {
       .insert(items)
       .values(uniqueItemsToInsert)
       .onConflictDoUpdate({
-        target: items.item_id,
+        target: items.itemId,
         set: buildConflictUpdateSet(items),
       });
 
     const uniqueModsToInsert = Array.from(modsToInsert.values());
-    const itemIds = uniqueModsToInsert.map((mod) => mod.item_id);
-    await db.delete(mods).where(inArray(mods.item_id, itemIds));
+    const itemIds = uniqueModsToInsert.map((mod) => mod.itemId);
+    await db.delete(mods).where(inArray(mods.itemId, itemIds));
 
     const modsPromise = db
       .insert(mods)
@@ -123,8 +123,8 @@ export async function updateCatalog(shops) {
 export async function getThreadsInRange(offset, limit) {
   return await db
     .select({
-      profileName: catalog.profile_name,
-      threadIndex: catalog.thread_index,
+      profileName: catalog.profileName,
+      threadIndex: catalog.threadIndex,
       title: catalog.title,
     })
     .from(catalog)
@@ -143,9 +143,9 @@ export async function getShopsInRange(offset, limit) {
       columns: { views: false },
       with: {
         items: {
-          columns: { shop_id: false },
+          columns: { shopId: false },
           with: {
-            mods: { columns: { item_id: false } },
+            mods: { columns: { itemId: false } },
           },
         },
       },

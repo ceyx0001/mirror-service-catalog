@@ -8,13 +8,13 @@ exports.mods = (0, pg_core_1.pgTable)("mods", {
     mod: (0, pg_core_1.text)("mod"),
     type: (0, pg_core_1.text)("type"),
     dupes: (0, pg_core_1.integer)("dupes"),
-    item_id: (0, pg_core_1.text)("item_id").references(() => itemsSchema_1.items.item_id),
+    itemId: (0, pg_core_1.text)("itemId").references(() => itemsSchema_1.items.itemId),
 }, (table) => ({
-    pk: (0, pg_core_1.primaryKey)({ columns: [table.mod, table.type, table.item_id] }),
+    pk: (0, pg_core_1.primaryKey)({ columns: [table.mod, table.type, table.itemId] }),
 }));
 exports.modsRelations = (0, drizzle_orm_1.relations)(exports.mods, ({ one }) => ({
     item: one(itemsSchema_1.items, {
-        fields: [exports.mods.item_id],
-        references: [itemsSchema_1.items.item_id],
+        fields: [exports.mods.itemId],
+        references: [itemsSchema_1.items.itemId],
     }),
 }));

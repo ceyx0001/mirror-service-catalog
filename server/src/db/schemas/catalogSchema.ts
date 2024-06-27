@@ -3,8 +3,8 @@ import { InferSelectModel, relations } from "drizzle-orm";
 import { items } from "./itemsSchema";
 
 export const catalog = pgTable("catalog", {
-  profile_name: text("profile_name").notNull().primaryKey(),
-  thread_index: integer("thread_index").unique(),
+  profileName: text("profileName").notNull().primaryKey(),
+  threadIndex: integer("threadIndex").unique(),
   views: integer("views"),
   title: text("title"),
 });

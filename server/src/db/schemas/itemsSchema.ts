@@ -4,20 +4,20 @@ import { catalog } from "./catalogSchema";
 import { mods } from "./modsSchema";
 
 export const items = pgTable("items", {
-  item_id: text("item_id").primaryKey().notNull(),
+  itemId: text("itemId").primaryKey().notNull(),
   icon: text("icon"),
   name: text("name"),
-  base_type: text("base_type"),
+  baseType: text("baseType"),
   quality: text("quality"),
-  shop_id: integer("shop_id")
+  shopId: integer("shopId")
     .notNull()
-    .references(() => catalog.thread_index, { onUpdate: "cascade" }),
+    .references(() => catalog.threadIndex, { onUpdate: "cascade" }),
 });
 
 export const itemsRelations = relations(items, ({ one, many }) => ({
   catalog: one(catalog, {
-    fields: [items.shop_id],
-    references: [catalog.thread_index],
+    fields: [items.shopId],
+    references: [catalog.threadIndex],
   }),
   mods: many(mods),
 }));

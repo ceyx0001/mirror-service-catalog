@@ -5,8 +5,8 @@ const pg_core_1 = require("drizzle-orm/pg-core");
 const drizzle_orm_1 = require("drizzle-orm");
 const itemsSchema_1 = require("./itemsSchema");
 exports.catalog = (0, pg_core_1.pgTable)("catalog", {
-    profile_name: (0, pg_core_1.text)("profile_name").notNull().primaryKey(),
-    thread_index: (0, pg_core_1.integer)("thread_index").unique(),
+    profileName: (0, pg_core_1.text)("profileName").notNull().primaryKey(),
+    threadIndex: (0, pg_core_1.integer)("threadIndex").unique(),
     views: (0, pg_core_1.integer)("views"),
     title: (0, pg_core_1.text)("title"),
 });

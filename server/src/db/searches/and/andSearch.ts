@@ -22,15 +22,15 @@ export async function getItems(filters: Filters) {
 
     if (filteredTable && filteredTable.length > 0) {
       const itemIdSet = new Set<string>();
-      filteredTable.map((mod: { item_id: string }) =>
-        itemIdSet.add(mod.item_id)
+      filteredTable.map((mod: { itemId: string }) =>
+        itemIdSet.add(mod.itemId)
       );
       const itemIds: string[] = Array.from(itemIdSet);
       const result = await db.query.items.findMany({
-        where: inArray(items.item_id, itemIds),
-        columns: { shop_id: false },
+        where: inArray(items.itemId, itemIds),
+        columns: { shopId: false },
         with: {
-          mods: { columns: { item_id: false } },
+          mods: { columns: { itemId: false } },
           catalog: { columns: { views: false } },
         },
       });

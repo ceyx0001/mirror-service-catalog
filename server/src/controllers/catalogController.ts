@@ -23,8 +23,8 @@ export const catalogUpdate = asyncHandler(
 
       const uniqueShops = new Map();
       shops.map((shop) => {
-        if (!uniqueShops.has(shop.profile_name)) {
-          uniqueShops.set(shop.profile_name, shop);
+        if (!uniqueShops.has(shop.profileName)) {
+          uniqueShops.set(shop.profileName, shop);
         }
       });
       const results = Array.from(uniqueShops.values());

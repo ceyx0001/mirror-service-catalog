@@ -55,7 +55,7 @@ export const andTitleFilter: Strategy = {
     if (!filter) {
       return null;
     }
-    return await applyFilters(filter, table, "thread_index", "catalog", [
+    return await applyFilters(filter, table, "threadIndex", "catalog", [
       "title",
     ]);
   },
@@ -65,11 +65,11 @@ export const andBaseFilter: Strategy = {
   apply: async (filter: string[], table: SelectCatalog[]) => {
     let filteredBase: PgTable;
     if (table && table.length > 0) {
-      const threadIndexes = table.map((shop) => shop.thread_index);
+      const threadIndexes = table.map((shop) => shop.threadIndex);
       filteredBase = await db
         .select()
         .from(items)
-        .where(inArray(items.shop_id, threadIndexes))
+        .where(inArray(items.shopId, threadIndexes))
         .as("filteredBase");
     } else {
       filteredBase = items;
@@ -79,8 +79,8 @@ export const andBaseFilter: Strategy = {
       return await db.select().from(filteredBase);
     }
 
-    return await applyFilters(filter, filteredBase, "item_id", "items", [
-      "base_type",
+    return await applyFilters(filter, filteredBase, "itemId", "items", [
+      "baseType",
       "name",
       "quality",
     ]);
@@ -91,11 +91,11 @@ export const andModFilter: Strategy = {
   apply: async (filter: string[], table: SelectItem[]) => {
     let filteredMods: PgTable;
     if (table && table.length > 0) {
-      const itemIds = table.map((item) => item.item_id);
+      const itemIds = table.map((item) => item.itemId);
       filteredMods = await db
         .select()
         .from(mods)
-        .where(inArray(mods.item_id, itemIds))
+        .where(inArray(mods.itemId, itemIds))
         .as("filteredMods");
     } else {
       filteredMods = mods;
@@ -105,6 +105,6 @@ export const andModFilter: Strategy = {
       return await db.select().from(filteredMods);
     }
 
-    return await applyFilters(filter, filteredMods, "item_id", "mods", ["mod"]);
+    return await applyFilters(filter, filteredMods, "itemId", "mods", ["mod"]);
   },
 };

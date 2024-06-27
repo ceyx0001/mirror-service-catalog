@@ -8,17 +8,17 @@ export const mods = pgTable(
     mod: text("mod"),
     type: text("type"),
     dupes: integer("dupes"),
-    item_id: text("item_id").references(() => items.item_id),
+    itemId: text("itemId").references(() => items.itemId),
   },
   (table) => ({
-    pk: primaryKey({ columns: [table.mod, table.type, table.item_id] }),
+    pk: primaryKey({ columns: [table.mod, table.type, table.itemId] }),
   })
 );
 
 export const modsRelations = relations(mods, ({ one }) => ({
   item: one(items, {
-    fields: [mods.item_id],
-    references: [items.item_id],
+    fields: [mods.itemId],
+    references: [items.itemId],
   }),
 }));
 
