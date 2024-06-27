@@ -39,9 +39,6 @@ const getShopData = async (index) => {
     const profileName = threadDocument("tr .post_info .posted-by .profile-link")
       .first()
       .text();
-
-    const profileDocument = await getProfileDocument(profileName);
-    let characterName = null;
     
     if (scriptContent.includes("DeferredItemRenderer")) {
       const arrayStartIndex = scriptContent.indexOf("new R(") + 6; // clean string
@@ -91,7 +88,6 @@ const getShopData = async (index) => {
 
     return {
       profileName: profileName,
-      characterName: characterName,
       threadIndex: parseInt(index),
       items: serviceItems,
     };
