@@ -76,6 +76,8 @@ export function About() {
                         <br />
                         Mod filters matches any item mod (any text below it's
                         quality).
+                        <br />
+                        <b>This tool is in no way affiliated with GGG.</b>
                       </p>
                     </div>
                   </div>
