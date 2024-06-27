@@ -1,4 +1,4 @@
-import { MouseEvent, ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 
 // tooltip that appears on hover of the parent container
 export function Tooltip({
@@ -13,7 +13,7 @@ export function Tooltip({
   const [hovered, setHovered] = useState(false);
   const [tooltip, setTooltip] = useState(baseText);
 
-  function handleClick(e: MouseEvent<HTMLDivElement, MouseEvent>) {
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
     setTooltip(eventText);
     setTimeout(() => {

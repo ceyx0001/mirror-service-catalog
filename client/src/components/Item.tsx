@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Tooltip } from "./Tooltip";
-import { write } from "fs";
 
 type Mods = {
   enchant: string[];

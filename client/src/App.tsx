@@ -130,7 +130,7 @@ function renderShops(
           return (
             <div
               ref={last}
-              key={shop.profile_name}
+              key={shop.profileName}
               className="overflow-visible"
             >
               <Shop shop={shop} />
@@ -138,7 +138,7 @@ function renderShops(
           );
         } else {
           return (
-            <div key={shop.profile_name} className="overflow-visible">
+            <div key={shop.profileName} className="overflow-visible">
               <Shop shop={shop} />
             </div>
           );
