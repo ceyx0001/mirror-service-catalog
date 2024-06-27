@@ -49,8 +49,6 @@ const getShopData = (index) => __awaiter(void 0, void 0, void 0, function* () {
         const profileName = threadDocument("tr .post_info .posted-by .profile-link")
             .first()
             .text();
-        const profileDocument = yield getProfileDocument(profileName);
-        let characterName = null;
         if (scriptContent.includes("DeferredItemRenderer")) {
             const arrayStartIndex = scriptContent.indexOf("new R(") + 6; // clean string
             const arrayEndIndex = scriptContent.indexOf(".run()") - 2;
@@ -95,7 +93,6 @@ const getShopData = (index) => __awaiter(void 0, void 0, void 0, function* () {
         }
         return {
             profileName: profileName,
-            characterName: characterName,
             threadIndex: parseInt(index),
             items: serviceItems,
         };
