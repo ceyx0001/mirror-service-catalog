@@ -59,8 +59,7 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
           item.name +
           " " +
           item.baseType +
-          " for " +
-          item.fee
+          (item.fee ? " for " + item.fee : "")
       );
     }
   }
