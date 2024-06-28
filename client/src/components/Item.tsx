@@ -12,6 +12,7 @@ type Mods = {
 
 export type ItemType = {
   itemId: string;
+  fee: string;
   icon: string;
   name: string;
   baseType: string;
@@ -57,10 +58,14 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
           " Hello, I would like to mirror " +
           item.name +
           " " +
-          item.baseType
+          item.baseType +
+          " for " +
+          item.fee
       );
     }
   }
+
+  console.log(item.fee);
 
   return (
     <article
@@ -93,7 +98,10 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
           </button>
         </Tooltip>
 
-        <Tooltip baseText={"Copy Whisper"} eventText={owner === null ? "Missing IGN/Private Profile": "Copied"}>
+        <Tooltip
+          baseText={"Copy Whisper"}
+          eventText={owner === null ? "Missing IGN/Private Profile" : "Copied"}
+        >
           <button aria-label="Copy-Whisper" onClick={handleWhisper}>
             <svg
               className="w-5 h-5 text-primary hover:text-text transition-colors"
@@ -110,6 +118,7 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
             </svg>
           </button>
         </Tooltip>
+        {item.fee && <span className="text-[0.85rem]">Fee: {item.fee}D</span>}
       </div>
 
       <span className="py-2 text-[0.9rem]">
