@@ -64,8 +64,6 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
     }
   }
 
-  console.log(item.fee);
-
   return (
     <article
       className={`text-[0.7rem] bg-card h-min max-h-min
