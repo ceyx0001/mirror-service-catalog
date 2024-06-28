@@ -60,8 +60,8 @@ export function About() {
                         <br /> Currently, jewels have not been added because
                         they have a different item format.
                         <br /> 
-                        <br /> In order to have the proper whisper, you must have "IGN: name" or "@name" somewhere in the post. Other usages of "IGN: " or "@" will cause inaccuracies.
-                        <br /> Similarily with fees, you must have "Fee: amount" for a fee to display on the item.
+                        <br /> In order to have the proper whisper, you must have "IGN: [name]" or "@[name]" somewhere in the post. Other usages of "IGN: " or "@" will cause inaccuracies.
+                        <br /> Similarily with fees, you must have "Fee: [amount]" for a fee to display on the item.
                       </p>
                     </div>
                     <h3
