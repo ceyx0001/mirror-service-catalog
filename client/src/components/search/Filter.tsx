@@ -1,9 +1,9 @@
-import { FocusEvent, KeyboardEvent } from "react";
+import { FocusEvent, KeyboardEvent, memo } from "react";
 import { Accordion } from "../Accordian";
 import { Filters } from "./Search";
 
 // Filtering list used for searching text on items
-export function Filter({
+const Filter = memo(function Filter({
   filters,
   setFilters,
   title,
@@ -93,4 +93,6 @@ export function Filter({
       </Accordion>
     </div>
   );
-}
+});
+
+export default Filter;

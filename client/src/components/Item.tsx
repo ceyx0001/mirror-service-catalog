@@ -22,7 +22,7 @@ export type ItemType = {
 
 function renderMods(mods: string[], id: string, color: string) {
   return mods ? (
-    <div className={`py-1`}>
+    <div>
       {mods.map((text: string, i) => (
         <p key={`${id}${i}`} className={`${color}`}>
           {text}

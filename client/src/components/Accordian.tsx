@@ -25,7 +25,7 @@ export const Accordion = ({
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
+              stroke="currentColor"   
               className={`h-5 w-5 text-primary absolute ml-auto right-0 top-0 ${
                 open && "rotate-180"
               } 

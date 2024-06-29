@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ShopType } from "../Shop";
-import { Filter } from "./Filter";
+import Filter from "./Filter";
+import { Timeout } from "./Timeout";
 
 export type Filters = {
   modFilters: string[];
@@ -33,6 +34,7 @@ export function Search({
     titleFilters: [],
   });
   const [filtering, setFiltering] = useState(false);
+  const [noResultTimeout, setNoResultTimeout] = useState<number>(0);
 
   function setFilter(filterType: keyof Filters, newFilters: string[]) {
     setFilters((prevState: Filters) => ({
@@ -44,7 +46,6 @@ export function Search({
   async function getFilteredCatalog() {
     try {
       setFiltering(true);
-
       try {
         if (
           filters.modFilters.length > 0 ||
@@ -58,7 +59,11 @@ export function Search({
           const response = await fetch(url);
           const data: DATA = await response.json();
           if (data instanceof Array) {
-            setFilteredCatalog(data);
+            if (data.length > 0) {
+              setFilteredCatalog(data);
+            } else {
+              setNoResultTimeout(3000);
+            }
           } else {
             if (response.status === 429) {
               setTimeout(data.timeout);
@@ -78,8 +83,19 @@ export function Search({
     }
   }
 
+  function handleTimeoutExpire() {
+    setNoResultTimeout(0);
+  }
+
   return (
     <div className="flex flex-col items-center lg:w-[16rem] h-[90vh]">
+      {noResultTimeout > 0 && (
+        <Timeout
+          duration={noResultTimeout}
+          onTimeout={handleTimeoutExpire}
+          message={"No results found."}
+        />
+      )}
       {filtering ? (
         <button
           type="button"

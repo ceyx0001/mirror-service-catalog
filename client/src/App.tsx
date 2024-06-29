@@ -87,10 +87,11 @@ export function App() {
     }
   }
 
+  const message = `Rate limit exceeded. Please wait ${timeout/1000} seconds.`
   return (
     <div className="relative bg-black">
       {timeout > 0 && (
-        <Timeout duration={timeout} onTimeout={handleTimeoutExpire} />
+        <Timeout duration={timeout} onTimeout={handleTimeoutExpire} message={message}/>
       )}
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar} />
 
@@ -128,11 +129,7 @@ function renderShops(
       {catalog.map((shop, index) => {
         if (catalog.length === index + 1) {
           return (
-            <div
-              ref={last}
-              key={shop.profileName}
-              className="overflow-visible"
-            >
+            <div ref={last} key={shop.profileName} className="overflow-visible">
               <Shop shop={shop} />
             </div>
           );
@@ -147,7 +144,7 @@ function renderShops(
 
       <span className="w-full text-center text-xl">
         {(loading || hasMore) && "Loading..."}
-        {!loading && !hasMore && "No items found."}
+        {!loading && !hasMore && "End of results."}
       </span>
     </>
   );

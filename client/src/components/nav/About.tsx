@@ -48,20 +48,16 @@ export function About() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           {" "}
-                          Standard Trading Shops
+                          Standard Trading Shops{" "}
                         </a>
-                        . It organizes all that are up for Mirror Service or are
+                        every day at midnight EST. It organizes all that are up for Mirror Service or are
                         part of a Mirror Shop. It will only show items from
                         forum threads whose titles have the words "mirror shop"
                         or "mirror service" in them. Each profile can have one
                         mirror thread indexed at a time (the highest indxed
                         thread in the 50 pages).
-                        <br />
-                        <br /> Currently, jewels have not been added because
-                        they have a different item format.
                         <br /> 
-                        <br /> In order to have the proper whisper, you must have "IGN: [name]" or "@[name]" somewhere in the post. Other usages of "IGN: " or "@" will cause inaccuracies.
-                        <br /> Similarily with fees, you must have "Fee: [amount]" for a fee to display on the item. Be sure to have the fees in the same order as the items that appear in the post.
+                        <br /> In order to have the proper whisper, you must exactly have "IGN: [name]" or "@[name]" somewhere in the post. Similarily with fees, you must have "Fee: [amount]" for a fee to display on the item. Be sure to have the fees in the same order as the items that appear in the post. Other usages of "IGN: ", "@", or "Fee: " will cause inaccuracies.
                       </p>
                     </div>
                     <h3
