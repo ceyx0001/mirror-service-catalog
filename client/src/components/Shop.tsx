@@ -25,7 +25,7 @@ export function Shop({ shop }: { shop: ShopType }) {
           <span className="text-primary hover:text-text transition">{shop.title}</span>
         </a>
       </div>
-      <Accordion defaultOpen={true}>
+      <Accordion>
         <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row gap-10">
           {shop.items.map((item: ItemType) => (
             <Item key={item.itemId} item={item} owner={shop.characterName} />

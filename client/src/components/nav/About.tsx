@@ -9,10 +9,9 @@ export function About() {
       <button
         type="button"
         aria-label="About"
-        className=" hover:brightness-200 transition text-primary"
         onClick={handleToggle}
       >
-        <span className="text-primary">About</span>
+        <span className="text-primary hover:text-text transition-colors">About</span>
       </button>
       <div
         className={`fixed inset-0 bg-black bg-opacity-90 ${

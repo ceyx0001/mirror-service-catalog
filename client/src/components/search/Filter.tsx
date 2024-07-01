@@ -1,9 +1,9 @@
-import { FocusEvent, KeyboardEvent, memo } from "react";
+import { FocusEvent, KeyboardEvent } from "react";
 import { Accordion } from "../Accordian";
 import { Filters } from "./Search";
 
 // Filtering list used for searching text on items
-const Filter = memo(function Filter({
+export function Filter({
   filters,
   setFilters,
   title,
@@ -43,7 +43,7 @@ const Filter = memo(function Filter({
 
   return (
     <div className="text-text pl-2 pb-2">
-      <Accordion title={title} defaultOpen={false}>
+      <Accordion title={title}>
         <div className="flex flex-col items-center">
           {filters.map((_filter, index) => (
             <div key={index} className="flex mb-3" onClick={blockClick}>
@@ -93,6 +93,4 @@ const Filter = memo(function Filter({
       </Accordion>
     </div>
   );
-});
-
-export default Filter;
+}

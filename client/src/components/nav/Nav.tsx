@@ -1,21 +1,24 @@
 import { Contact } from "./Contact";
 import { About } from "./About";
 import icon from "../../assets/Mirror_of_Kalandra.png";
+import { ReactNode } from "react";
 
 // navigation bar
 export function Nav({
   toggleSidebar,
   setToggleSidebar,
+  children,
 }: {
   toggleSidebar: boolean;
   setToggleSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+  children: ReactNode;
 }) {
   return (
     <nav className="flex flex-row items-center fixed top-0 border-b-1 border-secondary/55 py-1 w-full bg-background z-20">
       <button
         type="button"
-        aria-label="Navigation" 
-        className={`mx-4 transition group outline-none ${
+        aria-label="Navigation"
+        className={`transition group outline-none mx-4 ${
           toggleSidebar ? "left-64" : "left-2"
         }`}
         onClick={() => setToggleSidebar((toggleSidebar) => !toggleSidebar)}
@@ -34,13 +37,16 @@ export function Nav({
           </div>
         </div>
       </button>
-      <div className="flex flex-row items-center space-x-2">
-        <img className="w-8 h-8" src={icon} />
-        <h1 className="font-bold">Mirror Service Catalog</h1>
+      <div className="flex flex-row items-center space-x-2 mr-5">
+        <img className="w-7 h-7" src={icon} />
+        <h1 className="font-bold inline w-52">Mirror Service Catalog</h1>
       </div>
-      <div className="ml-auto lg:space-x-20 lg:mx-20 lg:ml-auto space-x-10 mx-6 flex">
-        <About />
-        <Contact />
+      <div className="flex w-full ml-8">
+        {children}
+        <div className="flex ml-auto space-x-20 mr-14 place-items-center">
+          <About />
+          <Contact />
+        </div>
       </div>
     </nav>
   );

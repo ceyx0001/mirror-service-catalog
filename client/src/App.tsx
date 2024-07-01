@@ -5,6 +5,7 @@ import { Nav } from "./components/nav/Nav";
 import { Timeout } from "./components/search/Timeout";
 import { useQuery, Paging } from "./hooks/useQuery";
 import { useSearch } from "./hooks/useSearch";
+import { AccordionContext } from "./components/Accordian";
 
 const DEFAULT_PAGING: Paging = {
   offset: 1,
@@ -20,7 +21,7 @@ export function App() {
   });
   const [filteredCatalog, setFilteredCatalog] = useState<ShopType[]>([]);
   const [timeout, setTimeout] = useState<number>(0);
-
+  const [showAll, setShowAll] = useState(true);
   const {
     catalog: queryResults,
     loading: queryLoading,
@@ -31,7 +32,6 @@ export function App() {
     loading: searchLoading,
     hasMore: searchHasMore,
   } = useSearch(searchPaging, filteredCatalog);
-
   const observer = useRef<IntersectionObserver>();
 
   const lastQuery = useCallback(
@@ -87,13 +87,62 @@ export function App() {
     }
   }
 
-  const message = `Rate limit exceeded. Please wait ${timeout/1000} seconds.`
+  function renderShops(
+    catalog: ShopType[],
+    loading: boolean,
+    hasMore: boolean,
+    last: LegacyRef<HTMLDivElement>
+  ) {
+    return (
+      <>
+        <AccordionContext.Provider value={showAll}>
+          {catalog.map((shop, index) => {
+            if (catalog.length === index + 1) {
+              return (
+                <div
+                  ref={last}
+                  key={shop.profileName}
+                  className="overflow-visible"
+                >
+                  <Shop shop={shop} />
+                </div>
+              );
+            } else {
+              return (
+                <div key={shop.profileName} className="overflow-visible">
+                  <Shop shop={shop} />
+                </div>
+              );
+            }
+          })}
+        </AccordionContext.Provider>
+
+        <span className="w-full text-center text-xl">
+          {(loading || hasMore) && "Loading..."}
+          {!loading && !hasMore && "End of results."}
+        </span>
+      </>
+    );
+  }
+
+  const message = `Rate limit exceeded. Please wait ${timeout / 1000} seconds.`;
+
   return (
     <div className="relative bg-black">
       {timeout > 0 && (
-        <Timeout duration={timeout} onTimeout={handleTimeoutExpire} message={message}/>
+        <Timeout
+          duration={timeout}
+          onTimeout={handleTimeoutExpire}
+          message={message}
+        />
       )}
-      <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar} />
+      <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar}>
+        <button onClick={() => setShowAll(!showAll)} aria-label="Expand-All-Shops">
+          <span className="text-primary hover:text-text transition-colors">
+            {showAll ? "Collapse All Shops" : "Expand All Shops"}
+          </span>
+        </button>
+      </Nav>
 
       <aside
         className={`border-r-1 border-secondary/55 bg-background h-screen fixed top-0 z-10 pt-20 transition-transform duration-150 ease-out ${
@@ -106,8 +155,8 @@ export function App() {
         />
       </aside>
       <div
-        className={`lg:mx-10 my-3 mt-[6rem] space-y-12 transition-transform origin-top flex flex-col max-h-screen ${
-          toggleSidebar ? "scale-[.89] translate-x-32" : "scale:100"
+        className={`lg:mx-10 my-3 mt-[5.5rem] space-y-12 transition-transform origin-top flex flex-col max-h-screen ${
+          toggleSidebar ? "scale-[.89] translate-x-32" : "scale-100"
         }`}
       >
         {filteredCatalog.length > 0
@@ -115,37 +164,5 @@ export function App() {
           : renderShops(queryResults, queryLoading, queryHasMore, lastQuery)}
       </div>
     </div>
-  );
-}
-
-function renderShops(
-  catalog: ShopType[],
-  loading: boolean,
-  hasMore: boolean,
-  last: LegacyRef<HTMLDivElement>
-) {
-  return (
-    <>
-      {catalog.map((shop, index) => {
-        if (catalog.length === index + 1) {
-          return (
-            <div ref={last} key={shop.profileName} className="overflow-visible">
-              <Shop shop={shop} />
-            </div>
-          );
-        } else {
-          return (
-            <div key={shop.profileName} className="overflow-visible">
-              <Shop shop={shop} />
-            </div>
-          );
-        }
-      })}
-
-      <span className="w-full text-center text-xl">
-        {(loading || hasMore) && "Loading..."}
-        {!loading && !hasMore && "End of results."}
-      </span>
-    </>
   );
 }

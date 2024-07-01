@@ -11,10 +11,9 @@ export function Contact() {
       <button
         type="button"
         aria-label="Contact"
-        className="hover:brightness-200 transition"
         onClick={handleToggle}
       >
-        <span className="text-primary">Contact</span>
+        <span className="text-primary hover:text-text transition-colors">Contact</span>
       </button>
 
       <div

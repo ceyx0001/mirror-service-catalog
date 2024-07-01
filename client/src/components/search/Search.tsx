@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ShopType } from "../Shop";
-import Filter from "./Filter";
+import { Filter } from "./Filter";
 import { Timeout } from "./Timeout";
 
 export type Filters = {
@@ -62,7 +62,7 @@ export function Search({
             if (data.length > 0) {
               setFilteredCatalog(data);
             } else {
-              setNoResultTimeout(3000);
+              setNoResultTimeout(2000);
             }
           } else {
             if (response.status === 429) {
