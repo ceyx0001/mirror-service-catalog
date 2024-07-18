@@ -118,7 +118,7 @@ export function App() {
         </AccordionContext.Provider>
 
         <span className="w-full text-center text-xl">
-          {(loading || hasMore) && "Loading..."}
+          {(loading || hasMore) && "Site is down for maintenance"}
           {!loading && !hasMore && "End of results."}
         </span>
       </>
