@@ -6,12 +6,10 @@ export function About() {
 
   return (
     <div className="relative text-primary z-10">
-      <button
-        type="button"
-        aria-label="About"
-        onClick={handleToggle}
-      >
-        <span className="text-primary hover:text-text transition-colors">About</span>
+      <button type="button" aria-label="About" onClick={handleToggle}>
+        <span className="text-primary hover:text-text transition-colors">
+          About
+        </span>
       </button>
       <div
         className={`fixed inset-0 bg-black bg-opacity-90 ${
@@ -49,14 +47,20 @@ export function About() {
                           {" "}
                           Standard Trading Shops{" "}
                         </a>
-                        every day at midnight EST. It organizes all that are up for Mirror Service or are
-                        part of a Mirror Shop. It will only show items from
-                        forum threads whose titles have the words "mirror shop"
-                        or "mirror service" in them. Each profile can have one
-                        mirror thread indexed at a time (the highest indxed
-                        thread in the 50 pages).
-                        <br /> 
-                        <br /> In order to have the proper whisper, you must exactly have "IGN: [name]" or "@[name]" somewhere in the post. Similarily with fees, you must have "Fee: [amount]" for a fee to display on the item. Be sure to have the fees in the same order as the items that appear in the post. Other usages of "IGN: ", "@", or "Fee: " will cause inaccuracies.
+                        every day at midnight EST. It organizes all that are up
+                        for Mirror Service or are part of a Mirror Shop. It will
+                        only show items from forum threads whose titles have the
+                        words "mirror shop" or "mirror service" in them. Each
+                        profile can have one mirror thread indexed at a time
+                        (the highest indxed thread in the 50 pages).
+                        <br />
+                        <br /> In order to have the proper whisper, you must
+                        exactly have "IGN: [name]" or "@[name]" somewhere in the
+                        post. Similarily with fees, you must have "Fee:
+                        [amount]" for a fee to display on the item. Be sure to
+                        have the fees in the same order as the items that appear
+                        in the post. Other usages of "IGN: ", "@", or "Fee: "
+                        will cause inaccuracies.
                       </p>
                     </div>
                     <h3
@@ -78,6 +82,17 @@ export function About() {
                         <br />
                         Mod filters matches any item mod (any text below it's
                         quality).
+                      </p>
+                    </div>
+                    <h3
+                      className="text-base font-semibold leading-6 mt-10 text-accent"
+                      id="modal-title"
+                    >
+                      Have any suggestions?
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-sm mb-10">
+                        If you would like to see a feature be implemented, send a message to the provided contacts.
                       </p>
                     </div>
                   </div>
