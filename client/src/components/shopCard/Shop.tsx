@@ -7,9 +7,10 @@ export type ShopType = {
   characterName: string;
   threadIndex: number;
   title: string;
+  views: number;
   items: ItemType[];
 };
-//USE MEMO USE MEMO YSE MEMO M/USE MEMO USE MEMO YSE MEMO M/USE MEMO USE MEMO YSE MEMO M/USE MEMO USE MEMO YSE MEMO M
+
 // react dev tools
 // shop information
 export function Shop({ shop }: { shop: ShopType }) {

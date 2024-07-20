@@ -38,7 +38,7 @@ input {
 }
 
 .progress-bar::-webkit-progress-bar {
-  background-color: #5d484b;
+  background-color: black;
   border-radius: 0.5rem;
 }
 

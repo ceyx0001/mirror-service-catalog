@@ -4,31 +4,40 @@ import { useEffect, useState } from "react";
 export function Timeout({
   duration,
   message,
-  onTimeout,
+  handleTimeout = () => {},
 }: {
   duration: number;
-  message: string;
-  onTimeout: () => void;
+  message: string | null;
+  handleTimeout?: () => void;
 }) {
-  const [remaining, setRemaining] = useState<number>(duration);
+  const [timeoutExpired, setTimeoutExpired] = useState<boolean>(false);
+  const [remainder, setRemainder] = useState(duration);
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setRemaining((prevRemaining) => {
-        const newRemaining = prevRemaining > 0 ? prevRemaining - 1000 : 0;
-        if (newRemaining === 0) {
-          onTimeout();
-        }
-        return newRemaining;
-      });
+    const timeoutId = setTimeout(() => {
+      setTimeoutExpired(true);
+      handleTimeout();
+    }, duration);
+    return () => clearTimeout(timeoutId);
+  }, [duration, handleTimeout]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setRemainder((prevRemainder) => prevRemainder - 1000);
     }, 1000);
     return () => {
-      clearInterval(interval);
+      clearInterval(intervalId);
     };
-  }, [onTimeout]);
+  }, [duration]);
+
   return (
-    <div className="flex flex-col items-center text-center space-y-2 w-fit fixed top-[5%] left-[50%] transform -translate-x-[50%] bg-background p-5 rounded-2xl z-50">
-      <span>{message}</span>
-      <progress className="progress-bar" value={remaining / duration} />
+    <div className="flex flex-col items-center text-center bg-red-900 p-5 w-fit space-y-3">
+      {!timeoutExpired && (
+        <>
+          <span>{message}</span>
+          <progress className="progress-bar" value={remainder / duration} />
+        </>
+      )}
     </div>
   );
 }

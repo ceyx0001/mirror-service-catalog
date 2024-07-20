@@ -1,167 +1,61 @@
-import { useRef, useState, useCallback, LegacyRef } from "react";
-import { Shop, ShopType } from "./components/Shop";
-import { Search } from "./components/search/Search";
+import { useState } from "react";
 import { Nav } from "./components/nav/Nav";
-import { Timeout } from "./components/search/Timeout";
-import { useQuery, Paging } from "./hooks/useQuery";
-import { useSearch } from "./hooks/useSearch";
-import { AccordionContext } from "./components/Accordian";
-
-const DEFAULT_PAGING: Paging = {
-  offset: 1,
-  limit: 10,
-};
+import ErrorBoundary from "./components/ErrorBoundary";
+import { Search } from "./components/search/Search";
+import Shops from "./components/Shops";
 
 export function App() {
+  const defaultUrl = new URL(`${import.meta.env.VITE_API_URL}/shops/range?threadIndex=0`);
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(true);
-  const [homePaging, setPaging] = useState<Paging>(DEFAULT_PAGING);
-  const [searchPaging, setsearchPaging] = useState<Paging>({
-    ...DEFAULT_PAGING,
-    offset: 0,
-  });
-  const [filteredCatalog, setFilteredCatalog] = useState<ShopType[]>([]);
-  const [timeout, setTimeout] = useState<number>(0);
   const [showAll, setShowAll] = useState(true);
-  const {
-    catalog: queryResults,
-    loading: queryLoading,
-    hasMore: queryHasMore,
-  } = useQuery(homePaging, setTimeout);
-  const {
-    catalog: searchResults,
-    loading: searchLoading,
-    hasMore: searchHasMore,
-  } = useSearch(searchPaging, filteredCatalog);
-  const observer = useRef<IntersectionObserver>();
+  const [url, setUrl] = useState(defaultUrl);
 
-  const lastQuery = useCallback(
-    (node: HTMLDivElement) => {
-      if (queryLoading) {
-        return;
-      }
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && queryHasMore) {
-          setPaging((old) => ({
-            offset: old.offset + DEFAULT_PAGING.limit,
-            limit: old.limit,
-          }));
-        }
-      });
-      if (node) {
-        observer.current.observe(node);
-      }
-    },
-    [queryLoading, queryHasMore]
-  );
-
-  const lastSearch = useCallback(
-    (node: HTMLDivElement) => {
-      if (searchLoading) {
-        return;
-      }
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && searchHasMore) {
-          setsearchPaging((old) => ({
-            offset: old.offset + DEFAULT_PAGING.limit,
-            limit: old.limit,
-          }));
-        }
-      });
-      if (node) {
-        observer.current.observe(node);
-      }
-    },
-    [searchLoading, searchHasMore]
-  );
-
-  function handleTimeoutExpire() {
-    setTimeout(0);
-    if (queryResults.length === 0) {
-      setPaging({ offset: 1, limit: 10 });
+  function setSearchUrl(url: URL | null) {
+    if (url) {
+      setUrl(url);
+    } else {
+      setUrl(defaultUrl);
     }
   }
 
-  function renderShops(
-    catalog: ShopType[],
-    loading: boolean,
-    hasMore: boolean,
-    last: LegacyRef<HTMLDivElement>
-  ) {
-    return (
-      <>
-        <AccordionContext.Provider value={showAll}>
-          {catalog.map((shop, index) => {
-            if (catalog.length === index + 1) {
-              return (
-                <div
-                  ref={last}
-                  key={shop.profileName}
-                  className="overflow-visible"
-                >
-                  <Shop shop={shop} />
-                </div>
-              );
-            } else {
-              return (
-                <div key={shop.profileName} className="overflow-visible">
-                  <Shop shop={shop} />
-                </div>
-              );
-            }
-          })}
-        </AccordionContext.Provider>
-
-        <span className="w-full text-center text-xl">
-          {(loading || hasMore) && "Loading..."}
-          {!loading && !hasMore && "End of results."}
-        </span>
-      </>
-    );
-  }
-
-  const message = `Rate limit exceeded. Please wait ${timeout / 1000} seconds.`;
-
   return (
-    <div className="relative bg-black">
-      {timeout > 0 && (
-        <Timeout
-          duration={timeout}
-          onTimeout={handleTimeoutExpire}
-          message={message}
-        />
-      )}
+    <div className="bg-black">
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar}>
-        <button onClick={() => setShowAll(!showAll)} aria-label="Expand-All-Shops">
-          <span className="text-primary hover:text-text transition-colors">
-            {showAll ? "Collapse All Shops" : "Expand All Shops"}
-          </span>
-        </button>
+        <div className="space-x-12">
+          <button
+            onClick={() => setShowAll(!showAll)}
+            aria-label="Expand-Or-Close-Shops"
+          >
+            <span className="text-primary hover:text-text transition-colors">
+              {showAll ? "Collapse All Shops" : "Expand All Shops"}
+            </span>
+          </button>
+          <button
+            onClick={() => setUrl(defaultUrl)}
+            aria-label="Load-Default-Shops"
+          >
+            <span className="text-primary hover:text-text transition-colors">
+              Load Default Shops
+            </span>
+          </button>
+        </div>
       </Nav>
 
       <aside
-        className={`border-r-1 border-secondary/55 bg-background h-screen fixed top-0 z-10 pt-20 transition-transform duration-150 ease-out ${
+        className={`border-r-1 border-secondary/55 bg-background h-screen fixed top-0 pt-20 transition-transform duration-150 ease-out ${
           toggleSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Search
-          setFilteredCatalog={setFilteredCatalog}
-          setTimeout={setTimeout}
-        />
+        <Search setSearchUrl={setSearchUrl} />
       </aside>
       <div
-        className={`lg:mx-10 my-3 mt-[5.5rem] space-y-12 transition-transform origin-top flex flex-col max-h-screen ${
-          toggleSidebar ? "scale-[.89] translate-x-32" : "scale-100"
+        className={`space-y-12 transition-transform origin-top flex flex-col flex-grow h-0 mt-20 ${
+          toggleSidebar ? "scale-[.866] translate-x-32" : "scale-100"
         }`}
       >
-        {filteredCatalog.length > 0
-          ? renderShops(searchResults, searchLoading, searchHasMore, lastSearch)
-          : renderShops(queryResults, queryLoading, queryHasMore, lastQuery)}
+        <ErrorBoundary>
+          <Shops url={url} showAll={showAll} />
+        </ErrorBoundary>
       </div>
     </div>
   );

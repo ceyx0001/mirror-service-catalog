@@ -17,7 +17,7 @@ export function Contact() {
       </button>
 
       <div
-        className={`grid grid-flow-row absolute -left-[8rem] top-12 border-secondary border bg-black rounded-lg min-w-max p-4 space-y-3 text-sm ${
+        className={`grid grid-flow-row absolute -left-[9rem] top-12 border-secondary border bg-black rounded-lg min-w-max p-4 space-y-3 text-sm ${
           visible ? "animate-fade-in" : "animate-fade-out"
         } ${faded && "hidden"}`}
       >

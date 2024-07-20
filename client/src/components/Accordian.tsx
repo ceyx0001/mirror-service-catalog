@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 
-export const AccordionContext = createContext(true);
+export const AccordionsContext = createContext(true);
 
 // generic accordion that hides/shows child components
 export const Accordion = ({
@@ -10,7 +10,7 @@ export const Accordion = ({
   title?: string;
   children: ReactNode;
 }) => {
-  const context = useContext(AccordionContext);
+  const context = useContext(AccordionsContext);
   const [open, setOpen] = useState(context);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const Accordion = ({
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              className={`h-5 w-5 text-primary absolute ml-auto right-0 top-0 ${
+              className={`h-5 w-5 text-primary absolute ml-auto right-0 top-0 transition-transform ${
                 open && "rotate-180"
               } 
           `}
@@ -51,7 +51,7 @@ export const Accordion = ({
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            className={`h-5 w-5 text-primary self-center ${
+            className={`h-5 w-5 text-primary self-center transition-transform ${
               open && "rotate-180"
             } 
           `}
