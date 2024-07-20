@@ -88,7 +88,8 @@ export function useQuery({
   useEffect(() => {
     setCatalog([]);
     setHasMore(true);
-  }, [url]);
+    setCursor({ threadIndex: 0, limit: defaultLimit });
+  }, [setCursor, url]);
 
   return {
     catalog,
