@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tooltip } from "./Tooltip";
+import { Tooltip } from "../Tooltip";
 
 type Mods = {
   enchant: string[];

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { ShopType } from "../Shop";
 import { Filter } from "./Filter";
-import { Timeout } from "./Timeout";
 
 export type Filters = {
   modFilters: string[];
@@ -9,32 +7,17 @@ export type Filters = {
   titleFilters: string[];
 };
 
-type ERROR = { message: string; timeout: number };
-type DATA = ERROR | ShopType[];
-
-// refactors filter strings to URL query parameters
-function addQuery(query: string, type: string, filters: string[]) {
-  for (const filter of filters) {
-    query = query + "&" + type + "=" + filter;
-  }
-  return query;
-}
-
 // search handler
 export function Search({
-  setFilteredCatalog,
-  setTimeout,
+  setSearchUrl,
 }: {
-  setFilteredCatalog: (catalog: ShopType[]) => void;
-  setTimeout: (duration: number) => void;
+  setSearchUrl: (url: URL | null) => void;
 }) {
   const [filters, setFilters] = useState<Filters>({
     modFilters: [],
     baseFilters: [],
     titleFilters: [],
   });
-  const [filtering, setFiltering] = useState(false);
-  const [noResultTimeout, setNoResultTimeout] = useState<number>(0);
 
   function setFilter(filterType: keyof Filters, newFilters: string[]) {
     setFilters((prevState: Filters) => ({
@@ -43,93 +26,58 @@ export function Search({
     }));
   }
 
-  async function getFilteredCatalog() {
-    try {
-      setFiltering(true);
-      try {
-        if (
-          filters.modFilters.length > 0 ||
-          filters.baseFilters.length > 0 ||
-          filters.titleFilters.length > 0
-        ) {
-          let url = `${import.meta.env.VITE_API_URL}/items/filter?`;
-          url = addQuery(url, "title", filters.titleFilters);
-          url = addQuery(url, "base", filters.baseFilters);
-          url = addQuery(url, "mod", filters.modFilters);
-          const response = await fetch(url);
-          const data: DATA = await response.json();
-          if (data instanceof Array) {
-            if (data.length > 0) {
-              setFilteredCatalog(data);
-            } else {
-              setNoResultTimeout(2000);
-            }
-          } else {
-            if (response.status === 429) {
-              setTimeout(data.timeout);
-            }
-          }
-        } else {
-          setFilteredCatalog([]);
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(error);
-        }
-      }
-      setFiltering(false);
-    } catch (error) {
-      console.error(error);
+  function getFilteredCatalog() {
+    // refactors filter strings to URL query parameters
+    function addQuery(url: URL, key: string, filters: string[]) {
+      filters.forEach((filter) => {
+        url.searchParams.append(key, filter);
+      });
     }
-  }
 
-  function handleTimeoutExpire() {
-    setNoResultTimeout(0);
+    const url = new URL(`${import.meta.env.VITE_API_URL}/items/filter`);
+    if (filters.modFilters.length > 0) {
+      addQuery(url, "mod", filters.modFilters);
+    }
+
+    if (filters.baseFilters.length > 0) {
+      addQuery(url, "base", filters.baseFilters);
+    }
+
+    if (filters.titleFilters.length > 0) {
+      addQuery(url, "title", filters.titleFilters);
+    }
+
+    if (url.searchParams.toString() === "") {
+      setSearchUrl(null);
+    } else {
+      setSearchUrl(url);
+    }
   }
 
   return (
     <div className="flex flex-col items-center lg:w-[16rem] h-[90vh]">
-      {noResultTimeout > 0 && (
-        <Timeout
-          duration={noResultTimeout}
-          onTimeout={handleTimeoutExpire}
-          message={"No results found."}
-        />
-      )}
-      {filtering ? (
-        <button
-          type="button"
-          aria-label="Search-Loading"
-          className=" text-text bg-secondary flex items-center justify-center w-32 lg:w-40 relative mb-8 p-1"
-          disabled
+      <button
+        type="button"
+        aria-label="Search"
+        className="text-text bg-secondary flex items-center justify-center w-40 hover:bg-accent relative transition mb-8 p-1"
+        onClick={getFilteredCatalog}
+      >
+        Search
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="h-5 w-5 text-text absolute right-4 hidden lg:block"
         >
-          <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-black" />
-        </button>
-      ) : (
-        <button
-          type="button"
-          aria-label="Search"
-          className="text-text bg-secondary flex items-center justify-center w-40 hover:bg-accent relative transition cursor-pointer mb-8 p-1"
-          onClick={getFilteredCatalog}
-        >
-          Search
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="h-5 w-5 text-text absolute right-4 hidden lg:block"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </button>
-      )}
-
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+      </button>
       <div className="w-full overflow-y-auto gutter">
         <Filter
           filters={filters.baseFilters}

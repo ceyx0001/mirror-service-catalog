@@ -1,7 +1,7 @@
 import { Contact } from "./Contact";
 import { About } from "./About";
-import icon from "../../assets/Mirror_of_Kalandra.png";
 import { ReactNode } from "react";
+import icon from "../../assets/Mirror_of_Kalandra.png";
 
 // navigation bar
 export function Nav({

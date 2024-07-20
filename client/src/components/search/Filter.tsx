@@ -85,7 +85,7 @@ export function Filter({
               blockClick(e);
               handleNewAccordionFilter();
             }}
-            className="text-base bg-secondary text-center px-3 hover:bg-accent transition-colors"
+            className="text-base bg-secondary text-center p-1 px-3 hover:bg-accent transition-colors"
           >
             + Add Filter
           </button>
