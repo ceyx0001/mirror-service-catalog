@@ -1,21 +1,20 @@
-import { useRef, useState, useCallback } from "react";
-import { Cursor, defaultLimit, useQuery } from "../hooks/useQuery";
+import { useRef, useCallback } from "react";
+import { defaultLimit, useQuery } from "../hooks/useQuery";
 import { Timeout } from "./search/Timeout";
 import { AccordionsContext } from "./Accordian";
 import { Shop } from "./shopCard/Shop";
 
 export default function Shops({
   url,
+  setUrl,
   showAll,
 }: {
   url: URL;
+  setUrl: React.Dispatch<React.SetStateAction<URL>>;
   showAll: boolean;
 }) {
-  const [cursor, setCursor] = useState<Cursor | null>(null);
   const { catalog, loading, hasMore, timeout, error } = useQuery({
-    cursor,
     url,
-    setCursor,
   });
   const observer = useRef<IntersectionObserver>();
 
@@ -31,17 +30,20 @@ export default function Shops({
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
           const lastEntry = catalog[catalog.length - 1];
-          setCursor({
-            threadIndex: lastEntry.threadIndex,
-            limit: defaultLimit,
-          });
+          url.searchParams.set(
+            "threadIndex",
+            lastEntry.threadIndex.toString()
+          );
+          url.searchParams.set("limit", defaultLimit.toString());
+          const newUrl = new URL(url);
+          setUrl(newUrl);
         }
       });
       if (node) {
         observer.current.observe(node);
       }
     },
-    [loading, hasMore, catalog]
+    [loading, hasMore, catalog, url, setUrl]
   );
 
   return (
@@ -84,8 +86,16 @@ export default function Shops({
                 <div className="ml-3 border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-black" />
               </div>
             )}
-            {(!loading && !hasMore && timeout === 0 && catalog.length > 0) && "End of results."}
-            {(!loading && !hasMore && timeout === 0 && catalog.length === 0) && "No items found."}
+            {!loading &&
+              !hasMore &&
+              timeout === 0 &&
+              catalog.length > 0 &&
+              "End of results."}
+            {!loading &&
+              !hasMore &&
+              timeout === 0 &&
+              catalog.length === 0 &&
+              "No items found."}
           </span>
         </>
       )}

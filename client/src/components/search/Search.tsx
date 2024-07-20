@@ -30,7 +30,9 @@ export function Search({
     // refactors filter strings to URL query parameters
     function addQuery(url: URL, key: string, filters: string[]) {
       filters.forEach((filter) => {
-        url.searchParams.append(key, filter);
+        if (filter) {
+          url.searchParams.append(key, filter);
+        }
       });
     }
 

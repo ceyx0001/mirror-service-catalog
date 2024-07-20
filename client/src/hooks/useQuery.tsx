@@ -9,20 +9,13 @@ export type Cursor = {
 export const defaultLimit = 10;
 
 // handling catalog queries without any search filters
-export function useQuery({
-  cursor,
-  url,
-  setCursor,
-}: {
-  cursor: Cursor | null;
-  url: URL;
-  setCursor: (cursor: Cursor) => void;
-}) {
+export function useQuery({ url }: { url: URL }) {
   const [catalog, setCatalog] = useState<ShopType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [timeoutDuration, setTimeoutDuration] = useState(0);
   const loadingRef = useRef(false);
+  const prevUrlRef = useRef(url);
 
   type ERROR = { message: string; timeout: number };
   type DATA = ERROR | ShopType[];
@@ -32,17 +25,19 @@ export function useQuery({
     let timeoutId: NodeJS.Timeout | undefined;
 
     const getShops = async () => {
+      if (timeoutDuration > 0) {
+        return;
+      }
+
       try {
-        if (cursor) {
-          (Object.keys(cursor) as Array<keyof Cursor>).forEach((key) =>
-            url.searchParams.set(key, cursor[key].toString())
-          );
-        }
         loadingRef.current = true;
         const response = await fetch(url);
         const data: DATA = await response.json();
         if (data instanceof Array) {
           if (!cleanup && data.length > 0) {
+            if (data.length < defaultLimit || data.length > defaultLimit) {
+              setHasMore(false);
+            }
             setCatalog((old) => {
               if (
                 data.length === defaultLimit &&
@@ -54,15 +49,11 @@ export function useQuery({
               return old.concat(data);
             });
           }
-          if (data.length < defaultLimit || data.length > defaultLimit) {
-            setHasMore(false);
-          }
           loadingRef.current = false;
         } else if (response.status === 429) {
           setTimeoutDuration(data.timeout);
           setCatalog([]);
           setHasMore(true);
-          setCursor({ threadIndex: 0, limit: defaultLimit });
           timeoutId = setTimeout(() => {
             setTimeoutDuration(0);
             clearTimeout(timeoutId);
@@ -83,13 +74,23 @@ export function useQuery({
     return () => {
       cleanup = true;
     };
-  }, [url, timeoutDuration, cursor, setCursor]);
+  }, [url, timeoutDuration]);
 
   useEffect(() => {
-    setCatalog([]);
-    setHasMore(true);
-    setCursor({ threadIndex: 0, limit: defaultLimit });
-  }, [setCursor, url]);
+    const keys1 = Array.from(prevUrlRef.current.searchParams.keys());
+    const keys2 = Array.from(url.searchParams.keys());
+    const areKeysSame = JSON.stringify(keys1) === JSON.stringify(keys2);
+
+    if (
+      prevUrlRef.current.pathname !== url.pathname ||
+      !areKeysSame ||
+      url.searchParams.get("threadIndex") === "0"
+    ) {
+      setCatalog([]);
+      setHasMore(true);
+      prevUrlRef.current = url;
+    }
+  }, [url]);
 
   return {
     catalog,

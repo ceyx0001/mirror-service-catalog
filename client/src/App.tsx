@@ -6,7 +6,7 @@ import Shops from "./components/Shops";
 
 export function App() {
   const defaultUrl = new URL(
-    `${import.meta.env.VITE_API_URL}/shops/range?threadIndex=0`
+    `${import.meta.env.VITE_API_URL}/shops/range?threadIndex=0&limit=10`
   );
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(true);
@@ -56,7 +56,7 @@ export function App() {
         }`}
       >
         <ErrorBoundary>
-          <Shops url={url} showAll={showAll} />
+          <Shops url={url} setUrl={setUrl} showAll={showAll}/>
         </ErrorBoundary>
       </div>
     </div>
