@@ -32,13 +32,13 @@ export function useQuery({
     let timeoutId: NodeJS.Timeout | undefined;
 
     const getShops = async () => {
-      loadingRef.current = true;
       try {
         if (cursor) {
           (Object.keys(cursor) as Array<keyof Cursor>).forEach((key) =>
             url.searchParams.set(key, cursor[key].toString())
           );
         }
+        loadingRef.current = true;
         const response = await fetch(url);
         const data: DATA = await response.json();
         if (data instanceof Array) {
@@ -57,6 +57,7 @@ export function useQuery({
           if (data.length < defaultLimit || data.length > defaultLimit) {
             setHasMore(false);
           }
+          loadingRef.current = false;
         } else if (response.status === 429) {
           setTimeoutDuration(data.timeout);
           setCatalog([]);
@@ -73,7 +74,6 @@ export function useQuery({
           setError(error.message);
         }
       }
-      loadingRef.current = false;
     };
 
     if (timeoutDuration === 0) {

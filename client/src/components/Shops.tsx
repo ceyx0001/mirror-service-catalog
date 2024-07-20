@@ -84,7 +84,8 @@ export default function Shops({
                 <div className="ml-3 border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-black" />
               </div>
             )}
-            {!loading && !hasMore && timeout === 0 && "End of results."}
+            {(!loading && !hasMore && timeout === 0 && catalog.length > 0) && "End of results."}
+            {(!loading && !hasMore && timeout === 0 && catalog.length === 0) && "No items found."}
           </span>
         </>
       )}
