@@ -5,7 +5,9 @@ import { Search } from "./components/search/Search";
 import Shops from "./components/Shops";
 
 export function App() {
-  const defaultUrl = new URL(`${import.meta.env.VITE_API_URL}/shops/range?threadIndex=0`);
+  const defaultUrl = new URL(
+    `${import.meta.env.VITE_API_URL}/shops/range?threadIndex=0`
+  );
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(true);
   const [url, setUrl] = useState(defaultUrl);
