@@ -24,7 +24,9 @@ export function Timeout({
     <div className="flex flex-col items-center text-center bg-red-900 p-5 w-fit space-y-3">
       {!timeoutExpired && (
         <>
-          <span>{message}</span>
+          <span>
+            {message}: {duration / 1000}s
+          </span>
         </>
       )}
     </div>
