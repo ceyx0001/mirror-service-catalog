@@ -52,8 +52,6 @@ export function useQuery({ url }: { url: URL }) {
           loadingRef.current = false;
         } else if (response.status === 429) {
           setTimeoutDuration(data.timeout);
-          setCatalog([]);
-          setHasMore(true);
           timeoutId = setTimeout(() => {
             setTimeoutDuration(0);
             clearTimeout(timeoutId);

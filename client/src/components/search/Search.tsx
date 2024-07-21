@@ -49,9 +49,7 @@ export function Search({
       addQuery(url, "title", filters.titleFilters);
     }
 
-    if (url.searchParams.toString() === "") {
-      setSearchUrl(null);
-    } else {
+    if (url.searchParams.toString() !== "") {
       setSearchUrl(url);
     }
   }

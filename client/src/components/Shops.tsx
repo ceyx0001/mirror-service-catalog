@@ -1,21 +1,27 @@
 import { useRef, useCallback } from "react";
-import { defaultLimit, useQuery } from "../hooks/useQuery";
-import { Timeout } from "./search/Timeout";
+import { defaultLimit } from "../hooks/useQuery";
 import { AccordionsContext } from "./Accordian";
-import { Shop } from "./shopCard/Shop";
+import { Shop, ShopType } from "./shopCard/Shop";
 
 export default function Shops({
   url,
+  hasMore,
+  loading,
+  catalog,
   setUrl,
+  timeout,
+  error,
   showAll,
 }: {
   url: URL;
+  catalog: ShopType[];
   setUrl: React.Dispatch<React.SetStateAction<URL>>;
+  timeout: number;
+  error: string | null;
+  hasMore: boolean;
+  loading: boolean;
   showAll: boolean;
 }) {
-  const { catalog, loading, hasMore, timeout, error } = useQuery({
-    url,
-  });
   const observer = useRef<IntersectionObserver>();
 
   const last = useCallback(
@@ -30,10 +36,7 @@ export default function Shops({
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
           const lastEntry = catalog[catalog.length - 1];
-          url.searchParams.set(
-            "threadIndex",
-            lastEntry.threadIndex.toString()
-          );
+          url.searchParams.set("threadIndex", lastEntry.threadIndex.toString());
           url.searchParams.set("limit", defaultLimit.toString());
           const newUrl = new URL(url);
           setUrl(newUrl);
@@ -48,11 +51,6 @@ export default function Shops({
 
   return (
     <div className={`lg:mx-10 space-y-10 flex flex-col`}>
-      {timeout > 0 && (
-        <div className="fixed left-1/2 -translate-x-1/2 z-50">
-          <Timeout duration={timeout} message={"Rate limit exceeded"} />
-        </div>
-      )}
       {error ? (
         <span className="text-[1.5rem] text-center">{error}</span>
       ) : (

@@ -3,6 +3,8 @@ import { Nav } from "./components/nav/Nav";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { Search } from "./components/search/Search";
 import Shops from "./components/Shops";
+import { useQuery } from "./hooks/useQuery";
+import { Timeout } from "./components/search/Timeout";
 
 export function App() {
   const defaultUrl = new URL(
@@ -11,6 +13,10 @@ export function App() {
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(true);
   const [url, setUrl] = useState(defaultUrl);
+
+  const { catalog, loading, hasMore, timeout, error } = useQuery({
+    url,
+  });
 
   function setSearchUrl(url: URL | null) {
     if (url) {
@@ -21,7 +27,7 @@ export function App() {
   }
 
   return (
-    <div className="bg-black">
+    <div className="bg-black relative">
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar}>
         <div className="space-x-12">
           <button
@@ -33,7 +39,11 @@ export function App() {
             </span>
           </button>
           <button
-            onClick={() => setUrl(defaultUrl)}
+            onClick={() => {
+              if (!loading) {
+                setUrl(defaultUrl);
+              }
+            }}
             aria-label="Load-Default-Shops"
           >
             <span className="text-primary hover:text-text transition-colors">
@@ -41,6 +51,11 @@ export function App() {
             </span>
           </button>
         </div>
+        {timeout > 0 && (
+          <div className="fixed left-1/2 -translate-x-1/2 z-50">
+            <Timeout duration={timeout} message={"Rate limit exceeded"} />
+          </div>
+        )}
       </Nav>
 
       <aside
@@ -56,7 +71,16 @@ export function App() {
         }`}
       >
         <ErrorBoundary>
-          <Shops url={url} setUrl={setUrl} showAll={showAll}/>
+          <Shops
+            url={url}
+            setUrl={setUrl}
+            showAll={showAll}
+            catalog={catalog}
+            timeout={timeout}
+            error={error}
+            hasMore={hasMore}
+            loading={loading}
+          />
         </ErrorBoundary>
       </div>
     </div>
