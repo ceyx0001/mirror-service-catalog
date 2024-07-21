@@ -78,22 +78,13 @@ export default function Shops({
           </AccordionsContext.Provider>
 
           <span className="w-fit self-center text-xl">
-            {(loading || hasMore || timeout > 0) && (
+            {(hasMore || timeout > 0) && (
               <div className="flex items-center">
                 Loading
                 <div className="ml-3 border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-black" />
               </div>
             )}
-            {!loading &&
-              !hasMore &&
-              timeout === 0 &&
-              catalog.length > 0 &&
-              "End of results."}
-            {!loading &&
-              !hasMore &&
-              timeout === 0 &&
-              catalog.length === 0 &&
-              "No items found."}
+            {!hasMore && "End of results."}
           </span>
         </>
       )}
