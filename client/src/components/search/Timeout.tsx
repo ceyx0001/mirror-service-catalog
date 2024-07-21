@@ -17,14 +17,18 @@ export function Timeout({
     const timeoutId = setTimeout(() => {
       setTimeoutExpired(true);
       handleTimeout();
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
     }, duration);
+    return () => clearTimeout(timeoutId);
+  }, [duration, handleTimeout]);
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       setRemainder((prevRemainder) => prevRemainder - 1000);
     }, 1000);
-    return () => {};
-  }, [duration, handleTimeout]);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [duration]);
 
   return (
     <div className="flex flex-col items-center text-center bg-red-900 p-5 w-fit space-y-3">
