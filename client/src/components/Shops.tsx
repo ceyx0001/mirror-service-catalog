@@ -53,7 +53,7 @@ export default function Shops({
   return (
     <div className={`flex flex-col`}>
       {error ? (
-        <span className="text-[1.5rem] text-center">{error}</span>
+        <span className="text-[1.5rem] text-center mt-40">{error}</span>
       ) : (
         <>
           <AccordionsContext.Provider value={showAll}>
