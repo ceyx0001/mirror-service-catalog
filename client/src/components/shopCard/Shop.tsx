@@ -11,7 +11,6 @@ export type ShopType = {
   items: ItemType[];
 };
 
-// react dev tools
 // shop information
 export function Shop({ shop }: { shop: ShopType }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -24,8 +23,8 @@ export function Shop({ shop }: { shop: ShopType }) {
   });
 
   return (
-    <div ref={ref} className="px-12 py-5 space-y-5 relative bg-background">
-      <div className="flex space-x-10 items-end">
+    <div ref={ref} className="px-12 py-5 relative bg-background">
+      <div className="flex items-end">
         <span className="lg:text-xl">{shop.profileName}</span>
         <a
           className="text-primary hover:text-text transition"
@@ -34,7 +33,7 @@ export function Shop({ shop }: { shop: ShopType }) {
           rel="noopener noreferrer"
           href={`https://www.pathofexile.com/forum/view-thread/${shop.threadIndex}`}
         >
-          <span className="text-primary hover:text-text transition">
+          <span className="text-primary hover:text-text transition pl-10">
             {shop.title}
           </span>
         </a>

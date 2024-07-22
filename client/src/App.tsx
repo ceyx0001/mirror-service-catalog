@@ -27,7 +27,7 @@ export function App() {
   }
 
   return (
-    <div className="bg-black relative">
+    <>
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar}>
         <div className="space-x-12">
           <button
@@ -66,8 +66,8 @@ export function App() {
         <Search setSearchUrl={setSearchUrl} />
       </aside>
       <div
-        className={`space-y-12 transition-transform origin-top flex flex-col flex-grow h-0 mt-20 ${
-          toggleSidebar ? "scale-[.866] translate-x-32" : "scale-100"
+        className={`mt-[4rem] mx-[1rem] ${
+          toggleSidebar ? "w-[101rem] translate-x-[16.35rem]" : ""
         }`}
       >
         <ErrorBoundary>
@@ -83,6 +83,6 @@ export function App() {
           />
         </ErrorBoundary>
       </div>
-    </div>
+    </>
   );
 }

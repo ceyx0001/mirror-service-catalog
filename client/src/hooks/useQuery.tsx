@@ -46,7 +46,7 @@ export function useQuery({ url }: { url: URL }) {
               ) {
                 setHasMore(false);
               }
-              return old.concat(data);
+              return [...old, ...data];
             });
           }
           loadingRef.current = false;

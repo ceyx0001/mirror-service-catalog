@@ -1,4 +1,10 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export const AccordionsContext = createContext(true);
 
@@ -20,6 +26,7 @@ export const Accordion = ({
   return (
     <div className="group" onClick={() => setOpen(!open)}>
       <button
+        aria-label="Open-Accordion"
         className={`w-full top-0 border-b border-secondary pb-1 group-hover:border-accent transition duration-150`}
       >
         {title !== "" ? (

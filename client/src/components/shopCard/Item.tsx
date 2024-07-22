@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Tooltip } from "../Tooltip";
 
 type Mods = {
@@ -22,11 +22,11 @@ export type ItemType = {
 
 function renderMods(mods: string[], id: string, color: string) {
   return mods ? (
-    <div>
+    <div className="flex flex-col">
       {mods.map((text: string, i) => (
-        <p key={`${id}${i}`} className={`${color}`}>
+        <span key={`${id}${i}`} className={`${color}`}>
           {text}
-        </p>
+        </span>
       ))}
     </div>
   ) : null;
@@ -47,7 +47,13 @@ function writeItem(item: ItemType) {
 }
 
 // item information
-export function Item({ item, owner }: { item: ItemType; owner: string }) {
+export const Item = memo(function Item({
+  item,
+  owner,
+}: {
+  item: ItemType;
+  owner: string;
+}) {
   const [enlarge, setEnlarge] = useState(false);
 
   function handleWhisper() {
@@ -67,7 +73,7 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
   return (
     <article
       className={`text-[0.7rem] bg-card h-min max-h-min
-        rounded-3xl px-4 pb-3 grid grid-rows-auto
+        rounded-3xl px-4 py-3 grid grid-rows-auto
         shadow-lg shadow-black hover:cursor-pointer transition-[transform, colors] border border-secondary duration-300 ${
           enlarge && "scale-[1.3] relative z-40 border border-accent"
         }`}
@@ -76,13 +82,18 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
         setEnlarge(!enlarge);
       }}
     >
-      <img src={item.icon} className="justify-self-center m-5" />
+      <img
+        src={item.icon}
+        className="justify-self-center"
+        alt={`${item.baseType}`}
+      />
 
-      <div className="inline-flex space-x-5">
+      <div className="inline-flex">
         <Tooltip baseText={"Copy POB"} eventText={"Copied"}>
           <button
             aria-label="Copy-POB"
             onClick={() => navigator.clipboard.writeText(writeItem(item))}
+            className="pr-4"
           >
             <svg
               className="w-5 h-5 text-primary hover:text-text transition-colors"
@@ -99,7 +110,11 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
           baseText={"Copy Whisper"}
           eventText={owner === null ? "Missing IGN/Private Profile" : "Copied"}
         >
-          <button aria-label="Copy-Whisper" onClick={handleWhisper}>
+          <button
+            aria-label="Copy-Whisper"
+            onClick={handleWhisper}
+            className="pr-4"
+          >
             <svg
               className="w-5 h-5 text-primary hover:text-text transition-colors"
               xmlns="http://www.w3.org/2000/svg"
@@ -123,16 +138,18 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
       </span>
       <div>
         {item.quality ? (
-          <span className="">Quality: {item.quality}%</span>
+          <span className="pb-2">Quality: {item.quality}%</span>
         ) : null}
         {renderMods(item.mods.enchant, item.itemId, "text-crafted")}
+        <div className="pb-2" />
         {item.mods.implicit ? (
           <>
-            <hr className="h-px my-1 bg-accent border-0" />
+            <hr className="h-px bg-accent border-0" />
             {renderMods(item.mods.implicit, item.itemId, "text-mod")}
           </>
         ) : null}
-        <hr className="h-px my-1 bg-accent border-0" />
+        <hr className="h-px bg-accent border-0" />
+        <div className="pb-2" />
         {renderMods(item.mods.explicit, item.itemId, "text-mod")}
         {renderMods(item.mods.fractured, item.itemId, "text-fractured")}
         {renderMods(item.mods.crafted, item.itemId, "text-crafted")}
@@ -140,4 +157,4 @@ export function Item({ item, owner }: { item: ItemType; owner: string }) {
       </div>
     </article>
   );
-}
+});

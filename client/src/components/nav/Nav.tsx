@@ -38,7 +38,7 @@ export function Nav({
         </div>
       </button>
       <div className="flex flex-row items-center space-x-2 mr-5">
-        <img className="w-7 h-7" src={icon} />
+        <img className="w-7 h-7" src={icon} alt="Mirror Service Catalog"/>
         <h1 className="font-bold inline w-52">Mirror Service Catalog</h1>
       </div>
       <div className="flex w-full ml-8">

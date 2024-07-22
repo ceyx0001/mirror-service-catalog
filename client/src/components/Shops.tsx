@@ -2,6 +2,7 @@ import { useRef, useCallback } from "react";
 import { defaultLimit } from "../hooks/useQuery";
 import { AccordionsContext } from "./Accordian";
 import { Shop, ShopType } from "./shopCard/Shop";
+import { Virtuoso } from "react-virtuoso";
 
 export default function Shops({
   url,
@@ -50,34 +51,41 @@ export default function Shops({
   );
 
   return (
-    <div className={`lg:mx-10 space-y-10 flex flex-col`}>
+    <div className={`flex flex-col`}>
       {error ? (
         <span className="text-[1.5rem] text-center">{error}</span>
       ) : (
         <>
           <AccordionsContext.Provider value={showAll}>
-            {catalog.map((shop, index) => {
-              if (catalog.length === index + 1) {
-                return (
-                  <div
-                    ref={last}
-                    key={shop.profileName}
-                    className="overflow-visible"
-                  >
-                    <Shop shop={shop} />
-                  </div>
-                );
-              } else {
-                return (
-                  <div key={shop.profileName} className="overflow-visible">
-                    <Shop shop={shop} />
-                  </div>
-                );
-              }
-            })}
+            <Virtuoso
+              useWindowScroll
+              totalCount={catalog.length}
+              itemContent={(index: number) => {
+                if (catalog.length - 1 === index) {
+                  return (
+                    <div
+                      ref={last}
+                      key={catalog[index].profileName}
+                      className="overflow-visible"
+                    >
+                      <Shop shop={catalog[index]} />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      key={catalog[index].profileName}
+                      className="overflow-visible mb-4"
+                    >
+                      <Shop shop={catalog[index]} />
+                    </div>
+                  );
+                }
+              }}
+            />
           </AccordionsContext.Provider>
 
-          <span className="w-fit self-center text-xl">
+          <span className="w-fit self-center text-xl mt-40">
             {(hasMore || timeout > 0) && (
               <div className="flex items-center">
                 Loading
