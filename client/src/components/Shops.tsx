@@ -49,7 +49,7 @@ export default function Shops({
     },
     [loading, hasMore, catalog, url, setUrl]
   );
-
+  console.log(hasMore);
   return (
     <div className={`flex flex-col`}>
       {error ? (
@@ -86,7 +86,7 @@ export default function Shops({
           </AccordionsContext.Provider>
 
           <span className="w-fit self-center text-xl mt-40">
-            {(hasMore || timeout > 0) && (
+            {(loading || timeout > 0) && (
               <div className="flex items-center">
                 Loading
                 <div className="ml-3 border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-black" />

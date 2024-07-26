@@ -23,15 +23,14 @@ export function useQuery({ url }: { url: URL }) {
   useEffect(() => {
     let cleanup = false;
     let timeoutId: NodeJS.Timeout | undefined;
-
     const getShops = async () => {
       if (timeoutDuration > 0) {
         return;
       }
-
       try {
         loadingRef.current = true;
         const response = await fetch(url);
+        loadingRef.current = false;
         const data: DATA = await response.json();
         if (data instanceof Array) {
           if (!cleanup && data.length > 0) {
@@ -48,8 +47,9 @@ export function useQuery({ url }: { url: URL }) {
               }
               return [...old, ...data];
             });
+          } else if (data.length === 0) {
+            setHasMore(false);
           }
-          loadingRef.current = false;
         } else if (response.status === 429) {
           setTimeoutDuration(data.timeout);
           timeoutId = setTimeout(() => {
@@ -68,7 +68,7 @@ export function useQuery({ url }: { url: URL }) {
     if (timeoutDuration === 0) {
       getShops();
     }
-
+    
     return () => {
       cleanup = true;
     };
