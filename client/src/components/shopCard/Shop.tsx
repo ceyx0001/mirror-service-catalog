@@ -1,6 +1,6 @@
 import { Item, ItemType } from "./Item";
 import { Accordion } from "../Accordian";
-import { useRef, useLayoutEffect } from "react";
+import { useRef } from "react";
 
 export type ShopType = {
   profileName: string;
@@ -12,15 +12,16 @@ export type ShopType = {
 };
 
 // shop information
-export function Shop({ shop }: { shop: ShopType }) {
+export function Shop({
+  shop,
+  renderAsOpen = true,
+  stateCallback,
+}: {
+  shop: ShopType;
+  renderAsOpen?: boolean;
+  stateCallback: (openState: boolean) => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const heightRef = useRef(0);
-
-  useLayoutEffect(() => {
-    if (ref.current) {
-      heightRef.current = ref.current.clientHeight;
-    }
-  });
 
   return (
     <div ref={ref} className="px-12 py-5 relative bg-background">
@@ -38,7 +39,7 @@ export function Shop({ shop }: { shop: ShopType }) {
           </span>
         </a>
       </div>
-      <Accordion>
+      <Accordion renderAsOpen={renderAsOpen} handleClick={stateCallback}>
         <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row gap-10">
           {shop.items.map((item: ItemType) => (
             <Item key={item.itemId} item={item} owner={shop.characterName} />

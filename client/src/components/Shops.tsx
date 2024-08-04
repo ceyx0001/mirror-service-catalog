@@ -1,29 +1,32 @@
 import { useRef, useCallback } from "react";
 import { defaultLimit } from "../hooks/useQuery";
-import { AccordionsContext } from "./Accordian";
 import { Shop, ShopType } from "./shopCard/Shop";
 import { Virtuoso } from "react-virtuoso";
 
 export default function Shops({
   url,
-  hasMore,
-  loading,
   catalog,
+  showAll,
   setUrl,
   timeout,
   error,
-  showAll,
+  hasMore,
+  loading,
 }: {
   url: URL;
   catalog: ShopType[];
+  showAll: boolean;
   setUrl: React.Dispatch<React.SetStateAction<URL>>;
   timeout: number;
   error: string | null;
   hasMore: boolean;
   loading: boolean;
-  showAll: boolean;
 }) {
   const observer = useRef<IntersectionObserver>();
+  const states: boolean[] = [];
+  catalog.forEach(() => {
+    states.push(showAll);
+  });
 
   const last = useCallback(
     (node: HTMLDivElement) => {
@@ -49,41 +52,56 @@ export default function Shops({
     },
     [loading, hasMore, catalog, url, setUrl]
   );
-  console.log(hasMore);
+
+  const stateCallback = (index: number, openState: boolean) => {
+    states[index] = !openState;
+  };
+
   return (
     <div className={`flex flex-col`}>
       {error ? (
         <span className="text-[1.5rem] text-center mt-40">{error}</span>
       ) : (
         <>
-          <AccordionsContext.Provider value={showAll}>
-            <Virtuoso
-              useWindowScroll
-              totalCount={catalog.length}
-              itemContent={(index: number) => {
-                if (catalog.length - 1 === index) {
-                  return (
-                    <div
-                      ref={last}
-                      key={catalog[index].profileName}
-                      className="overflow-visible"
-                    >
-                      <Shop shop={catalog[index]} />
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      key={catalog[index].profileName}
-                      className="overflow-visible mb-4"
-                    >
-                      <Shop shop={catalog[index]} />
-                    </div>
-                  );
-                }
-              }}
-            />
-          </AccordionsContext.Provider>
+          <Virtuoso
+            useWindowScroll
+            key={showAll.toString()}
+            totalCount={catalog.length}
+            itemContent={(index: number) => {
+              if (catalog.length - 1 === index) {
+                return (
+                  <div
+                    ref={last}
+                    key={catalog[index].profileName}
+                    className="overflow-visible"
+                  >
+                    <Shop
+                      shop={catalog[index]}
+                      renderAsOpen={states[index]}
+                      stateCallback={(openState) => {
+                        stateCallback(index, openState);
+                      }}
+                    />
+                  </div>
+                );
+              } else {
+                return (
+                  <div
+                    key={catalog[index].profileName}
+                    className="overflow-visible mb-4"
+                  >
+                    <Shop
+                      shop={catalog[index]}
+                      renderAsOpen={states[index]}
+                      stateCallback={(openState) => {
+                        stateCallback(index, openState);
+                      }}
+                    />
+                  </div>
+                );
+              }
+            }}
+          />
 
           <span className="w-fit self-center text-xl mt-40">
             {(loading || timeout > 0) && (

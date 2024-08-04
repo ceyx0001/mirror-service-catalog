@@ -1,30 +1,27 @@
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-export const AccordionsContext = createContext(true);
+import { ReactNode, useState } from "react";
 
 // generic accordion that hides/shows child components
 export const Accordion = ({
   children,
   title = "",
+  renderAsOpen = true,
+  handleClick = () => {},
 }: {
   title?: string;
   children: ReactNode;
+  renderAsOpen?: boolean;
+  handleClick?: (openState: boolean) => void;
 }) => {
-  const context = useContext(AccordionsContext);
-  const [open, setOpen] = useState(context);
-
-  useEffect(() => {
-    context === true ? setOpen(true) : setOpen(false);
-  }, [context]);
+  const [open, setOpen] = useState(renderAsOpen);
 
   return (
-    <div className="group" onClick={() => setOpen(!open)}>
+    <div
+      className="group"
+      onClick={() => {
+        setOpen(!open);
+        handleClick(open);
+      }}
+    >
       <button
         aria-label="Open-Accordion"
         className={`w-full top-0 border-b border-secondary pb-1 group-hover:border-accent transition duration-150`}
