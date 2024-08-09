@@ -42,9 +42,9 @@ export function Filter({
   }
 
   return (
-    <div className="text-text pl-2 pb-2">
+    <div className="text-text p-2 pb-2">
       <Accordion title={title}>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center overflow-hidden">
           {filters.map((_filter, index) => (
             <div key={index} className="flex mb-3" onClick={blockClick}>
               <input

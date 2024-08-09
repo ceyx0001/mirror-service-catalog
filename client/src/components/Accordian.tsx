@@ -24,7 +24,7 @@ export const Accordion = ({
     >
       <button
         aria-label="Open-Accordion"
-        className={`w-full top-0 border-b border-secondary pb-1 group-hover:border-accent transition duration-150`}
+        className={`w-full top-0 border-b border-secondary pb-1 group-hover:border-accent transition-colors duration-150`}
       >
         {title !== "" ? (
           <div className="justify-center w-full relative">
