@@ -16,7 +16,7 @@ export const Accordion = ({
 
   return (
     <div
-      className="group"
+      className="group cursor-pointer"
       onClick={() => {
         setOpen(!open);
         handleClick(open);
