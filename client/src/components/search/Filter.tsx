@@ -1,6 +1,6 @@
-import { FocusEvent, KeyboardEvent } from "react";
 import { Accordion } from "../Accordian";
 import { Filters } from "./Search";
+import { nanoid } from "nanoid";
 
 // Filtering list used for searching text on items
 export function Filter({
@@ -9,55 +9,47 @@ export function Filter({
   title,
   filterKey,
 }: {
-  filters: string[];
-  setFilters: (filterType: keyof Filters, newFilters: string[]) => void;
+  filters: Map<string, string>;
+  setFilters: (
+    filterType: keyof Filters,
+    newFilters: Map<string, string>
+  ) => void;
   title: string;
   filterKey: keyof Filters;
 }) {
-  function handleBlur(index: number, e: FocusEvent<HTMLInputElement, Element>) {
-    const newFilters = [...filters];
-    if (e.currentTarget.value !== "") {
-      newFilters[index] = e.currentTarget.value;
-      setFilters(filterKey, newFilters);
-    }
-  }
-
-  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      e.currentTarget.blur();
-    }
-  }
-
-  function handleNewAccordionFilter() {
-    setFilters(filterKey, [...filters, ""]);
-  }
-
-  function handleRemoveFilter(index: number) {
-    const newFilters = filters.filter((_, i) => i !== index);
-    setFilters(filterKey, newFilters);
-  }
-
-  function blockClick(event: React.MouseEvent<HTMLElement>) {
-    event.stopPropagation();
+  function handleRemoveFilter(key: string) {
+    filters.delete(key);
+    setFilters(filterKey, filters);
   }
 
   return (
     <div className="text-text p-2 pb-2">
       <Accordion title={title}>
         <div className="flex flex-col items-center overflow-hidden">
-          {filters.map((_filter, index) => (
-            <div key={index} className="flex mb-3" onClick={blockClick}>
+          {Array.from(filters).map(([key, filter]) => (
+            <div
+              key={key}
+              className="flex mb-3"
+              onClick={(e) => e.stopPropagation()}
+            >
               <input
-                aria-label={`Filter-${index}`}
+                aria-label={`Filter-${filter}`}
+                type="text"
                 className="bg-secondary outline-none hover:shadow-primary shadow-sm transition-shadow px-1 p-1"
-                onBlur={(e) => handleBlur(index, e)}
-                onKeyDown={(e) => handleKeyDown(e)}
-                autoFocus={index === filters.length - 1}
+                onChange={(e) => {
+                  filters.set(key, e.target.value);
+                  setFilters(filterKey, filters);
+                }}
+                value={filter}
+                autoFocus
               />
               <button
                 type="button"
                 aria-label="Close-Filter"
-                onClick={() => handleRemoveFilter(index)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFilter(key);
+                }}
                 className="bg-accent transition hover:bg-red-900"
               >
                 <svg
@@ -82,8 +74,9 @@ export function Filter({
             type="button"
             aria-label="Add-Filter"
             onClick={(e) => {
-              blockClick(e);
-              handleNewAccordionFilter();
+              e.stopPropagation();
+              filters.set(nanoid(), "");
+              setFilters(filterKey, filters);
             }}
             className="text-base bg-secondary text-center p-1 px-3 hover:bg-accent transition-colors"
           >

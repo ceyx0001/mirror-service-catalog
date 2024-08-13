@@ -15,7 +15,7 @@ export function useQuery({ url }: { url: URL }) {
   const [hasMore, setHasMore] = useState(true);
   const [timeoutDuration, setTimeoutDuration] = useState(0);
   const loadingRef = useRef(false);
-  const prevUrlRef = useRef(url);
+  const prevUrlRef = useRef<URL | null>(null);
 
   type ERROR = { message: string; timeout: number };
   type DATA = ERROR | ShopType[];
@@ -68,21 +68,19 @@ export function useQuery({ url }: { url: URL }) {
     if (timeoutDuration === 0) {
       getShops();
     }
-    
+
     return () => {
       cleanup = true;
     };
   }, [url, timeoutDuration]);
 
   useEffect(() => {
-    const keys1 = Array.from(prevUrlRef.current.searchParams.keys());
-    const keys2 = Array.from(url.searchParams.keys());
-    const areKeysSame = JSON.stringify(keys1) === JSON.stringify(keys2);
-
     if (
-      prevUrlRef.current.pathname !== url.pathname ||
-      !areKeysSame ||
-      url.searchParams.get("threadIndex") === "0"
+      (prevUrlRef.current !== null &&
+        prevUrlRef.current.search !== url.search &&
+        !url.pathname.includes("range")) ||
+      (url.pathname.includes("range") &&
+        url.pathname !== prevUrlRef.current?.pathname)
     ) {
       setCatalog([]);
       setHasMore(true);
@@ -93,7 +91,7 @@ export function useQuery({ url }: { url: URL }) {
   return {
     catalog,
     loading: loadingRef.current,
-    hasMore: hasMore,
+    hasMore,
     timeout: timeoutDuration,
     error,
   };

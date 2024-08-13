@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Filter } from "./Filter";
 
 export type Filters = {
-  modFilters: string[];
-  baseFilters: string[];
-  titleFilters: string[];
+  modFilters: Map<string, string>;
+  baseFilters: Map<string, string>;
+  titleFilters: Map<string, string>;
 };
 
 // search handler
@@ -14,12 +14,12 @@ export function Search({
   setSearchUrl: (url: URL | null) => void;
 }) {
   const [filters, setFilters] = useState<Filters>({
-    modFilters: [],
-    baseFilters: [],
-    titleFilters: [],
+    modFilters: new Map(),
+    baseFilters: new Map(),
+    titleFilters: new Map(),
   });
 
-  function setFilter(filterType: keyof Filters, newFilters: string[]) {
+  function setFilter(filterType: keyof Filters, newFilters: Map<string,string>) {
     setFilters((prevState: Filters) => ({
       ...prevState,
       [filterType]: newFilters,
@@ -28,29 +28,31 @@ export function Search({
 
   function getFilteredCatalog() {
     // refactors filter strings to URL query parameters
-    function addQuery(url: URL, key: string, filters: string[]) {
+    function addQuery(url: URL, filterKey: string, filters: string[]) {
       filters.forEach((filter) => {
         if (filter) {
-          url.searchParams.append(key, filter);
+          url.searchParams.append(filterKey, filter);
         }
       });
     }
 
     const url = new URL(`${import.meta.env.VITE_API_URL}/items/filter`);
-    if (filters.modFilters.length > 0) {
-      addQuery(url, "mod", filters.modFilters);
+    if (filters.modFilters.size > 0) {
+      addQuery(url, "mod", Array.from(filters.modFilters.values()));
     }
 
-    if (filters.baseFilters.length > 0) {
-      addQuery(url, "base", filters.baseFilters);
+    if (filters.baseFilters.size > 0) {
+      addQuery(url, "base", Array.from(filters.baseFilters.values()));
     }
 
-    if (filters.titleFilters.length > 0) {
-      addQuery(url, "title", filters.titleFilters);
+    if (filters.titleFilters.size > 0) {
+      addQuery(url, "title", Array.from(filters.titleFilters.values()));
     }
 
     if (url.searchParams.toString() !== "") {
       setSearchUrl(url);
+    } else {
+      setSearchUrl(null);
     }
   }
 

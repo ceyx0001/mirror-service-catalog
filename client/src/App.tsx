@@ -13,14 +13,13 @@ export function App() {
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(true);
   const [url, setUrl] = useState(defaultUrl);
-
   const { catalog, loading, hasMore, timeout, error } = useQuery({
     url,
   });
 
-  function setSearchUrl(url: URL | null) {
-    if (url) {
-      setUrl(url);
+  function setSearchUrl(newUrl: URL | null) {
+    if (newUrl) {
+      setUrl(newUrl);
     } else {
       setUrl(defaultUrl);
     }
