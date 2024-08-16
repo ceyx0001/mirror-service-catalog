@@ -75,12 +75,15 @@ export function useQuery({ url }: { url: URL }) {
   }, [url, timeoutDuration]);
 
   useEffect(() => {
+    console.log(url.pathname + " " + prevUrlRef.current?.pathname);
     if (
       (prevUrlRef.current !== null &&
         prevUrlRef.current.search !== url.search &&
         !url.pathname.includes("range")) ||
       (url.pathname.includes("range") &&
-        url.pathname !== prevUrlRef.current?.pathname)
+        url.pathname !== prevUrlRef.current?.pathname) ||
+      (url.pathname.includes("filter") &&
+        prevUrlRef.current?.pathname.includes("filter"))
     ) {
       setCatalog([]);
       setHasMore(true);
