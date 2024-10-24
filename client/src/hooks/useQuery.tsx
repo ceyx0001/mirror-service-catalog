@@ -1,100 +1,114 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ShopType } from "../components/shopCard/Shop";
 
 export type Cursor = {
-  threadIndex: number;
-  limit: number;
+  threadIndex: string;
+  itemId: string;
+  limit: string;
+};
+
+export type Query = {
+  url: URL;
+  setUrl: (newUrl: URL) => void;
+  setQueryUrl: (newUrl: URL, append: boolean) => void;
+  queryUrl: (append: boolean) => void;
+  catalog: ShopType[];
+  loading: boolean;
+  hasMore: boolean;
+  cursor: Cursor;
+  timeout: number;
+  error: string;
 };
 
 export const defaultLimit = 10;
 
-// handling catalog queries without any search filters
-export function useQuery({ url }: { url: URL }) {
-  const [catalog, setCatalog] = useState<ShopType[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
+export function useQuery(defaultUrl: URL) {
+  const [catalog, setCatalog] = useState<{ array: ShopType[]; cursor: Cursor }>({
+    array: [],
+    cursor: { threadIndex: "", itemId: "", limit: `${defaultLimit}` },
+  });
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const [timeoutDuration, setTimeoutDuration] = useState(0);
-  const loadingRef = useRef(false);
-  const prevUrlRef = useRef<URL | null>(null);
+
+  const url = useRef<URL>(defaultUrl);
+  const hasMore = useRef(true);
+  const timeoutId = useRef<NodeJS.Timeout>();
 
   type ERROR = { message: string; timeout: number };
-  type DATA = ERROR | ShopType[];
+  type SEARCH = { array: ShopType[]; cursor: string };
+  type DATA = ERROR | ShopType[] | SEARCH;
+
+  // Helper function to handle the catalog state update
+  const updateCatalog = useCallback(
+    (newData: ShopType[], append: boolean, newCursor: Cursor) => {
+      setCatalog((old) => ({
+        array: append ? [...old.array, ...newData] : newData,
+        cursor: newCursor,
+      }));
+    },
+    []
+  );
+
+  const getShops = useCallback(async (append = false) => {
+    try {
+      setLoading(true);
+      const response = await fetch(url.current);
+      const data: DATA = await response.json();
+
+      if (Array.isArray(data)) {
+        hasMore.current = data.length > 0;
+        if (hasMore.current) {
+          const lastShop = data[data.length - 1];
+          updateCatalog(data, append, {
+            limit: catalog.cursor.limit,
+            threadIndex: lastShop.threadIndex.toString(),
+            itemId: lastShop.items[lastShop.items.length - 1].itemId,
+          });
+        }
+      } else if ("array" in data) {
+        hasMore.current = data.array.length > 0;
+        if (hasMore.current) {
+          const lastShop = data.array[data.array.length - 1];
+          updateCatalog(data.array, append, {
+            limit: catalog.cursor.limit,
+            threadIndex: lastShop.threadIndex.toString(),
+            itemId: data.cursor,
+          });
+        }
+      } else if (response.status === 429) {
+        console.error(429);
+        setTimeoutDuration(data.timeout);
+        timeoutId.current = setTimeout(() => {
+          setTimeoutDuration(0);
+          clearTimeout(timeoutId.current);
+        }, data.timeout);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [catalog.cursor.limit, updateCatalog]);
 
   useEffect(() => {
-    let cleanup = false;
-    let timeoutId: NodeJS.Timeout | undefined;
-    const getShops = async () => {
-      if (timeoutDuration > 0) {
-        return;
-      }
-      try {
-        loadingRef.current = true;
-        const response = await fetch(url);
-        loadingRef.current = false;
-        const data: DATA = await response.json();
-        if (data instanceof Array) {
-          if (!cleanup && data.length > 0) {
-            if (data.length < defaultLimit || data.length > defaultLimit) {
-              setHasMore(false);
-            }
-            setCatalog((old) => {
-              if (
-                data.length === defaultLimit &&
-                old[0] &&
-                old[0].profileName === data[0].profileName
-              ) {
-                setHasMore(false);
-              }
-              return [...old, ...data];
-            });
-          } else if (data.length === 0) {
-            setHasMore(false);
-          }
-        } else if (response.status === 429) {
-          setTimeoutDuration(data.timeout);
-          timeoutId = setTimeout(() => {
-            setTimeoutDuration(0);
-            clearTimeout(timeoutId);
-          }, data.timeout);
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(error);
-          setError(error.message);
-        }
-      }
-    };
-
     if (timeoutDuration === 0) {
       getShops();
     }
-
-    return () => {
-      cleanup = true;
-    };
-  }, [url, timeoutDuration]);
-
-  useEffect(() => {
-    console.log(url.pathname + " " + prevUrlRef.current?.pathname);
-    if (
-      (prevUrlRef.current !== null &&
-        prevUrlRef.current.search !== url.search &&
-        !url.pathname.includes("range")) ||
-      (url.pathname.includes("range") &&
-        url.pathname !== prevUrlRef.current?.pathname) ||
-      (url.pathname.includes("filter") &&
-        prevUrlRef.current?.pathname.includes("filter"))
-    ) {
-      setCatalog([]);
-      setHasMore(true);
-      prevUrlRef.current = url;
-    }
-  }, [url]);
+  }, [getShops, timeoutDuration]);
 
   return {
-    catalog,
-    loading: loadingRef.current,
-    hasMore,
+    url: url.current,
+    setUrl: (newUrl: URL) => (url.current = newUrl),
+    setQueryUrl: (newUrl: URL, append: boolean) => {
+      url.current = newUrl;
+      getShops(append);
+    },
+    queryUrl: (append: boolean) => getShops(append),
+    catalog: catalog.array,
+    loading,
+    hasMore: hasMore.current,
+    cursor: catalog.cursor,
     timeout: timeoutDuration,
     error,
   };

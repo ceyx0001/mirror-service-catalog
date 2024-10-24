@@ -47,7 +47,7 @@ export function About() {
                           {" "}
                           Standard Trading Shops{" "}
                         </a>
-                        every day at midnight EST. It organizes all that are up
+                        every Monday. It organizes all that are up
                         for Mirror Service or are part of a Mirror Shop. It will
                         only show items from forum threads whose titles have the
                         words "mirror shop" or "mirror service" in them. Each

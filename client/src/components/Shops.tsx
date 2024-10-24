@@ -1,56 +1,44 @@
 import { useRef, useCallback } from "react";
-import { defaultLimit } from "../hooks/useQuery";
-import { Shop, ShopType } from "./shopCard/Shop";
+import { Query } from "../hooks/useQuery";
+import { Shop } from "./shopCard/Shop";
 import { Virtuoso } from "react-virtuoso";
 
 export default function Shops({
-  url,
-  catalog,
   showAll,
-  setUrl,
-  timeout,
-  error,
-  hasMore,
-  loading,
+  query,
 }: {
-  url: URL;
-  catalog: ShopType[];
   showAll: boolean;
-  setUrl: React.Dispatch<React.SetStateAction<URL>>;
-  timeout: number;
-  error: string | null;
-  hasMore: boolean;
-  loading: boolean;
+  query: Query;
 }) {
   const observer = useRef<IntersectionObserver>();
   const states: boolean[] = [];
-  catalog.forEach(() => {
+  query.catalog.forEach(() => {
     states.push(showAll);
   });
 
   const last = useCallback(
     (node: HTMLDivElement) => {
-      if (loading) {
+      if (query.loading) {
         return;
       }
 
       if (observer.current) {
         observer.current.disconnect();
       }
+
+      const newUrl = new URL(query.url);
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          const lastEntry = catalog[catalog.length - 1];
-          url.searchParams.set("threadIndex", lastEntry.threadIndex.toString());
-          url.searchParams.set("limit", defaultLimit.toString());
-          const newUrl = new URL(url);
-          setUrl(newUrl);
+        if (entries[0].isIntersecting && query.hasMore) {
+          newUrl.searchParams.set("threadIndex", query.cursor.threadIndex);
+          newUrl.searchParams.set("itemId", query.cursor.itemId);
+          query.setQueryUrl(newUrl, true);
         }
       });
       if (node) {
         observer.current.observe(node);
       }
     },
-    [loading, hasMore, catalog, url, setUrl]
+    [query]
   );
 
   const stateCallback = (index: number, openState: boolean) => {
@@ -59,24 +47,24 @@ export default function Shops({
 
   return (
     <div className={`flex flex-col`}>
-      {error ? (
-        <span className="text-[1.5rem] text-center mt-40">{error}</span>
+      {query.error ? (
+        <span className="text-[1.5rem] text-center mt-40">{query.error}</span>
       ) : (
         <>
           <Virtuoso
             useWindowScroll
             key={showAll.toString()}
-            totalCount={catalog.length}
+            totalCount={query.catalog.length}
             itemContent={(index: number) => {
-              if (catalog.length - 1 === index) {
+              if (query.catalog.length - 1 === index) {
                 return (
                   <div
                     ref={last}
-                    key={catalog[index].profileName}
+                    key={query.catalog[index].profileName}
                     className="overflow-visible"
                   >
                     <Shop
-                      shop={catalog[index]}
+                      shop={query.catalog[index]}
                       renderAsOpen={states[index]}
                       stateCallback={(openState) => {
                         stateCallback(index, openState);
@@ -87,11 +75,11 @@ export default function Shops({
               } else {
                 return (
                   <div
-                    key={catalog[index].profileName}
+                    key={query.catalog[index].profileName}
                     className="overflow-visible mb-4"
                   >
                     <Shop
-                      shop={catalog[index]}
+                      shop={query.catalog[index]}
                       renderAsOpen={states[index]}
                       stateCallback={(openState) => {
                         stateCallback(index, openState);
@@ -104,13 +92,13 @@ export default function Shops({
           />
 
           <span className="w-fit self-center text-xl mt-40">
-            {(loading || timeout > 0) && (
+            {(query.loading || query.timeout > 0) && (
               <div className="flex items-center">
                 Loading
                 <div className="ml-3 border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-black" />
               </div>
             )}
-            {!hasMore && "End of results."}
+            {!query.hasMore && "End of results."}
           </span>
         </>
       )}

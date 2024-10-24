@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Filter } from "./Filter";
+import { Cursor } from "../../hooks/useQuery";
 
 export type Filters = {
   modFilters: Map<string, string>;
@@ -9,9 +10,11 @@ export type Filters = {
 
 // search handler
 export function Search({
-  setSearchUrl,
+  cursor,
+  setQueryUrl,
 }: {
-  setSearchUrl: (url: URL | null) => void;
+  cursor: Cursor;
+  setQueryUrl: (newUrl: URL, append: boolean) => void;
 }) {
   const [filters, setFilters] = useState<Filters>({
     modFilters: new Map(),
@@ -19,7 +22,24 @@ export function Search({
     titleFilters: new Map(),
   });
 
-  function setFilter(filterType: keyof Filters, newFilters: Map<string,string>) {
+  // Initial URL
+  const initialUrl = useMemo(
+    () => new URL(`${import.meta.env.VITE_API_URL}/items/filter`),
+    []
+  );
+
+  const [url, setUrl] = useState(() => initialUrl);
+
+  useEffect(() => {
+    url.searchParams.set("threadIndex", cursor.threadIndex);
+    url.searchParams.set("itemId", cursor.itemId);
+    url.searchParams.set("limit", cursor.limit);
+  }, [cursor, url]);
+
+  function setFilter(
+    filterType: keyof Filters,
+    newFilters: Map<string, string>
+  ) {
     setFilters((prevState: Filters) => ({
       ...prevState,
       [filterType]: newFilters,
@@ -27,32 +47,36 @@ export function Search({
   }
 
   function getFilteredCatalog() {
-    // refactors filter strings to URL query parameters
-    function addQuery(url: URL, filterKey: string, filters: string[]) {
-      filters.forEach((filter) => {
-        if (filter) {
-          url.searchParams.append(filterKey, filter);
-        }
-      });
+    // Reset the URL to the initial state
+    setUrl(new URL(initialUrl.toString()));
+    let search = false;
+
+    function addQuery(url: URL, filterKey: string, urlFilters: string[]) {
+      if (urlFilters.length === 0) {
+        url.searchParams.delete(filterKey);
+      } else {
+        urlFilters.forEach((filter) => {
+          if (filter) {
+            if (
+              !url.searchParams.has(filterKey) ||
+              url.searchParams.get(filterKey) !== filter
+            ) {
+              url.searchParams.set(filterKey, filter);
+            }
+          }
+        });
+        search = true;
+      }
     }
 
-    const url = new URL(`${import.meta.env.VITE_API_URL}/items/filter`);
-    if (filters.modFilters.size > 0) {
-      addQuery(url, "mod", Array.from(filters.modFilters.values()));
-    }
+    addQuery(url, "mod", Array.from(filters.modFilters.values()));
+    addQuery(url, "base", Array.from(filters.baseFilters.values()));
+    addQuery(url, "title", Array.from(filters.titleFilters.values()));
 
-    if (filters.baseFilters.size > 0) {
-      addQuery(url, "base", Array.from(filters.baseFilters.values()));
-    }
-
-    if (filters.titleFilters.size > 0) {
-      addQuery(url, "title", Array.from(filters.titleFilters.values()));
-    }
-
-    if (url.searchParams.toString() !== "") {
-      setSearchUrl(url);
-    } else {
-      setSearchUrl(null);
+    if (search) {
+      url.searchParams.set("threadIndex", "");
+      url.searchParams.set("itemId", "");
+      setQueryUrl(url, false);
     }
   }
 

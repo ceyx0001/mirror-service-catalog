@@ -12,18 +12,7 @@ export function App() {
   );
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(true);
-  const [url, setUrl] = useState(defaultUrl);
-  const { catalog, loading, hasMore, timeout, error } = useQuery({
-    url,
-  });
-
-  function setSearchUrl(newUrl: URL | null) {
-    if (newUrl) {
-      setUrl(newUrl);
-    } else {
-      setUrl(defaultUrl);
-    }
-  }
+  const query = useQuery(defaultUrl);
 
   return (
     <>
@@ -39,8 +28,8 @@ export function App() {
           </button>
           <button
             onClick={() => {
-              if (!loading) {
-                setUrl(defaultUrl);
+              if (!query.loading) {
+                query.setQueryUrl(defaultUrl, false);
               }
             }}
             aria-label="Load-Default-Shops"
@@ -50,9 +39,9 @@ export function App() {
             </span>
           </button>
         </div>
-        {timeout > 0 && (
+        {query.timeout > 0 && (
           <div className="fixed left-1/2 -translate-x-1/2 z-50">
-            <Timeout duration={timeout} message={"Rate limit exceeded"} />
+            <Timeout duration={query.timeout} message={"Rate limit exceeded"} />
           </div>
         )}
       </Nav>
@@ -62,7 +51,7 @@ export function App() {
           toggleSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Search setSearchUrl={setSearchUrl} />
+        <Search cursor={query.cursor} setQueryUrl={query.setQueryUrl}/>
       </aside>
       <div
         className={`mt-[4rem] mx-[1rem] ${
@@ -70,16 +59,7 @@ export function App() {
         }`}
       >
         <ErrorBoundary>
-          <Shops
-            url={url}
-            setUrl={setUrl}
-            showAll={showAll}
-            catalog={catalog}
-            timeout={timeout}
-            error={error}
-            hasMore={hasMore}
-            loading={loading}
-          />
+          <Shops showAll={showAll} query={query} />
         </ErrorBoundary>
       </div>
     </>
