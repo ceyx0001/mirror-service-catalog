@@ -3,7 +3,6 @@ import { ShopType } from "../components/shopCard/Shop";
 
 export type Cursor = {
   threadIndex: string;
-  itemId: string;
   limit: string;
 };
 
@@ -25,7 +24,7 @@ export const defaultLimit = 10;
 export function useQuery(defaultUrl: URL) {
   const [catalog, setCatalog] = useState<{ array: ShopType[]; cursor: Cursor }>({
     array: [],
-    cursor: { threadIndex: "", itemId: "", limit: `${defaultLimit}` },
+    cursor: { threadIndex: "", limit: `${defaultLimit}` },
   });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -63,7 +62,6 @@ export function useQuery(defaultUrl: URL) {
           updateCatalog(data, append, {
             limit: catalog.cursor.limit,
             threadIndex: lastShop.threadIndex.toString(),
-            itemId: lastShop.items[lastShop.items.length - 1].itemId,
           });
         }
       } else if ("array" in data) {
@@ -73,7 +71,6 @@ export function useQuery(defaultUrl: URL) {
           updateCatalog(data.array, append, {
             limit: catalog.cursor.limit,
             threadIndex: lastShop.threadIndex.toString(),
-            itemId: data.cursor,
           });
         }
       } else if (response.status === 429) {

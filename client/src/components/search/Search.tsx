@@ -32,7 +32,6 @@ export function Search({
 
   useEffect(() => {
     url.searchParams.set("threadIndex", cursor.threadIndex);
-    url.searchParams.set("itemId", cursor.itemId);
     url.searchParams.set("limit", cursor.limit);
   }, [cursor, url]);
 
