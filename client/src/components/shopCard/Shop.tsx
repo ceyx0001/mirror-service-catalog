@@ -1,6 +1,6 @@
 import { Item, ItemType } from "./Item";
 import { Accordion } from "../Accordian";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export type ShopType = {
   profileName: string;
@@ -22,10 +22,11 @@ export function Shop({
   stateCallback: (openState: boolean) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [enlarge, setEnlarge] = useState<string | null>(null);
 
   return (
     <div ref={ref} className="px-12 py-5 relative bg-background">
-      <div className="flex items-end">
+      <div className="flex items-end pb-5">
         <span className="lg:text-xl">{shop.profileName}</span>
         <a
           className="text-primary hover:text-text transition"
@@ -42,7 +43,13 @@ export function Shop({
       <Accordion renderAsOpen={renderAsOpen} handleClick={stateCallback}>
         <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row gap-10">
           {shop.items.map((item: ItemType) => (
-            <Item key={item.itemId} item={item} owner={shop.characterName} />
+            <Item
+              key={item.itemId}
+              item={item}
+              owner={shop.characterName}
+              enlarge={enlarge === item.itemId}
+              setEnlarge={setEnlarge}
+            />
           ))}
         </div>
       </Accordion>

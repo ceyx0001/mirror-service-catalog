@@ -6,11 +6,13 @@ export const Accordion = ({
   title = "",
   renderAsOpen = true,
   handleClick = () => {},
+  animate = false,
 }: {
   title?: string;
   children: ReactNode;
   renderAsOpen?: boolean;
   handleClick?: (openState: boolean) => void;
+  animate?: boolean;
 }) => {
   const [open, setOpen] = useState(renderAsOpen);
 
@@ -69,7 +71,13 @@ export const Accordion = ({
           </svg>
         )}
       </button>
-      <div className={`text-sm py-5 ${!open && "hidden"} `}>{children}</div>
+      <div
+        className={`text-sm grid ${animate ? "transition-all" : ""} ${
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">{children}</div>
+      </div>
     </div>
   );
 };

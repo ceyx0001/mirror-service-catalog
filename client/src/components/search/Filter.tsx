@@ -24,8 +24,8 @@ export function Filter({
 
   return (
     <div className="text-text p-2 pb-2">
-      <Accordion title={title}>
-        <div className="flex flex-col items-center overflow-hidden">
+      <Accordion title={title} animate={true}>
+        <div className="flex flex-col items-center pt-5 pb-5">
           {Array.from(filters).map(([key, filter]) => (
             <div
               key={key}

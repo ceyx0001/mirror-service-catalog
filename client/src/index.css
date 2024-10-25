@@ -48,11 +48,14 @@ input {
   transition: width 0.5s; /* This line animates the progress bar */
 }
 
-.tooltip-trigger {
-  position: relative;
-  display: inline;
+.accordion {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: 250ms grid-template-rows ease;
+  & .expanded {
+    grid-template-rows: 1fr;
+  }
 }
-
 @media screen and (max-width: 600) {
   span,
   p,

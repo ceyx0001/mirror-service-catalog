@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo } from "react";
 import { Tooltip } from "../Tooltip";
 
 type Mods = {
@@ -50,12 +50,14 @@ function writeItem(item: ItemType) {
 export const Item = memo(function Item({
   item,
   owner,
+  enlarge,
+  setEnlarge,
 }: {
   item: ItemType;
   owner: string;
+  enlarge: boolean;
+  setEnlarge: (id: string | null) => void;
 }) {
-  const [enlarge, setEnlarge] = useState(false);
-
   function handleWhisper() {
     if (owner) {
       navigator.clipboard.writeText(
@@ -79,7 +81,7 @@ export const Item = memo(function Item({
         }`}
       onClick={(e) => {
         e.stopPropagation();
-        setEnlarge(!enlarge);
+        setEnlarge(enlarge ? null : item.itemId);
       }}
     >
       <img
