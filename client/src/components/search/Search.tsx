@@ -74,7 +74,6 @@ export function Search({
 
     if (search) {
       url.searchParams.set("threadIndex", "");
-      url.searchParams.set("itemId", "");
       setQueryUrl(url, false);
     }
   }

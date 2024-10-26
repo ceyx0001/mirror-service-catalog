@@ -1,4 +1,3 @@
-import { useRef, useCallback } from "react";
 import { Query } from "../hooks/useQuery";
 import { Shop } from "./shopCard/Shop";
 import { Virtuoso } from "react-virtuoso";
@@ -10,36 +9,10 @@ export default function Shops({
   showAll: boolean;
   query: Query;
 }) {
-  const observer = useRef<IntersectionObserver>();
   const states: boolean[] = [];
   query.catalog.forEach(() => {
     states.push(showAll);
   });
-
-  const last = useCallback(
-    (node: HTMLDivElement) => {
-      if (query.loading) {
-        return;
-      }
-
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-
-      const newUrl = new URL(query.url);
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && query.hasMore) {
-          newUrl.searchParams.set("threadIndex", query.cursor.threadIndex);
-          newUrl.searchParams.set("itemId", query.cursor.itemId);
-          query.setQueryUrl(newUrl, true);
-        }
-      });
-      if (node) {
-        observer.current.observe(node);
-      }
-    },
-    [query]
-  );
 
   const stateCallback = (index: number, openState: boolean) => {
     states[index] = !openState;
@@ -55,38 +28,28 @@ export default function Shops({
             useWindowScroll
             key={showAll.toString()}
             totalCount={query.catalog.length}
-            itemContent={(index: number) => {
-              if (query.catalog.length - 1 === index) {
-                return (
-                  <div
-                    ref={last}
-                    key={query.catalog[index].profileName}
-                    className="overflow-visible"
-                  >
-                    <Shop
-                      shop={query.catalog[index]}
-                      renderAsOpen={states[index]}
-                      stateCallback={(openState) => {
-                        stateCallback(index, openState);
-                      }}
-                    />
-                  </div>
+            itemContent={(index: number) => (
+              <div
+                key={query.catalog[index].profileName}
+                className="overflow-visible mb-4"
+              >
+                <Shop
+                  shop={query.catalog[index]}
+                  renderAsOpen={states[index]}
+                  stateCallback={(openState) => {
+                    stateCallback(index, openState);
+                  }}
+                />
+              </div>
+            )}
+            endReached={() => {
+              if (query.hasMore && !query.loading) {
+                const newUrl = new URL(query.url);
+                newUrl.searchParams.set(
+                  "threadIndex",
+                  query.cursor.threadIndex
                 );
-              } else {
-                return (
-                  <div
-                    key={query.catalog[index].profileName}
-                    className="overflow-visible mb-4"
-                  >
-                    <Shop
-                      shop={query.catalog[index]}
-                      renderAsOpen={states[index]}
-                      stateCallback={(openState) => {
-                        stateCallback(index, openState);
-                      }}
-                    />
-                  </div>
-                );
+                query.setQueryUrl(newUrl, true);
               }
             }}
           />
