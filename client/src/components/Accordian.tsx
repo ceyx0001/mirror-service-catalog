@@ -76,7 +76,9 @@ export const Accordion = ({
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >
-        <div className="overflow-hidden">{children}</div>
+        <div className={`${animate ? "overflow-hidden" : "overflow-visible"}`}>
+          {children}
+        </div>
       </div>
     </div>
   );
