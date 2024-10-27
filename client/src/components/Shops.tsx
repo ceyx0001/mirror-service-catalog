@@ -1,6 +1,7 @@
+import { useEffect, useRef } from "react";
 import { Query } from "../hooks/useQuery";
 import { Shop } from "./shopCard/Shop";
-import { Virtuoso } from "react-virtuoso";
+import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 
 export default function Shops({
   showAll,
@@ -14,9 +15,36 @@ export default function Shops({
     states.push(showAll);
   });
 
+  const listRef = useRef<VirtuosoHandle>(null);
+  const endRef = useRef(null);
+
   const stateCallback = (index: number, openState: boolean) => {
     states[index] = !openState;
   };
+
+  useEffect(() => {
+    if (endRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            if (query.hasMore && !query.loading) {
+              const newUrl = new URL(query.url);
+              newUrl.searchParams.set(
+                "threadIndex",
+                query.cursor.threadIndex
+              );
+              query.setQueryUrl(newUrl, true);
+            }
+          }
+        },
+        { threshold: 1.0 }
+      );
+
+      observer.observe(endRef.current);
+
+      return () => observer.disconnect();
+    }
+  }, [query]);
 
   return (
     <div className={`flex flex-col`}>
@@ -25,13 +53,15 @@ export default function Shops({
       ) : (
         <>
           <Virtuoso
+            ref={listRef}
             useWindowScroll
+            followOutput={true}
             key={showAll.toString()}
             totalCount={query.catalog.length}
             itemContent={(index: number) => (
               <div
                 key={query.catalog[index].profileName}
-                className="overflow-visible mb-4"
+                className="mb-4"
               >
                 <Shop
                   shop={query.catalog[index]}
@@ -42,18 +72,8 @@ export default function Shops({
                 />
               </div>
             )}
-            endReached={() => {
-              if (query.hasMore && !query.loading) {
-                const newUrl = new URL(query.url);
-                newUrl.searchParams.set(
-                  "threadIndex",
-                  query.cursor.threadIndex
-                );
-                query.setQueryUrl(newUrl, true);
-              }
-            }}
           />
-
+          <div ref={endRef} style={{ height: "1px" }} />
           <span className="w-fit self-center text-xl mt-40">
             {(query.loading || query.timeout > 0) && (
               <div className="flex items-center">
