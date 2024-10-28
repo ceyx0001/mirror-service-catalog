@@ -79,7 +79,7 @@ export function Search({
   }
 
   return (
-    <div className="flex flex-col items-center lg:w-[16rem] h-[90vh]">
+    <div className="flex flex-col items-center w-[15rem] lg:w-[16rem] h-[90vh]">
       <button
         type="button"
         aria-label="Search"

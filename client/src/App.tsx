@@ -17,7 +17,7 @@ export function App() {
   return (
     <>
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar}>
-        <div className="space-x-12">
+        <div className="lg:space-x-12 space-x-7">
           <button
             onClick={() => setShowAll(!showAll)}
             aria-label="Expand-Or-Close-Shops"
@@ -55,7 +55,7 @@ export function App() {
       </aside>
       <div
         className={`mt-[4rem] mx-[1rem] ${
-          toggleSidebar ? "w-[101rem] translate-x-[16.35rem]" : ""
+          toggleSidebar ? "sm:w-[34.5rem] sm:translate-x-[15rem] lg:w-[101rem] lg:translate-x-[16.35rem]" : ""
         }`}
       >
         <ErrorBoundary>

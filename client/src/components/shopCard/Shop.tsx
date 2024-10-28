@@ -26,16 +26,16 @@ export function Shop({
 
   return (
     <div ref={ref} className="px-12 py-5 relative bg-background">
-      <div className="flex items-end pb-5">
-        <span className="lg:text-xl">{shop.profileName}</span>
+      <div className="flex items-center">
+        <span className="sm:text-sm lg:text-xl">{shop.profileName}</span>
         <a
-          className="text-primary hover:text-text transition"
+          className="text-primary hover:text-text transition text-sm lg:text-lg sm:pl-10"
           aria-label="Shop-Link"
           target="_blank"
           rel="noopener noreferrer"
           href={`https://www.pathofexile.com/forum/view-thread/${shop.threadIndex}`}
         >
-          <span className="text-primary hover:text-text transition pl-10">
+          <span className="text-primary hover:text-text transition">
             {shop.title}
           </span>
         </a>
