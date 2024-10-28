@@ -15,7 +15,6 @@ export const Accordion = ({
   animate?: boolean;
 }) => {
   const [open, setOpen] = useState(renderAsOpen);
-
   return (
     <div
       className="group cursor-pointer"
@@ -71,15 +70,17 @@ export const Accordion = ({
           </svg>
         )}
       </button>
-      <div
-        className={`text-sm grid ${animate ? "transition-all" : ""} ${
-          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-        }`}
-      >
-        <div className={`${animate ? "overflow-hidden" : "overflow-visible"}`}>
-          {children}
+      {animate ? (
+        <div
+          className={`text-sm grid transition-all ${
+            open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          <div className={`overflow-hidden`}>{children}</div>
         </div>
-      </div>
+      ) : (
+        <div className={`text-sm ${!open && "hidden"}`}>{children}</div>
+      )}
     </div>
   );
 };

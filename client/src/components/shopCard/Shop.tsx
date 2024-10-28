@@ -40,7 +40,7 @@ export function Shop({
           </span>
         </a>
       </div>
-      <Accordion renderAsOpen={renderAsOpen} handleClick={stateCallback}>
+      <Accordion renderAsOpen={renderAsOpen} handleClick={stateCallback} animate={false}>
         <div className="grid lg:grid-cols-4 grid-cols-1 grid-flow-row gap-10 pt-5">
           {shop.items.map((item: ItemType) => (
             <Item
