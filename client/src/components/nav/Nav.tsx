@@ -43,7 +43,7 @@ export function Nav({
       </div>
       <div className="flex w-full ml-8">
         {children}
-        <div className="flex ml-auto lg:space-x-20 space-x-5 mr-14 place-items-center">
+        <div className="flex flex-col lg:flex-row ml-auto lg:space-x-12 mr-14 place-items-start">
           <About />
           <Contact />
         </div>
