@@ -60,9 +60,9 @@ export function App() {
           <Search cursor={query.cursor} setQueryUrl={query.setQueryUrl} />
         </aside>
         <div
-          className={`mt-[4rem] mx-[1rem] flex-grow transition-transform duration-150  lg:max-w-[101rem] md:max-w-[42.75rem] max-w-[27.75rem] ${
+          className={`mt-[4rem] mx-[1rem] flex-grow transition-transform duration-150 ${
             toggleSidebar
-              ? "sm:translate-x-[15rem] lg:translate-x-[16.35rem]"
+              ? "sm:translate-x-[15rem] lg:translate-x-[16.35rem] lg:max-w-[101rem] md:max-w-[44.5rem] sm:max-w-[28rem]"
               : ""
           }`}
         >
