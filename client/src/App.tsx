@@ -5,6 +5,8 @@ import { Search } from "./components/search/Search";
 import Shops from "./components/Shops";
 import { useQuery } from "./hooks/useQuery";
 import { Timeout } from "./components/search/Timeout";
+import { About } from "./components/nav/About";
+import { Contact } from "./components/nav/Contact";
 
 export function App() {
   const defaultUrl = new URL(
@@ -39,13 +41,17 @@ export function App() {
             </span>
           </button>
         </div>
+        <div className="flex flex-col lg:flex-row ml-auto lg:space-x-12 mr-14 place-items-start">
+          <About />
+          <Contact />
+        </div>
         {query.timeout > 0 && (
           <div className="fixed left-1/2 -translate-x-1/2 z-50">
             <Timeout duration={query.timeout} message={"Rate limit exceeded"} />
           </div>
         )}
       </Nav>
-      <div className="relative">
+      <div className="flex relative">
         <aside
           className={`border-r-1 border-secondary/55 bg-background h-screen fixed top-0 pt-20 transition-transform duration-150 ease-out z-10 ${
             toggleSidebar ? "translate-x-0" : "-translate-x-full"
@@ -54,9 +60,9 @@ export function App() {
           <Search cursor={query.cursor} setQueryUrl={query.setQueryUrl} />
         </aside>
         <div
-          className={`mt-[4rem] mx-[1rem] ${
+          className={`mt-[4rem] mx-[1rem] flex-grow transition-transform duration-150  lg:max-w-[101rem] md:max-w-[42.75rem] max-w-[27.75rem] ${
             toggleSidebar
-              ? "sm:w-[34.5rem] sm:translate-x-[15rem] lg:w-[101rem] lg:translate-x-[16.35rem]"
+              ? "sm:translate-x-[15rem] lg:translate-x-[16.35rem]"
               : ""
           }`}
         >

@@ -1,5 +1,3 @@
-import { Contact } from "./Contact";
-import { About } from "./About";
 import { ReactNode } from "react";
 import icon from "../../assets/Mirror_of_Kalandra.png";
 
@@ -38,16 +36,10 @@ export function Nav({
         </div>
       </button>
       <div className="flex flex-row items-center space-x-2 mr-5">
-        <img className="w-7 h-7" src={icon} alt="Exile's Emporium"/>
+        <img className="w-7 h-7" src={icon} alt="Exile's Emporium" />
         <h1 className="font-bold inline lg:w-52">Exile's Emporium</h1>
       </div>
-      <div className="flex w-full ml-8">
-        {children}
-        <div className="flex flex-col lg:flex-row ml-auto lg:space-x-12 mr-14 place-items-start">
-          <About />
-          <Contact />
-        </div>
-      </div>
+      {children}
     </nav>
   );
 }
