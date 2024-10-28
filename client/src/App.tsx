@@ -19,7 +19,7 @@ export function App() {
   return (
     <>
       <Nav toggleSidebar={toggleSidebar} setToggleSidebar={setToggleSidebar}>
-        <div className="lg:space-x-12">
+        <div className="md:space-x-12">
           <button
             onClick={() => setShowAll(!showAll)}
             aria-label="Expand-Or-Close-Shops"
@@ -41,7 +41,7 @@ export function App() {
             </span>
           </button>
         </div>
-        <div className="flex flex-col lg:flex-row ml-auto lg:space-x-12 mr-14 place-items-start">
+        <div className="ml-auto flex flex-col md:flex-row md:space-x-12 mr-14 place-items-start">
           <About />
           <Contact />
         </div>
