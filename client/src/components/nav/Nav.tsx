@@ -37,7 +37,7 @@ export function Nav({
       </button>
       <div className="flex flex-row items-center space-x-2 mr-5">
         <img className="w-7 h-7" src={icon} alt="Exile's Emporium" />
-        <h1 className="font-bold inline lg:w-52">Exile's Emporium</h1>
+        <h1 data-test="nav-heading" className="font-bold inline lg:w-52">Exile's Emporium</h1>
       </div>
       {children}
     </nav>

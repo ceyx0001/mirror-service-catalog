@@ -33,6 +33,7 @@ export function Filter({
               onClick={(e) => e.stopPropagation()}
             >
               <input
+                data-test="search-filter"
                 aria-label={`Filter-${filter}`}
                 type="text"
                 className="bg-secondary outline-none hover:shadow-primary shadow-sm transition-shadow px-1 p-1"
@@ -71,6 +72,7 @@ export function Filter({
             </div>
           ))}
           <button
+            data-test="add-filter-button"
             type="button"
             aria-label="Add-Filter"
             onClick={(e) => {

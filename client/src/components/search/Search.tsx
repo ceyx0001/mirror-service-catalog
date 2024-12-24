@@ -81,6 +81,7 @@ export function Search({
   return (
     <div className="flex flex-col items-center w-[15rem] lg:w-[16rem] h-[90vh]">
       <button
+        data-test="search-button"
         type="button"
         aria-label="Search"
         className="text-text bg-secondary flex items-center justify-center w-40 hover:bg-accent relative transition mb-8 p-1"
@@ -102,7 +103,7 @@ export function Search({
           />
         </svg>
       </button>
-      <div className="w-full overflow-y-auto gutter">
+      <div data-test="base-filters" className="w-full overflow-y-auto gutter">
         <Filter
           filters={filters.baseFilters}
           setFilters={setFilter}
@@ -110,7 +111,7 @@ export function Search({
           filterKey="baseFilters"
         />
       </div>
-      <div className="w-full overflow-y-auto gutter">
+      <div data-test="mod-filters" className="w-full overflow-y-auto gutter">
         <Filter
           filters={filters.modFilters}
           setFilters={setFilter}
@@ -118,7 +119,7 @@ export function Search({
           filterKey="modFilters"
         />
       </div>
-      <div className="w-full overflow-y-auto gutter">
+      <div data-test="title-filters" className="w-full overflow-y-auto gutter">
         <Filter
           filters={filters.titleFilters}
           setFilters={setFilter}
